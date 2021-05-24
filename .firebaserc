@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "superb-tendril-224107": {
+      "hosting": {
+        "app": [
+          "superb-tendril-224107"
+        ]
+      }
+    }
+  }
+}
