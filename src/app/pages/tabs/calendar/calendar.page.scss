@@ -1,0 +1,23 @@
+ion-content ion-toolbar {
+  --background: translucent;
+}
+
+#container{  
+  margin-top: 50% !important; 
+  width:80%;
+  margin:auto;
+}
+
+#textLogin{
+  text-align: center;
+}
+
+#buttonLogin{
+  float:none;
+  width:80%;
+  margin: 5px 10%;
+}
+
+#buttonLogin > p{
+  color: black;
+}

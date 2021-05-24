@@ -1,0 +1,69 @@
+<!--
+<super-tabs>
+  <super-tabs-toolbar slot="top" color="primary">
+    <super-tab-button>
+      <ion-icon name="paper" color="light"></ion-icon>
+      <ion-label>Search</ion-label>
+    </super-tab-button>
+    <super-tab-button>
+      <ion-icon name="paper" color="light"></ion-icon>
+      <ion-label>Maps</ion-label>
+    </super-tab-button>
+    <super-tab-button>
+      <ion-icon name="paper" color="light"></ion-icon>
+      <ion-label>Reserve</ion-label>
+    </super-tab-button>
+    <super-tab-button>
+      <ion-icon name="paper" color="light"></ion-icon>
+      <ion-label>Search</ion-label>
+    </super-tab-button>
+  </super-tabs-toolbar>
+  <super-tabs-container>
+    <super-tab>
+      <ion-content>
+        Search
+      </ion-content>
+    </super-tab>
+    <super-tab>
+      <ion-content>
+        Maps
+      </ion-content>
+    </super-tab>
+    <super-tab>
+      <ion-content>
+        Reserve
+      </ion-content>
+    </super-tab>
+    <super-tab>
+      <ion-content>
+        Calendar
+      </ion-content>
+    </super-tab>
+  </super-tabs-container>
+</super-tabs>
+-->
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom" color="dark">
+    <ion-tab-button tab="search">
+      <ion-icon  name="search"></ion-icon>
+      <ion-label>{{env.search| titlecase}}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="maps">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>{{env.maps| titlecase}}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="reserve">
+      <ion-icon name="checkbox-outline"></ion-icon>
+      <ion-label>{{env.reserves| titlecase}}</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="calendar">
+      <ion-icon name="calendar"></ion-icon>
+      <ion-label>{{env.calendar| titlecase}}</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+
+</ion-tabs>

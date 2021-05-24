@@ -1,0 +1,48 @@
+<ion-header>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" >
+  
+  <div id="infoform" action="">
+    <div id="contentInfo">
+      <h3>{{sportCenter.name}}</h3>
+      <br>
+      <div>
+        <ion-label>{{env.track | titlecase }}</ion-label>
+        <ion-select class="form-select form-select-sm" aria-label=".form-select-sm " aria-placeholder="Select Track" [(ngModel)]="selectTrack" (ionChange)="changeTrack($event)" interface="popover" id="trackPicker">
+          <ion-select-option *ngFor="let track of tracks;" value="{{ track }}">{{track.name}}</ion-select-option>
+        </ion-select>
+      </div>
+      <br>
+
+      <div class="select">
+        <ion-label>{{env.date | titlecase }}</ion-label>
+        <input  type="date" id="datePicker" [(ngModel)]="day" (change)="activeHour(day)"/>
+      </div>
+      <br>
+      <div class="select" [class.hide]="hoursEmpty">
+        <ion-label>{{env.hour | titlecase }}</ion-label>
+        <ion-datetime disabled="true" displayFormat="HH:mm" pickerFormat="HH:mm" [hourValues]="hours"
+          name="datetime" minuteValues="0,30" placeholder="{{env.selectHour}}" id="hourPicker" text-right></ion-datetime>
+      </div>
+      <p [class.hide]="!hoursEmpty" id="messageHours">{{env.emptyHour}}</p>
+
+      <br><br><br>
+      <div class="nameReserve" [class.hide]="hoursEmpty">
+        <ion-label>{{env.reserveName}}</ion-label>
+        <br>
+        <input class="form-control" type="text" placeholder={{env.yourName}}>
+      </div>
+    </div>
+    <div id="blockButton" [class.hide]="hoursEmpty">
+      <ion-button id="buttonForms" color="tertiary">{{env.reserver}}</ion-button>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,26 @@
+{
+    "sportCenters": [
+        {
+            "idSportCenter": 1,
+            "name": "Ciudad de Cadiz",
+            "street": "Av. Cayetano del Toro",
+            "city": "Cádiz",
+            "postalcode": 11000,
+            "province": "Cádiz",
+            "country": "España",
+            "longitude": -6.27133879461033,
+            "latitude": 36.49782643740423
+        },
+        {
+            "idSportCenter": 2,
+            "name": "Pabellón Polideportivo Municipal",
+            "street": "Calle Ribera del Muelle, s/n",
+            "city": "Puerto Real",
+            "postalcode": 11510,
+            "province": "Cádiz",
+            "country": "España",
+            "longitude": -6.194226,
+            "latitude": 36.5264645
+        }
+    ]
+}

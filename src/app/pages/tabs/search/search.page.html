@@ -1,0 +1,34 @@
+<ion-content>
+  <div id="menu-search">
+    <div>
+      <div class="select">
+        <ion-label>{{env.city | titlecase}}</ion-label>
+        <ion-select interface="popover" *ngIf="citys" [(ngModel)]="city">
+          <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
+        </ion-select>
+      </div>
+      <div class="select">
+        <ion-label>{{env.sport | titlecase}}</ion-label>
+        <ion-select interface="popover" [(ngModel)]="sport" >
+          <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
+        </ion-select>
+      </div>
+    </div>
+    <ion-button id="buttonSearch" expand="full" color="tertiary" (click)="search(city, sport)">
+      <p>{{env.search}}</p>
+    </ion-button>
+  </div>
+  <div id="contentList">
+    <ion-virtual-scroll id="result-search">
+      <ion-card *ngFor="let center of sportCenters" (click)="openPage(center, sport)">
+        <ion-card-title> {{ center.name }} </ion-card-title>
+        <p>{{ center.street }} - {{ center.city }}</p>
+      </ion-card>
+
+      <div *ngIf="init || empty" class="message">
+        <ion-label *ngIf="init"> {{env.selectCitySport }}</ion-label>
+        <ion-label *ngIf="empty"> {{env.emptySearch }} </ion-label>
+      </div>
+    </ion-virtual-scroll>
+  </div>
+</ion-content>
