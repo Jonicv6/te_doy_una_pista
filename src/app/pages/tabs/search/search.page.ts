@@ -15,8 +15,8 @@ import { SportCenter } from 'src/models/sportcenter';
 export class SearchPage {
 
   citys: any[] = [];
-  sports: any[] = []; 
-  sportCenters: any[] = []; 
+  sports: any[] = [];
+  sportCenters: any[] = [];
   sportCenterData = [];
   loading: any;
   init: boolean = true;
@@ -77,43 +77,26 @@ export class SearchPage {
   }
 
   search(city, sport) {
-    let centerList: any;
     this.sportCenters = [];
 
     //Cambiamos los valores de los boolean
-    this.init = false;   
+    this.init = false;
 
+    //Buscamos los SportCenters según la ciudad y el deporte indicado
     this.presentLoading(environment.textLoading);
-     setTimeout(() => {
-      this.sportCenterDataService.getSportCenters()
-      .subscribe(result => {
-        centerList = result.filter(item => item.city === city);
+    setTimeout(() => {
+      this.sportCenterDataService.getSportCentersCityAndSport(city, sport)
+        .subscribe(result => {
+          this.sportCenters = result;
 
-        this.trackDataService.getTracks()
-          .subscribe(resultTrack => {
-            resultTrack.filter(item => {
-              let sports = item.sport.split("-");
-
-              for (let auxList of centerList) {
-                if (sports.indexOf(sport) != -1 &&
-                  auxList.idSportCenter === item.sportCenter &&
-                  this.sportCenters.indexOf(auxList) == -1) {
-                  //console.log(item.idTrack + " " + sports.indexOf(sport) + " " + sport)
-                  this.sportCenters.push(auxList);
-                };
-              }
-
-            });
-
-            if (this.sportCenters.length == 0) {
-              this.empty = true;
-            } else {
-              this.empty = false;
-            }
-          });
-     });
-       this.loading.dismiss();
-     }, 1500);
+          if (this.sportCenters.length == 0) {
+            this.empty = true;
+          } else {
+            this.empty = false;
+          }
+        });
+      this.loading.dismiss();
+    }, 1500);
 
   }
 
@@ -123,8 +106,8 @@ export class SearchPage {
   openPage(resultSelect, sport) {
     let params = [resultSelect, sport]
     this.sendParams.sendObjectSource(params);
-    this.navCtrl.navigateForward('tabs/search/forms');
-    }
+    this.navCtrl.navigateForward('tabs/search/forms/' + resultSelect.idSportCenter);
+  }
 
   initResult() {
     //this.sportCenters.push("Barrio 512")
