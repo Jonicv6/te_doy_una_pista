@@ -21,7 +21,7 @@ const routes: Routes = [
               import('./search/search.module').then(m => m.SearchPageModule)
           },
           {
-            path: 'forms',
+            path: 'forms/:id',
             children: [
               {
                 path: '',
