@@ -30,4 +30,8 @@ export class SportCenterDataService {
     return this.http.get(environment.endPoint + environment.sporcenterPoint + id);
   }
 
+  public getSportCentersCityAndSport(city, sport): Observable<any> {
+    return this.http.get(environment.endPoint + environment.sporcenterPoint + city + "/" + sport);
+  }
+
 }
