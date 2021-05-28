@@ -27,6 +27,10 @@ export class TrackDataService {
     return this.http.get(environment.endPoint + environment.trackPoint + id);
   }
 
+  public getTrackSportCenter(id, sport): Observable<any> {
+    return this.http.get(environment.endPoint + environment.trackPoint + id + "/" + sport);
+  }
+
   
   private setReserve(value: Track) {
     this._track = value;
