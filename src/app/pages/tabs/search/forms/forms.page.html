@@ -9,10 +9,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" >
-  
+  <h3 class="ml-3">{{sportCenterName}}</h3>
   <div id="infoform" action="">
     <div id="contentInfo">
-      <h3>{{sportCenter.name}}</h3>
       <br>
       <div>
         <ion-label>{{env.track | titlecase }}</ion-label>
@@ -32,7 +31,7 @@
         <ion-datetime disabled="true" displayFormat="HH:mm" pickerFormat="HH:mm" [hourValues]="hours"
           name="datetime" minuteValues="0,30" placeholder="{{env.selectHour}}" id="hourPicker" text-right></ion-datetime>
       </div>
-      <p [class.hide]="!hoursEmpty" id="messageHours">{{env.emptyHour}}</p>
+      <p [class.hide]="!hoursEmpty" id="messageHours">{{env.emptyHours}}</p>
 
       <br><br><br>
       <div class="nameReserve" [class.hide]="hoursEmpty">

@@ -104,9 +104,9 @@ export class SearchPage {
 
 
   openPage(resultSelect, sport) {
-    let params = [resultSelect, sport]
-    this.sendParams.sendObjectSource(params);
-    this.navCtrl.navigateForward('tabs/search/forms/' + resultSelect.idSportCenter);
+   // let params = [resultSelect, sport]
+    //athis.sendParams.sendObjectSource(params);
+    this.navCtrl.navigateForward('tabs/search/forms/' + resultSelect.idSportCenter + "/" + sport);
   }
 
   initResult() {
