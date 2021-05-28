@@ -26,8 +26,8 @@ export class SportCenterDataService {
     this._sportCenter = data;
   }
 
-  public getSportCenter(id): Observable<any> {
-    return this.http.get(environment.endPoint + environment.sporcenterPoint + id);
+  public getSportCenter(id): Observable<SportCenter> {
+    return this.http.get<SportCenter>(environment.endPoint + environment.sporcenterPoint + id);
   }
 
   public getSportCentersCityAndSport(city, sport): Observable<any> {
