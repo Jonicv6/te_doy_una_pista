@@ -20,6 +20,7 @@ export const environment = {
   endPoint: "http://31.131.183.8:3000",
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
+  reservePoint: "/reserve/",
 
   //Variables nombre
   search: "buscar",
@@ -34,9 +35,15 @@ export const environment = {
   reserver: "reservar",
   reserveName: "Nombre de la Reserva",
   yourName: "Su nombre",
+  back: "Volver",
 
   //Variables
-  hoursOpen: ["8","9","10","11","12","13","16","17","18","19","20","21","22"],
+  hoursOpen: ["08","09","10","11","12","13","16","17","18","19","20","21","22"],
+
+  //Titulos SweetAlert
+  titleSuccessReserve: "Reserva realizada",
+  titleErrorDataReserve: "Datos erróneos",
+  titleErrorSelectDay: "Error Fecha",
 
   //Mensajes 
   textWait: "Espere por favor",
@@ -54,12 +61,17 @@ export const environment = {
   emptySearch: "Sin resultados. Inténtelo de nuevo.",
   emptyHours: "No hay horas libres, seleccione otro día.",
 
+  //Mensajes de exito
+  successReserve: "Ha realizado su reserva con éxito",
+
   //Iconos
   iconMapURL: "assets/icon/sports/alfiler.png",
   iconSportCenterURL: "assets/icon/sports/estadio-ubicacion.png",
   
   //Mensajes de Error 
-  errorLocation: "Error en la localización"
+  errorLocation: "Error en la localización",
+  errorDataReserve: "Rellene todos los datos de la reserva.",
+  errorSelectDay: "Debe seleccionar primero una pista."
 };
 
 /*
