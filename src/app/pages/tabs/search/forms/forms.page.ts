@@ -1,12 +1,15 @@
 import { Component, OnInit, Input, ɵɵNgOnChangesFeature } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { SendParamsService } from 'src/app/services/send-params.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
 import { Track } from 'src/models/track';
-import { resolve } from 'url';
+import { DatePipe } from '@angular/common'
+import { Reserve } from 'src/models/reserve';
+import Swal from 'sweetalert2';
 
 //@Input() sportCenter:any;
 @Component({
@@ -15,133 +18,182 @@ import { resolve } from 'url';
   styleUrls: ['./forms.page.scss'],
 })
 export class FormsPage implements OnInit {
-  sportCenter: SportCenter;
-  sport: any;
-  tracks: Track[] = [];
-  defaultHours: any[] = environment.hoursOpen;
-  hours: any[] = [];
-  hoursEmpty: boolean = false;
-  day: string = new Date().toLocaleString().split(" ")[0];
-  actualHour: string = new Date().toLocaleString().split(" ")[1].split(":")[0];
-  selectTrack: Track;
   env = environment;
-  sportCenterName: string; 
+  sportCenter: SportCenter;
+  sportCenterName: string;
+  sport: string;
+  selectDay: string;
+  minDay: string = new Date().toLocaleDateString('en-US');
+  actualHour: string = new Date().toLocaleTimeString().split(":")[0];
+  defaultHours: any[] = environment.hoursOpen;
+  hours: string[] = [];
+  hoursEmpty: boolean = false;
+  tracks: Track[] = [];
+  selectTrack: Track;
+  selectHour: string;
+  nameReserve: string;
 
 
-  constructor(private activedRoute: ActivatedRoute,
+  constructor(private route: Router,private activedRoute: ActivatedRoute,
     public getParams: SendParamsService,
     private trackDataService: TrackDataService,
-    private sportCenterDataService: SportCenterDataService) {
-    /*
-    //Recogemos los datos enviados desde la página Search
-    let id = this.activedRoute.snapshot.params['id'];
-
-    //TODO: CAPTURAR DATOS DE LA BBDD DEL SPORTCENTER SEGUN LA ID
-    //ASI CUANDO HAGAN UN F5 SE MANTIENE LOS DATOS.
-    this.sportCenterDataService.getSportCenter(id).subscribe(data => {
-      console.log(data)
-      this.sportCenter = data;
-    });*/
-
-
-    //Recorremos las diversas pistas
-    /*this.trackDataService.getTracks()
-      .subscribe(result => {
-        for (let i of result) {
-          if (i.sportCenter === this.sportCenter.idSportCenter) {
-            let auxiliar = i.sport.split("-");
-            auxiliar.forEach(element => {
-              if (element === this.sport) {
-                this.tracks.push(i);
-              }
-            });
-          }
-        }
-      });*/
-    /*this.getarams.$getObjectSource.subscribe(data => {
-      this.sportCenter = data[0];
-      this.sport = data[1];
-
-    });*/
-
+    private sportCenterDataService: SportCenterDataService,
+    private reserveDataService: ReserveDataService,
+    public datepipe: DatePipe) {
 
   }
 
-   ngOnInit() {
-     console.log("INIT")
+  ngOnInit() {
     this.getData();
-    
-    //Realizamos el Split porque la fecha se imprime: 2021-03-18T02:04:44.746Z
-    //CORREGIRLO 
-    document.getElementById("datePicker").setAttribute("min", this.day);
-    console.log(this.day)
-    this.activeHour(this.day)
   }
 
-  async getData(){
+  async getData() {
     //Recogemos los datos enviados desde la página Search
     let id = this.activedRoute.snapshot.params['id'];
     this.sport = this.activedRoute.snapshot.params['sport'];
-    //TODO: CAPTURAR DATOS DE LA BBDD DEL SPORTCENTER SEGUN LA ID
-    //ASI CUANDO HAGAN UN F5 SE MANTIENE LOS DATOS.
-   await this.sportCenterDataService.getSportCenter(id).toPromise().then(r=>{
-    
-    this.sportCenter = r;
-    //Por fallo en la variable, debo de usar una exclusiva para el titulo
-    this.sportCenterName = this.sportCenter.name;
+
+    //Esperamos que devuelva los datos del pabellon
+    await this.sportCenterDataService.getSportCenter(id).toPromise().then(r => {
+
+      this.sportCenter = r;
+      //Por fallo en la variable, debo de usar una exclusiva para el titulo
+      this.sportCenterName = this.sportCenter.name;
     });
 
+    //Esperamos que devuelva los datos de las pistas de ese pabellon y ese deporte
     await this.trackDataService.getTrackSportCenter(id, this.sport)
       .toPromise().then(result => {
         this.tracks = result;
-        console.log(this.tracks)
       });
   }
 
 
-  changeTrack() {
-    //this.selectTrack = $event.target.value;
-    console.log(this.selectTrack)
-
+  changeTrack(trackAux: Track) {
+    this.selectTrack = trackAux;
+    this.selectDay = undefined;
+    this.hours = [];
+    this.checkHoursEmpty();
   }
+
 
   /* --------------- Horas restantes con un margen de dos horas --------------- */
-  activeHour(selectDay) {
+  activeHour() {
+    if (this.selectTrack == undefined) {
+      Swal.fire({
+        title: this.env.titleErrorSelectDay,
+        text: this.env.errorSelectDay,
+        icon: 'error',
+        heightAuto: false
+      })
+      this.selectDay = undefined;
 
-    this.trackDataService.getReseves()
-      .subscribe(result => {
-        this.hours = []
-        //Rellenamos la variable hours
-        for (let hour of this.defaultHours) {
-          if (this.day == selectDay && Number.parseInt(hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
-            this.hours.push(hour);
-          } else {
-            this.hours.push(hour);
+    } else {
+
+      //Transformamos la fecha yyyy-MM-dd a dd-MM-yyyy(formato de la BD)
+      let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
+
+      //Realizamos la consulta para que nos devuelva la lista de reservas.
+      this.reserveDataService.getReservesForTrackDate(this.selectTrack.idTrack, formatDate)
+        .subscribe(async result => {
+          let reservesBD: Reserve[] = result;
+          let hoursReserveThisTrackDay: string[] = []; //Horas ocupadas de esa pista y dia seleccionados
+          for (let reserve of reservesBD) {
+            hoursReserveThisTrackDay.push(reserve.hour.split(":")[0]);
           }
-        }
-        console.log(this.actualHour.toString())
-        console.log(this.hours)
 
-        for (let i of result) {
+          //Son las horas ocupadas en las pistas que interseccionan
+          let hoursReserveTrackIntersection: string[] = [];
 
-        }
+          //Consultamos las horas de las pistas que interseccionen
+          let typeTrackIntersection: string;
+          switch (this.selectTrack.type) {
+            case "Vertical":
+              typeTrackIntersection = "Horizontal";
+              break;
+            case "Horizontal":
+              typeTrackIntersection = "Vertical";
+              break;
 
-        if (this.hours.length == 0) {
-          this.hoursEmpty = true;
-        } else {
-          document.getElementById("hourPicker").setAttribute("disabled", 'false');
-          document.getElementById("hourPicker").style.color = "white";
-          document.getElementById("hourPicker").style.opacity = "inherit";
-        }
-      });
+            default:
+              break;
+          }
 
+          await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, formatDate, typeTrackIntersection).toPromise().then(result => {
+            //Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
+            for (let r in result) {
+              hoursReserveTrackIntersection.push(result[r].hour.split(":")[0]);
+            }
+          });
+
+          this.hours = []  //Reiniciamos la variable
+          //Rellenamos la variable hours con una diferencia minima de dos horas
+          for (let hour of this.defaultHours) {
+            //Transformamos temporalmente la variable minDay 
+            let today = this.datepipe.transform(this.minDay, 'dd-MM-yyyy');
+            //Rellenamos las horas libres segun si es el dia seleccionado o no
+            //Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
+            //Ni en las pistas que interseccionen
+            if (today === formatDate && !hoursReserveThisTrackDay.includes(hour) && (!hoursReserveTrackIntersection.includes(hour) || hoursReserveTrackIntersection == [])) {
+              if (Number.parseInt(hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
+                this.hours.push(hour);
+              }
+            } else if (today != this.selectDay && !hoursReserveThisTrackDay.includes(hour) && !hoursReserveTrackIntersection.includes(hour)) {
+              this.hours.push(hour);
+            }
+          }
+          console.log(this.hours)
+
+          this.checkHoursEmpty();
+
+        });
+    }
   }
 
+  checkHoursEmpty() {
+    //Si hay un dia seleccionado y no hay horas disponible mostrará un mensaje
+    if (this.hours.length == 0 && this.selectDay != undefined) {
+      this.hoursEmpty = true;
+    } else if (this.selectDay != undefined) {
+      //Si el dia está seleccionado
+      document.getElementById("hourPicker").setAttribute("disabled", 'false');
+      document.getElementById("hourPicker").style.color = "white";
+      this.hoursEmpty = false;
+    } else {
+      //Si el dia no está seleccionado
+      document.getElementById("hourPicker").setAttribute("value", "");
+      document.getElementById("hourPicker").setAttribute("disabled", 'true');
+      document.getElementById("hourPicker").style.color = "floralwhite !important";
+      this.hoursEmpty = false;
+    }
+  }
 
-  //COMPLETAR
-  //Capturar valor de Track 
-  //Realizar metodo que al seleccionar dia, se activa las horas libres correspondiente
-  //Prohibir seleccionar fechas anteriores a hoy  -- HECHO
-  //Prohibir horas anteriores a la actual+1hora 
+  checkReserve() {
+    
+    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour ==undefined || this.nameReserve == (undefined || null)){
+      Swal.fire({
+        title: this.env.titleErrorDataReserve,
+        text: this.env.errorDataReserve,
+        icon: 'error',
+        heightAuto: false
+      })
+    }else {
+      let selectHourAux = this.selectHour.split("T")[1].split(":")[0];
+      let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
+
+      let reserve = <any>{track:this.selectTrack.idTrack, date: formatDate, hour: selectHourAux+":00", user:this.nameReserve};
+      console.log(reserve)
+        this.reserveDataService.createReserve(reserve).subscribe( r=>{
+          console.log(r)
+      }
+      );
+      Swal.fire({
+        title: this.env.titleSuccessReserve,
+        text: this.env.successReserve,
+        icon: 'success',
+        heightAuto: false,
+      });
+      this.route.navigateByUrl('tabs/search');
+    }
+  }
 
 }
