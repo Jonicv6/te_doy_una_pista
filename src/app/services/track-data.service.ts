@@ -31,16 +31,4 @@ export class TrackDataService {
     return this.http.get(environment.endPoint + environment.trackPoint + id + "/" + sport);
   }
 
-  
-  private setReserve(value: Track) {
-    this._track = value;
-  }
-
-  public getReseves(): Observable<any> {
-    return this.http.get(environment.endPoint + environment.trackPoint);
-  }
-
-  public getReserve(id): Observable<any> {
-    return this.http.get(environment.endPoint + environment.trackPoint + id);
-  }
 }
