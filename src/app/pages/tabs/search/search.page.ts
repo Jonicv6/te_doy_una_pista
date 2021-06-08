@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { Environment } from '@ionic-native/google-maps';
 import { LoadingController, NavController } from '@ionic/angular';
-import { SendParamsService } from 'src/app/services/send-params.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
@@ -16,20 +14,20 @@ export class SearchPage {
 
   citys: any[] = [];
   sports: any[] = [];
-  sportCenters: any[] = [];
+  sport: string;
+  sportCenters: SportCenter[] = [];
   sportCenterData = [];
   loading: any;
   init: boolean = true;
   empty: boolean = false;
-  sport: SportCenter;
   city: any;
   env = environment;
+  sportAux: any;
 
   constructor(
     public navCtrl: NavController,
     private sportCenterDataService: SportCenterDataService,
     private loadingCtrl: LoadingController,
-    private sendParams: SendParamsService,
     private trackDataService: TrackDataService) {
 
     //Consultamos a la base de datos 
@@ -76,9 +74,11 @@ export class SearchPage {
 
   }
 
+  /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
   search(city, sport) {
     this.sportCenters = [];
-
+    this.sportAux = sport; //Guardamos el valor de deportes
+    
     //Cambiamos los valores de los boolean
     this.init = false;
 
@@ -103,14 +103,11 @@ export class SearchPage {
 
 
 
-  openPage(center, sport) {
-   // let params = [resultSelect, sport]
-    //athis.sendParams.sendObjectSource(params);
-    this.navCtrl.navigateForward('tabs/search/forms/' + center.idSportCenter + "/" + sport);
+  openPage(center) {
+    this.navCtrl.navigateForward('tabs/search/forms/' + center.idSportCenter + "/" + this.sportAux);
   }
 
   initResult() {
-    //this.sportCenters.push("Barrio 512")
   }
 
 
