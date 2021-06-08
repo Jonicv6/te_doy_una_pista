@@ -1,7 +1,6 @@
-
 <ion-content color="primary" [fullscreen]="true">
-    <ion-select id="selectSport" (ionChange)="changeSport(sport)" interface="popover" [(ngModel)]="sport" placeholder="{{env.selectSport}}">
+  <ion-select id="selectSport" (ionChange)="changeSport(sport)" interface="popover" [(ngModel)]="sport" placeholder="{{env.selectSport}}">
         <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
-      </ion-select>
+    </ion-select>      
     <div #mapElement class="map"></div>
 </ion-content>
