@@ -38,10 +38,11 @@ ion-title{
   float:none;
   width:100%;
   margin: 0px;
+  --background: var(--ion-color-primary-shade) !important;
 }
 
 #buttonSearch > p{
-  color: black;
+  color: var(--ion-color-tertiary);
   margin-bottom: 0;
 }
 
