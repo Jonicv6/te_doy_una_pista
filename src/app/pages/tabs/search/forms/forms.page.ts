@@ -10,6 +10,7 @@ import { Track } from 'src/models/track';
 import { DatePipe } from '@angular/common'
 import { Reserve } from 'src/models/reserve';
 import Swal from 'sweetalert2';
+import { ReserveLocal } from 'src/models/reserveLocal';
 
 //@Input() sportCenter:any;
 @Component({
@@ -34,7 +35,7 @@ export class FormsPage implements OnInit {
   nameReserve: string;
 
 
-  constructor(private route: Router,private activedRoute: ActivatedRoute,
+  constructor(private route: Router, private activedRoute: ActivatedRoute,
     public getParams: SendParamsService,
     private trackDataService: TrackDataService,
     private sportCenterDataService: SportCenterDataService,
@@ -168,31 +169,43 @@ export class FormsPage implements OnInit {
   }
 
   checkReserve() {
-    
-    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour ==undefined || this.nameReserve == (undefined || null)){
+    //Si algún campo está vacio salta el alert
+    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null)) {
       Swal.fire({
         title: this.env.titleErrorDataReserve,
         text: this.env.errorDataReserve,
         icon: 'error',
         heightAuto: false
       })
-    }else {
+    } else {
       let selectHourAux = this.selectHour.split("T")[1].split(":")[0];
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
-      let reserve = <any>{track:this.selectTrack.idTrack, date: formatDate, hour: selectHourAux+":00", user:this.nameReserve};
+      let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
       console.log(reserve)
-        this.reserveDataService.createReserve(reserve).subscribe( r=>{
-          console.log(r)
+      this.reserveDataService.createReserve(reserve).subscribe(r => {
+        
+
+        let aux: ReserveLocal[] = [];
+        if (JSON.parse(localStorage.getItem('reserves')) != null) {
+          aux = JSON.parse(localStorage.getItem('reserves'));
+        }
+
+        //Creamos la variable que guardaremos en local, con el id de la reserva creada
+        let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
+        aux.push(reserveLocal);
+        localStorage.setItem('reserves', JSON.stringify(aux));
+
+        Swal.fire({
+          title: this.env.titleSuccessReserve,
+          text: this.env.successReserve,
+          icon: 'success',
+          heightAuto: false,
+        });
+        this.route.navigateByUrl('tabs/search');
       }
       );
-      Swal.fire({
-        title: this.env.titleSuccessReserve,
-        text: this.env.successReserve,
-        icon: 'success',
-        heightAuto: false,
-      });
-      this.route.navigateByUrl('tabs/search');
+
     }
   }
 
