@@ -1,5 +1,25 @@
+<ion-content>
+  <div id="contentList">
+    <ion-virtual-scroll id="reserveList">
+      <ion-card *ngFor="let reserve of listReserves">
+        <div>
+          <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
+          <h6>{{ reserve.track.name }}</h6>
+          <p>
+            <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
+            <ion-icon name="time"></ion-icon> {{ reserve.hour }}
+          </p>
+        </div>
 
-<ion-content color="primary" [fullscreen]="true">
-  
+        <ion-button id="buttonDeleteReserve" size="small" expand="block" shape="round">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
 
+      </ion-card>
+
+      <div class="message" *ngIf="listReserves.length==0">
+        <ion-label> {{env.emptyReserveLocal }} </ion-label>-->
+      </div>
+    </ion-virtual-scroll>
+  </div>
 </ion-content>
