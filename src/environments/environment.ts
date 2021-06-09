@@ -60,6 +60,7 @@ export const environment = {
   emptySportCenter: "Actualmente no hay ningún polideportivo disponible",
   emptySearch: "Sin resultados. Inténtelo de nuevo.",
   emptyHours: "No hay horas libres, seleccione otro día.",
+  emptyReserveLocal: "No has reservado ninguna pista todavía.",
 
   //Mensajes de exito
   successReserve: "Ha realizado su reserva con éxito",
