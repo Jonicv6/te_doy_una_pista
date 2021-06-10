@@ -29,10 +29,21 @@ export class SearchPage {
     private sportCenterDataService: SportCenterDataService,
     private loadingCtrl: LoadingController,
     private trackDataService: TrackDataService) {
+   
+  }
 
-    //Consultamos a la base de datos 
-    this.sportCenterDataService.getSportCenters()
-      .subscribe(result => {
+  ngOnInit() { 
+     this.getData();
+  }
+
+   async getData() {
+     //Activamos el loading y cargamos los datos
+    await this.presentLoading(environment.textLoading);
+    this.loading.present();
+
+    //Extraemos las ciudad de los SportCenters
+    await this.sportCenterDataService.getSportCenters()
+    .toPromise().then(result => {
         //Recorremos los datos 
         for (let i of result) {
           //Si la ciudad está repetida, se descarta
@@ -45,8 +56,8 @@ export class SearchPage {
       });
 
     //Leemos los deportes que existen
-    this.trackDataService.getTracks()
-      .subscribe(result => {
+    await this.trackDataService.getTracks()
+      .toPromise().then(result => {
         for (let i of result) {
           let auxiliar = i.sport.split("-");
           auxiliar.forEach(element => {
@@ -57,49 +68,53 @@ export class SearchPage {
 
         }
         this.sport = this.sports[0];
-        this.search(this.city, this.sport);
+        
       });
-
+      //Paramos el loading
+      this.loading.dismiss();
+      
+      //Una vez cargado ambos, realiza la busqueda por primera vez
+      this.search(this.city, this.sport);
   }
 
-  ngOnInit() {
+
+  /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
+  async search(city, sport) {
+    this.sportCenters = [];
+    this.sportAux = sport; //Guardamos el valor de deportes
+
+    //Cambiamos los valores de los boolean
+    this.init = false;
+
+    //Ejecutamos el Loading
+    await this.presentLoading(environment.textLoading);
+    this.loading.present();
+
+    //Buscamos los SportCenters según la ciudad y el deporte indicado
+    await this.sportCenterDataService.getSportCentersCityAndSport(city, sport)
+      .toPromise().then(result => {
+        this.sportCenters = result;
+
+        if (this.sportCenters.length == 0) {
+          this.empty = true;
+        } else {
+          this.empty = false;
+        }
+        //Paramos el loading
+        this.loading.dismiss();
+      });
+
+
+
+
   }
 
   async presentLoading(message: string) {
     this.loading = await this.loadingCtrl.create({
-      message
-      //duration:2000
+      message,
+      duration: 10000
     });
-    await this.loading.present();
-
   }
-
-  /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
-  search(city, sport) {
-    this.sportCenters = [];
-    this.sportAux = sport; //Guardamos el valor de deportes
-    
-    //Cambiamos los valores de los boolean
-    this.init = false;
-
-    //Buscamos los SportCenters según la ciudad y el deporte indicado
-    this.presentLoading(environment.textLoading);
-    setTimeout(() => {
-      this.sportCenterDataService.getSportCentersCityAndSport(city, sport)
-        .subscribe(result => {
-          this.sportCenters = result;
-
-          if (this.sportCenters.length == 0) {
-            this.empty = true;
-          } else {
-            this.empty = false;
-          }
-        });
-      this.loading.dismiss();
-    }, 1500);
-
-  }
-
 
 
 
