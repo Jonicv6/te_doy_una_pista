@@ -44,6 +44,16 @@ export const environment = {
   titleSuccessReserve: "Reserva realizada",
   titleErrorDataReserve: "Datos erróneos",
   titleErrorSelectDay: "Error Fecha",
+  titleDeleteReserve: "¿Está seguro?",
+  titleDeleted: "¡Borrado!",
+
+  //Mensaje SweetAlert
+  textDeleteReserve: "Eliminará su reserva",
+
+
+  //Botones SweetAlert
+  buttonConfirmDelete: "Sí, borralo.",
+  buttonCancelDelete: "No lo borres",
 
   //Mensajes 
   textWait: "Espere por favor",
@@ -64,6 +74,7 @@ export const environment = {
 
   //Mensajes de exito
   successReserve: "Ha realizado su reserva con éxito",
+  successReserveDeleted: "Se ha eliminado con éxito",
 
   //Iconos
   iconMapURL: "assets/icon/sports/alfiler.png",
