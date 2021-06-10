@@ -35,4 +35,8 @@ export class ReserveDataService {
   public getHourReservesForSportCenterDateType(id, date, type): Observable<any> {
     return this.http.get(environment.endPoint + environment.reservePoint + id + "/" + date + "/" + type);
   }
+
+  public deleteReserve(reserve):Observable<any>{
+    return this.http.delete(environment.endPoint + environment.reservePoint + reserve.idReserve);
+  }
 }
