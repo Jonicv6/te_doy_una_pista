@@ -183,18 +183,18 @@ export class FormsPage implements OnInit {
 
       let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
       console.log(reserve)
+      //Creamos la reserva en la base de datos
       this.reserveDataService.createReserve(reserve).subscribe(r => {
         
-
-        let aux: ReserveLocal[] = [];
+        let listReserveLocal: ReserveLocal[] = [];
         if (JSON.parse(localStorage.getItem('reserves')) != null) {
-          aux = JSON.parse(localStorage.getItem('reserves'));
+          listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
         }
 
         //Creamos la variable que guardaremos en local, con el id de la reserva creada
         let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
-        aux.push(reserveLocal);
-        localStorage.setItem('reserves', JSON.stringify(aux));
+        listReserveLocal.push(reserveLocal);
+        localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
 
         Swal.fire({
           title: this.env.titleSuccessReserve,
