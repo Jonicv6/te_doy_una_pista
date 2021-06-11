@@ -28,15 +28,6 @@ const routes: Routes = [
                 loadChildren: () => import('./search/forms/forms.module').then(m => m.FormsPageModule)
               }
             ]
-          },
-          {
-            path: 'resume',
-            children: [
-              {
-                path: '',
-                loadChildren: () => import('./search/resume/resume.module').then(m => m.ResumePageModule)
-              }
-            ]
           }
         ]
       },
