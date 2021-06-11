@@ -6,8 +6,8 @@
     <ion-virtual-scroll id="reserveList">
       <ion-card
         *ngFor="let reserve of listReserves"
-        [ngClass]="{'reservePast': (reserve.date < today || (reserve.date == today && (actualHour|number) < (reserve.hour|number))), 
-        'reserveToday': (reserve.date == today && (reserve.hour|number) <= (actualHour|number))}"
+        [ngClass]="{'reservePast': (reserve.date < today || (reserve.date == today && actualHour < reserve.hour)), 
+        'reserveToday': (reserve.date == today && reserve.hour <= actualHour)}"
       >
         <div>
           <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
@@ -28,12 +28,9 @@
           <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-card>
+      <div class="message" *ngIf="!listReserves || listReserves.length==0">
+        <ion-label> {{env.emptyReserveLocal }} </ion-label>
+      </div>
     </ion-virtual-scroll>
-  </div>
-  <div
-    class="message"
-    *ngIf="listReserves.length==0 || listReserves==undefined"
-  >
-    <ion-label> {{env.emptyReserveLocal }} </ion-label>
   </div>
 </ion-content>
