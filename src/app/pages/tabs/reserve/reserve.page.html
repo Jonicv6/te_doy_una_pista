@@ -11,11 +11,11 @@
       >
         <div>
           <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
+          <ion-card-content id="dateReserve">
           <h6>{{ reserve.track.name }}</h6>
-          <p id="dateReserve">
             <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
             <ion-icon name="time"></ion-icon> {{ reserve.hour }}
-          </p>
+          </ion-card-content>
         </div>
 
         <ion-button
