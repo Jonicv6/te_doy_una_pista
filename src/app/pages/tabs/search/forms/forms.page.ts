@@ -40,7 +40,7 @@ export class FormsPage implements OnInit {
     private trackDataService: TrackDataService,
     private sportCenterDataService: SportCenterDataService,
     private reserveDataService: ReserveDataService,
-    public datepipe: DatePipe) {
+    private datepipe: DatePipe) {
 
   }
 
