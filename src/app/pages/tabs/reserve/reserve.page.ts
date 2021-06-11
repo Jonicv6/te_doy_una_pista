@@ -71,6 +71,17 @@ export class ReservePage {
   //metodo para leer los datos locales
   async getDataLocal() {
     this.listReserves = await JSON.parse(localStorage.getItem('reserves'));
+    await this.orderReserves();
+  }
+
+  orderReserves(){
+    this.listReserves.sort((a:ReserveLocal, b:ReserveLocal) => {
+      //Reformulamos las variables de fecha 
+      let arrayA = a.date.split('-');
+      let arrayB = b.date.split('-');
+      //Se comparan las fechas con la siguiente forma -> yyyy-MM-DDThh:mm
+      return +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour) - +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour)
+    })
   }
 
 
