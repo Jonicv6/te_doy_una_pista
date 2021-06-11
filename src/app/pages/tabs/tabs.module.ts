@@ -14,8 +14,7 @@ import { SuperTabsModule } from '@ionic-super-tabs/angular';
     IonicModule,
     CommonModule,
     FormsModule,
-    TabsPageRoutingModule,
-    SuperTabsModule
+    TabsPageRoutingModule
   ],
   declarations: [TabsPage]
 })
