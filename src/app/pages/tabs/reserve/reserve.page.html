@@ -1,31 +1,39 @@
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content>
-    </ion-refresher-content>
+    <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
-    <div id="contentList">
-      <ion-virtual-scroll id="reserveList">
-        <ion-card *ngFor="let reserve of listReserves">
-          <div>
-            <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
-            <h6>{{ reserve.track.name }}</h6>
-            <p id="dateReserve">
-              <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
-              <ion-icon name="time"></ion-icon> {{ reserve.hour }}
-            </p>
-          </div>
+  <div id="contentList">
+    <ion-virtual-scroll id="reserveList">
+      <ion-card
+        *ngFor="let reserve of listReserves"
+        [ngClass]="{'reservePast': (reserve.date < today || (reserve.date == today && (actualHour|number) < (reserve.hour|number))), 
+        'reserveToday': (reserve.date == today && (reserve.hour|number) <= (actualHour|number))}"
+      >
+        <div>
+          <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
+          <h6>{{ reserve.track.name }}</h6>
+          <p id="dateReserve">
+            <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
+            <ion-icon name="time"></ion-icon> {{ reserve.hour }}
+          </p>
+        </div>
 
-          <ion-button id="buttonDeleteReserve" size="small" expand="block" shape="round"
-            (click)="deleteReserve(reserve)">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-button>
-
-        </ion-card>
-
-
-      </ion-virtual-scroll>
-    </div>
-  <div class="message" *ngIf="listReserves.length==0 || listReserves==undefined">
+        <ion-button
+          id="buttonDeleteReserve"
+          size="small"
+          expand="block"
+          shape="round"
+          (click)="deleteReserve(reserve)"
+        >
+          <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-card>
+    </ion-virtual-scroll>
+  </div>
+  <div
+    class="message"
+    *ngIf="listReserves.length==0 || listReserves==undefined"
+  >
     <ion-label> {{env.emptyReserveLocal }} </ion-label>
   </div>
 </ion-content>

@@ -40,10 +40,6 @@ h6{
   color:var(--ion-color-tertiary-shade);
 }
 
-#dateReserve{
-  color: var(--ion-color-tertiary)
-}
-
 .message{
   background-color: white;
   opacity: 50%;
@@ -65,5 +61,26 @@ h6{
 
 #buttonDeleteReserve ion-icon{
   font-size: xx-large;
+}
+
+
+.reservePast{
+  background-color: var(--ion-color-medium-shade) ;
+}
+.reservePast *{
+  color: var(--ion-color-light-tint) ;
+}
+
+.reserveToday{
+  background-color: var(--ion-color-tertiary) ;
+  color: black
+}
+
+.reserveToday ion-card-title{
+  color:black
+}
+
+#dateReserve{
+  color:var(--ion-color-tertiary-shade) ;
 }
 

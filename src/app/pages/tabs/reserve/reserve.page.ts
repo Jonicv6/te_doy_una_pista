@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { environment } from 'src/environments/environment';
@@ -13,9 +14,13 @@ export class ReservePage {
 
   listReserves: ReserveLocal[] = [];
   env = environment;
+  today: string = new Date().toLocaleDateString('en-US');
+  actualHour: string = new Date().toLocaleTimeString();
 
   constructor(
-    private reserveDataService: ReserveDataService) {
+    private reserveDataService: ReserveDataService,
+    private datepipe: DatePipe) {
+      this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
   }
 
   ngOnInit() {
