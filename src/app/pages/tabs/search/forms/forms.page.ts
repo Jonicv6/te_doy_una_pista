@@ -23,16 +23,16 @@ export class FormsPage implements OnInit {
   sportCenter: SportCenter;
   sportCenterName: string;
   sport: string;
-  selectDay: string;
+  selectDay: string = undefined;
   minDay: string = new Date().toLocaleDateString('en-US');
   actualHour: string = new Date().toLocaleTimeString().split(":")[0];
   defaultHours: any[] = environment.hoursOpen;
   hours: string[] = [];
   hoursEmpty: boolean = false;
   tracks: Track[] = [];
-  selectTrack: Track;
-  selectHour: string;
-  nameReserve: string;
+  selectTrack: Track = undefined;
+  selectHour: string = undefined;
+  nameReserve: string = undefined;
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -45,6 +45,13 @@ export class FormsPage implements OnInit {
   }
 
   ngOnInit() {
+    this.getData();
+  }
+
+  //Se borra el cache de la vista cuando pasa a activa
+  //Asi el formulario este vacio al entrar en el caso de haber hecho una reserva
+  //en esa misma pista
+  ionViewWillEnter(){
     this.getData();
   }
 
@@ -89,7 +96,7 @@ export class FormsPage implements OnInit {
       this.selectDay = undefined;
 
     } else {
-
+      this.selectHour = undefined;
       //Transformamos la fecha yyyy-MM-dd a dd-MM-yyyy(formato de la BD)
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
