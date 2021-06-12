@@ -7,9 +7,6 @@ ion-toolbar{
   --ion-background-color: #222428;
 }
 
-ion-title{
-  color:white;
-}
 
 #menu-search{
   display: flex;
@@ -30,8 +27,9 @@ ion-title{
 }
 
 .select > ion-select{
-  background-color: var(tertiary) !important;
+  color: white;
   margin-right: 5px;
+
 }
 
 #buttonSearch{
@@ -67,6 +65,14 @@ ion-card{
   padding: 10px;
 }
 
+ion-card-title{
+  color:white;
+}
+
+ion-card p{
+  color: var(--ion-color-tertiary);
+}
+
 .message{
   background-color: white;
   opacity: 50%;
@@ -77,7 +83,7 @@ ion-card{
 }
 
 .message>ion-label{
-  color:grey;
+  color: grey;
 }
   
 
