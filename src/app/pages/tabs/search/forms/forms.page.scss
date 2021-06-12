@@ -1,9 +1,19 @@
+#backButton{
+  background-color:dodgerblue;
+  border-radius: 20px;
+  color: white;
+}
+
 ion-toolbar {
   --background: transparent !important;
 }
 
 .header-md::after {
   visibility: hidden !important;
+}
+
+h3{
+  color: var(--ion-color-tertiary);
 }
 
 ion-content {
@@ -30,7 +40,7 @@ ion-select::part(icon) {
 }
 
 ion-label {
-  color: black;
+  color: white;
 }
 
 .select > ion-label {
