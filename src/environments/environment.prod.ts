@@ -17,7 +17,7 @@ export const environment = {
     measurementId: "G-XGZ2PTLG4B"
   },
   //Variables Host
-  endPoint: "http://31.131.183.8:3000",
+  endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
@@ -42,6 +42,7 @@ export const environment = {
 
   //Titulos SweetAlert
   titleSuccessReserve: "Reserva realizada",
+  titleErrorReserve: "Reserva no realizada",
   titleErrorDataReserve: "Datos erróneos",
   titleErrorSelectDay: "Error Fecha",
   titleDeleteReserve: "¿Está seguro?",
@@ -81,6 +82,7 @@ export const environment = {
   iconSportCenterURL: "assets/icon/sports/estadio-ubicacion.png",
   
   //Mensajes de Error 
+  errorReserve: "Error en la reserva, seleccione otros datos.",
   errorLocation: "Error en la localización",
   errorDataReserve: "Rellene todos los datos de la reserva.",
   errorSelectDay: "Debe seleccionar primero una pista."
