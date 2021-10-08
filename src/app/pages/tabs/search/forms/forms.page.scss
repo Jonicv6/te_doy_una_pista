@@ -23,11 +23,9 @@ ion-content {
 
 #infoform {
   padding: 0 5%;
+  height: 100%;
 }
 
-#contentInfo {
-  padding-bottom: 30%;
-}
 
 #trackPicker {  
   float: right;
@@ -84,6 +82,14 @@ ion-label {
 
 #blockButton {
   text-align: center;
+  position: absolute;
+  bottom: 25%;
+  left: 25%;
+  right: 25%;
+}
+
+#buttonForms{
+  --ion-color-contrast: black !important;
 }
 
 #messageHours {
