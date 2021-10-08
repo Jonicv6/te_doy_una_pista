@@ -8,4 +8,5 @@ export interface ReserveLocal{
     date: string;
     hour: string;
     user: string;
+    time: number;
 }
