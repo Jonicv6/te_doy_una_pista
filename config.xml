@@ -3,7 +3,7 @@
     <name>Te doy una pista?</name>
     <description>Aplicación para la reserva de pistas deportivas</description>
     <author email="jonimarmon@gmail.com" href="http://ionicframework.com/">Jonathan Márquez Monis - TFG 2ºDAM</author>
-    <content original-src="index.html" src="http://localhost:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -105,5 +105,4 @@
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
     <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
-    <allow-navigation href="http://localhost:8100" sessionid="e392e56a" />
 </widget>
