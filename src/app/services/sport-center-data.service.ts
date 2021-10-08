@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Track } from 'src/models/track';
 import { environment } from 'src/environments/environment';
+import { HTTP } from '@ionic-native/http/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,15 @@ export class SportCenterDataService {
   sportCenters: [];
   private _sportCenter: SportCenter;
 
-  constructor(private http: HttpClient) { }
-
+  /* ----------------------------- Constructor WEB ---------------------------- */
+  
+  constructor(private httpClient: HttpClient) { }
   private setSportCenters(data) {
     this.sportCenters = data;
   }
 
   public getSportCenters(): Observable<any> {
-    return this.http.get(environment.endPoint + environment.sporcenterPoint);
+    return this.httpClient.get(environment.endPoint + environment.sporcenterPoint);
   }
 
   private setSportCenter(data) {
@@ -27,11 +29,37 @@ export class SportCenterDataService {
   }
 
   public getSportCenter(id): Observable<SportCenter> {
-    return this.http.get<SportCenter>(environment.endPoint + environment.sporcenterPoint + id);
+    return this.httpClient.get<SportCenter>(environment.endPoint + environment.sporcenterPoint + id);
   }
 
   public getSportCentersCityAndSport(city, sport): Observable<any> {
-    return this.http.get(environment.endPoint + environment.sporcenterPoint + city + "/" + sport);
+    return this.httpClient.get(environment.endPoint + environment.sporcenterPoint + city + "/" + sport);
+  }  
+  
+
+  /* ------------------------- Constructor IOS/ANDROID ------------------------ */
+  /*
+  constructor(private http: HTTP){}
+
+  private setSportCenters(data) {
+    this.sportCenters = data;
   }
+
+  public getSportCenters(){
+    return this.http.get(environment.endPoint + environment.sporcenterPoint, null, null);
+  }
+
+  private setSportCenter(data) {
+    this._sportCenter = data;
+  }
+
+  public getSportCenter(id) {
+    return this.http.get(environment.endPoint + environment.sporcenterPoint, id,null);
+  }
+
+  public getSportCentersCityAndSport(city, sport) {
+    return this.http.get(environment.endPoint + environment.sporcenterPoint, [city,sport], null);
+  }
+  */
 
 }
