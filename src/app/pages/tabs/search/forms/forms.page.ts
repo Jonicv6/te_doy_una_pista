@@ -51,7 +51,7 @@ export class FormsPage implements OnInit {
   //Se borra el cache de la vista cuando pasa a activa
   //Asi el formulario este vacio al entrar en el caso de haber hecho una reserva
   //en esa misma pista
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.getData();
   }
 
@@ -96,6 +96,7 @@ export class FormsPage implements OnInit {
       this.selectDay = undefined;
 
     } else {
+
       this.selectHour = undefined;
       //Transformamos la fecha yyyy-MM-dd a dd-MM-yyyy(formato de la BD)
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
@@ -149,7 +150,6 @@ export class FormsPage implements OnInit {
               this.hours.push(hour);
             }
           }
-          console.log(this.hours)
 
           this.checkHoursEmpty();
 
@@ -175,7 +175,7 @@ export class FormsPage implements OnInit {
     }
   }
 
-  checkReserve() {
+  async checkReserve() {
     //Si algún campo está vacio salta el alert
     if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null)) {
       Swal.fire({
@@ -185,34 +185,102 @@ export class FormsPage implements OnInit {
         heightAuto: false
       })
     } else {
+      //Recoge los datos seleccionados
       let selectHourAux = this.selectHour.split("T")[1].split(":")[0];
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
+      //Creamos la variable Reserva
       let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
-      console.log(reserve)
-      //Creamos la reserva en la base de datos
-      this.reserveDataService.createReserve(reserve).subscribe(r => {
-        
-        let listReserveLocal: ReserveLocal[] = [];
-        if (JSON.parse(localStorage.getItem('reserves')) != null) {
-          listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
+
+      //Comprobamos si la pista esta disponible antes de guardarla
+      let reserveAvailable = await this.checkDateReserveEmpty(reserve);
+      if (reserveAvailable) {
+        //Creamos la reserva en la base de datos
+        this.reserveDataService.createReserve(reserve).subscribe(r => {
+
+          let listReserveLocal: ReserveLocal[] = [];
+          if (JSON.parse(localStorage.getItem('reserves')) != null) {
+            listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
+          }
+
+          //Creamos la variable que guardaremos en local, con el id de la reserva creada
+          let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
+          listReserveLocal.push(reserveLocal);
+          localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
+
+          Swal.fire({
+            title: this.env.titleSuccessReserve,
+            text: this.env.successReserve,
+            icon: 'success',
+            heightAuto: false,
+          });
+          this.route.navigateByUrl('tabs/search');
         }
-
-        //Creamos la variable que guardaremos en local, con el id de la reserva creada
-        let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
-        listReserveLocal.push(reserveLocal);
-        localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-
+        );
+      } else {
+        //Mostramos error al realizar la reserva
         Swal.fire({
-          title: this.env.titleSuccessReserve,
-          text: this.env.successReserve,
-          icon: 'success',
-          heightAuto: false,
-        });
-        this.route.navigateByUrl('tabs/search');
+          title: this.env.titleErrorReserve,
+          text: this.env.errorReserve,
+          icon: 'error',
+          heightAuto: false
+        })
       }
-      );
+    }
+  }
 
+  // Comprobamos que la Reserva está disponible en la fecha y pista seleccionadas, justo antes de guardarla en BBDD.
+  async checkDateReserveEmpty(reserve) {
+    //Consultamos las horas de las pistas que interseccionen
+    let typeTrackIntersection: string;
+    switch (this.selectTrack.type) {
+      case "Vertical":
+        typeTrackIntersection = "Horizontal";
+        break;
+      case "Horizontal":
+        typeTrackIntersection = "Vertical";
+        break;
+
+      default:
+        break;
+    }
+
+    let TrackReserved = [];
+
+    // Comprobamos si existe una reserva a la misma hora en una pista que interseccione con la seleccionada
+    await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, reserve.date, typeTrackIntersection).toPromise().then(result => {
+      let resultFilter = result.filter(function (filterReserve) {
+        if (filterReserve.hour === reserve.hour) {
+          return filterReserve.hour;
+        }
+      });
+
+      if (resultFilter.length != 0) {
+        TrackReserved.push(resultFilter);
+      }
+
+    });
+
+    // Comprobamos si existe una reserva a la misma hora en la misma pista y fecha 
+    await this.reserveDataService.getReservesForTrackDate(reserve.track, reserve.date).toPromise().then(result => {
+
+      let resultFilter = result.filter(function (filterReserve) {
+        if (filterReserve.hour === reserve.hour) {
+          return filterReserve.hour;
+        }
+      });
+
+      if (resultFilter.length != 0) {
+        TrackReserved.push(resultFilter);
+      }
+
+    });
+
+    // Si no hay ninguna pista que interseccione a esa hora o la misma pista esté ocupada a esa hora, permite reservarla
+    if (TrackReserved.length != 0) {
+      return false;
+    } else {
+      return true;
     }
   }
 
