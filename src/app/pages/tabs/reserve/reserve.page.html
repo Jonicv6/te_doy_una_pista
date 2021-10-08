@@ -4,17 +4,18 @@
   </ion-refresher>
   <div id="contentList">
     <ion-virtual-scroll id="reserveList">
-      <ion-card
+      <ion-card id="cardReserve"
         *ngFor="let reserve of listReserves"
-        [ngClass]="{'reservePast': (reserve.date < today || (reserve.date == today && actualHour < reserve.hour)), 
-        'reserveToday': (reserve.date == today && reserve.hour <= actualHour)}"
-      >
+        [ngClass]="{'reservePast': (reserve.time == -1), 
+        'reserveToday': reserve.time == 0}"
+      > <!-- COMPROBAR QUE SI ES UNA FECHA ANTIGUA SE CAMBIE EL COLOR DE LA TARJETA-->
         <div>
           <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
           <ion-card-content id="dateReserve">
           <h6>{{ reserve.track.name }}</h6>
             <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
             <ion-icon name="time"></ion-icon> {{ reserve.hour }}
+            <p>Nombre de la reserva: '{{ reserve.user }}'</p>
           </ion-card-content>
         </div>
 

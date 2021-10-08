@@ -14,8 +14,8 @@ export class ReservePage {
 
   listReserves: ReserveLocal[] = [];
   env = environment;
-  today: string = new Date().toLocaleDateString('en-US');
-  actualHour: string = new Date().toLocaleTimeString();
+  today = new Date().toLocaleDateString('en-US');
+  actualHour: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   constructor(
     private reserveDataService: ReserveDataService,
@@ -72,10 +72,32 @@ export class ReservePage {
   async getDataLocal() {
     this.listReserves = await JSON.parse(localStorage.getItem('reserves'));
     await this.orderReserves();
+
+    this.listReserves.forEach(reserve => {
+      let reserveDate = reserve.date.split("-");
+      let todayDate = this.today.split("-");
+
+
+      // TODO: ARREGLAR FORMULA PARA CAMBIAR TARJETA DE RESERVA 
+      if (reserve.date == this.today){
+        reserve.time = 0;
+      } else if(
+        //EXPLICACION: Dia menor pero mismo mes y año - Mes menor pero mismo año - Año menor
+        (reserveDate[0]<todayDate[0] && reserveDate[1]==todayDate[1] && reserveDate[2]==todayDate[2]) || 
+        (reserveDate[1]<todayDate[1] && reserveDate[2]==todayDate[2] ) || 
+        (reserveDate[2]<todayDate[2]) || (reserve.date == this.today && reserve.hour[0] <= this.actualHour[0])){
+        console.log ("RESERVA: "+reserve.date +" - TODAY: "+this.today+" - RESERVE HOUR: "+reserve.hour+" - HOUR: "+this.actualHour )
+
+        reserve.time = -1;
+      }else{
+        reserve.time = 1;
+      }
+    });
   }
 
   orderReserves(){
     this.listReserves.sort((a:ReserveLocal, b:ReserveLocal) => {
+
       //Reformulamos las variables de fecha 
       let arrayA = a.date.split('-');
       let arrayB = b.date.split('-');
