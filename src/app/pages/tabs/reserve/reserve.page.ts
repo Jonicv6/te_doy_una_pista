@@ -102,7 +102,7 @@ export class ReservePage {
       let arrayA = a.date.split('-');
       let arrayB = b.date.split('-');
       //Se comparan las fechas con la siguiente forma -> yyyy-MM-DDThh:mm
-      return +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour) - +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour)
+      return +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour) - +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour)
     }).reverse();
   }
 
