@@ -8,7 +8,7 @@
         *ngFor="let reserve of listReserves"
         [ngClass]="{'reservePast': (reserve.time == -1), 
         'reserveToday': reserve.time == 0}"
-      > <!-- COMPROBAR QUE SI ES UNA FECHA ANTIGUA SE CAMBIE EL COLOR DE LA TARJETA-->
+      >
         <div>
           <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
           <ion-card-content id="dateReserve">
