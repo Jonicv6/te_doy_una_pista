@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { User } from '../shared/user.interface';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import * as firebase from 'firebase';
@@ -10,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
-  public user$: Observable<User>;
+  /*public user$: Observable<User>;
 
   constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore) {
     this.user$ = this.afAuth.authState.pipe(
@@ -92,5 +91,5 @@ export class AuthService {
     };
 
     return userRef.set(data, { merge: true });
-  }
+  }*/
 }
