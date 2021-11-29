@@ -12,13 +12,17 @@ import { ComponentsModule } from './components/components.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   ComponentsModule,
   IonicModule.forRoot(),
-  HttpClientModule],
+  HttpClientModule, AngularFireAuthModule, AngularFireModule.initializeApp(environment.firebaseConfig)],
   providers: [
     StatusBar,
     DatePipe,
