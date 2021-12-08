@@ -1,7 +1,7 @@
 {
   "hosting": {
     "target": "app",
-    "public": "www",
+    "public": "src",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -9,7 +9,7 @@
     ],
     "rewrites": [
       {
-        "source": "*",
+        "source": "**",
         "destination": "/index.html"
       }
     ]
