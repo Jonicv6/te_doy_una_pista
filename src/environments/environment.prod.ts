@@ -36,6 +36,7 @@ export const environment = {
   reserveName: "Nombre de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
+  buttonLogin: "Iniciar sesión con Google",
 
   //Variables
   hoursOpen: ["08","09","10","11","12","13","16","17","18","19","20","21","22"],
@@ -60,6 +61,7 @@ export const environment = {
   textWait: "Espere por favor",
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
+  textLogin: "Para visualizar el calendario es necesario vincular una cuenta",
   
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
@@ -71,7 +73,7 @@ export const environment = {
   emptySportCenter: "Actualmente no hay ningún polideportivo disponible",
   emptySearch: "Sin resultados. Inténtelo de nuevo.",
   emptyHours: "No hay horas libres, seleccione otro día.",
-  emptyReserveLocal: "No has reservado ninguna pista todavía.",
+  emptyReserveLocal: "No has reservado ninguna pista todavía. Desliza hacía abajo para actualizar la lista",
 
   //Mensajes de exito
   successReserve: "Ha realizado su reserva con éxito",

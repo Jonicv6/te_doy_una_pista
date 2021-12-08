@@ -36,6 +36,7 @@ export const environment = {
   reserveName: "Nombre de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
+  buttonLogin: "Iniciar sesión con Google",
 
   //Variables
   hoursOpen: ["08","09","10","11","12","13","16","17","18","19","20","21","22"],
@@ -60,6 +61,7 @@ export const environment = {
   textWait: "Espere por favor",
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
+  textLogin: "Para visualizar el calendario es necesario vincular una cuenta",
   
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
