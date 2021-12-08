@@ -61,7 +61,7 @@ export const environment = {
   textWait: "Espere por favor",
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
-  textLogin: "Para visualizar el calendario es necesario vincular una cuenta",
+  textLogin: "Para visualizar el calendario es necesario vincular una cuenta Google",
   
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
