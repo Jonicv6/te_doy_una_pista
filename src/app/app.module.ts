@@ -11,9 +11,6 @@ import { AppComponent } from './app.component';
 import { ComponentsModule } from './components/components.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-
-import { GooglePlus } from '@ionic-native/google-plus/ngx';
-
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
@@ -23,7 +20,7 @@ import { environment } from 'src/environments/environment';
   entryComponents: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   ComponentsModule,
-  IonicModule.forRoot(), GooglePlus,
+  IonicModule.forRoot(),
   HttpClientModule, AngularFireAuthModule, AngularFireModule.initializeApp(environment.firebaseConfig)],
   providers: [
     StatusBar,
