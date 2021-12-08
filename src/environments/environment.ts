@@ -37,6 +37,7 @@ export const environment = {
   yourName: "Su nombre",
   back: "Volver",
   buttonLogin: "Iniciar sesión",
+  titleApp: "¿Te doy una pista?",
 
   //Variables
   hoursOpen: ["08","09","10","11","12","13","16","17","18","19","20","21","22"],
