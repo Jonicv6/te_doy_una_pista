@@ -20,7 +20,7 @@
   </div>
   <div id="contentList">
     <ion-virtual-scroll id="result-search">
-      <ion-card *ngFor="let center of sportCenters" (click)="openPage(center, sport)">
+      <ion-card *ngFor="let center of sportCenters" (click)="openPage(center)">
         <ion-card-title> {{ center.name }} </ion-card-title>
         <p>{{ center.street }} - {{ center.city }}</p>
       </ion-card>
