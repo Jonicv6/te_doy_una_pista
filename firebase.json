@@ -1,11 +1,11 @@
 {
   "hosting": {
-    "target": "app",
-    "public": ".",
+    "public": "dist/app",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/.firebase/*"
     ],
     "rewrites": [
       {
