@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/app",
+    "public": "tedoyunapista",
     "ignore": [
       "firebase.json",
       "**/.*",
