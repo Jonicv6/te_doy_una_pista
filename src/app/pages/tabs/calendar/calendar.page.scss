@@ -12,9 +12,12 @@ ion-content ion-toolbar {
 }
 
 #buttonLogin{
-  margin: 5px 15%;  
-  padding: 0px 10%;
+  margin: 0px;
+  position: absolute;
+  padding: 0 10%;
   height: auto;
+  left: 15%;
+  right: 15%;
 }
 
 #buttonLogin > p{
