@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,6 +22,7 @@ import { environment } from 'src/environments/environment';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
   ComponentsModule,
   IonicModule.forRoot(),
+  GooglePlus,
   HttpClientModule, AngularFireAuthModule, AngularFireModule.initializeApp(environment.firebaseConfig)],
   providers: [
     StatusBar,

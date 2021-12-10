@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.tfg.tedoyunapista" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Te doy una pista?</name>
+    <name>¿Te doy una pista?</name>
     <description>Aplicación para la reserva de pistas deportivas</description>
     <author email="jonimarmon@gmail.com" href="http://ionicframework.com/">Jonathan Márquez Monis - TFG 2ºDAM</author>
     <content src="index.html" />

@@ -98,7 +98,11 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-advanced-http": {}
+      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-googleplus": {
+        "REVERSED_CLIENT_ID": "com.jonathan.tedoyunapista",
+        "WEB_APPLICATION_CLIENT_ID": "702844795474-sbh3uc19otjoi43n1esknkgmq431l1j5.apps.googleusercontent.com"
+      }
     },
     "platforms": [
       "android"
