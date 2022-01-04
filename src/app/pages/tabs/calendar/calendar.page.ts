@@ -25,8 +25,8 @@ export class CalendarPage {
   env = environment;
 
   loginGoogle() {
-    alert("DENTRO");
-    
+    alert("DENTRO GOOGLE");
+
     var provider = new auth.GoogleAuthProvider();
     provider.addScope('profile');
     provider.addScope('email');
