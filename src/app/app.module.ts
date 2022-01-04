@@ -31,29 +31,28 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
 };
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [AppComponent],
-  imports: [
-    AngularFireAuthModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    BrowserModule,
-    HttpClientModule,
-    IonicModule.forRoot(),
-    AppRoutingModule,
-    ComponentsModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
-  ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  providers: [
-    AngularFirestore,
-    GooglePlus,
-    StatusBar,
-    DatePipe,
-    AuthService,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-  ],  
-  bootstrap: [AppComponent],
+    declarations: [AppComponent],
+    imports: [
+        AngularFireAuthModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        BrowserModule,
+        HttpClientModule,
+        IonicModule.forRoot(),
+        AppRoutingModule,
+        ComponentsModule,
+        FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    providers: [
+        AngularFirestore,
+        GooglePlus,
+        StatusBar,
+        DatePipe,
+        AuthService,
+        SplashScreen,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { };
 /*function firebaseUiAuthConfig(firebaseUiAuthConfig: any): any[] | import("@angular/core").Type<any> | import("@angular/core").ModuleWithProviders<{}> {
