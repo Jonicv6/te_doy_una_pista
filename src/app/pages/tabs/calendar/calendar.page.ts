@@ -49,7 +49,7 @@ export class CalendarPage {
 
 
 
-  #TEMPORAL
+  //TEMPORAL
         /*const auth = getAuth();
         getRedirectResult(auth)
         .then((result) => {
