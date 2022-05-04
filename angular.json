@@ -40,6 +40,9 @@
               },
               {
                 "input": "./node_modules/bootstrap/dist/css/bootstrap.css"
+              },
+              {
+                "input": "./node_modules/devextreme/dist/css/dx.light.css"
               }
             ],
             "scripts": [

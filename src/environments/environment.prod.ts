@@ -2,11 +2,13 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { config } from "process";
+
 export const environment = {
   production: true,
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  firebaseConfig : {
+  /*firebaseConfig: {
     apiKey: "AIzaSyAgkpKuy49LY1GFOHCCnVP6a-zsjjgBjuM",
     authDomain: "superb-tendril-224107.firebaseapp.com",
     databaseURL: "https://superb-tendril-224107.firebaseio.com",
@@ -15,7 +17,7 @@ export const environment = {
     messagingSenderId: "702844795474",
     appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
     measurementId: "G-XGZ2PTLG4B"
-  },
+  },*/
   //Variables Host
   endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
@@ -36,11 +38,18 @@ export const environment = {
   reserveName: "Nombre de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
-  buttonLogin: "Iniciar sesión con Google",
+  buttonLogin: "Iniciar sesión",
+  buttonLogout: "Cerrar sesión",
   titleApp: "¿Te doy una pista?",
 
   //Variables
-  hoursOpen: ["08","09","10","11","12","13","16","17","18","19","20","21","22"],
+  hoursOpen: [{ idHour: 1, hour: "08", minutes: "00" }, { idHour: 2, hour: "09", minutes: "00" },
+  { idHour: 3, hour: "10", minutes: "00" }, { idHour: 4, hour: "11", minutes: "00" },
+  { idHour: 5, hour: "12", minutes: "00" }, { idHour: 6, hour: "13", minutes: "00" },
+  { idHour: 7, hour: "16", minutes: "00" }, { idHour: 8, hour: "17", minutes: "00" },
+  { idHour: 9, hour: "18", minutes: "00" }, { idHour: 9, hour: "19", minutes: "00" },
+  { idHour: 11, hour: "20", minutes: "00" }, { idHour: 10, hour: "21", minutes: "00" },
+  { idHour: 13, hour: "22", minutes: "00" }],
 
   //Titulos SweetAlert
   titleSuccessReserve: "Reserva realizada",
@@ -63,9 +72,10 @@ export const environment = {
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
   textLogin: "Para visualizar el calendario es necesario vincular una cuenta Google",
-  
+
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
+  selectTrack: "Seleccione una pista",
   selectHour: "Seleccione una hora",
   selectCity: "Selecciona Ciudad",
   selectSport: "Seleccione Deporte",
@@ -83,7 +93,7 @@ export const environment = {
   //Iconos
   iconMapURL: "assets/icon/sports/alfiler.png",
   iconSportCenterURL: "assets/icon/sports/estadio-ubicacion.png",
-  
+
   //Mensajes de Error 
   errorReserve: "Error en la reserva, seleccione otros datos.",
   errorLocation: "Error en la localización",
@@ -91,6 +101,17 @@ export const environment = {
   errorSelectDay: "Debe seleccionar primero una pista."
 };
 
+
+export const firebaseConfig= {
+  apiKey: "AIzaSyAgkpKuy49LY1GFOHCCnVP6a-zsjjgBjuM",
+  authDomain: "superb-tendril-224107.firebaseapp.com",
+  databaseURL: "https://superb-tendril-224107.firebaseio.com",
+  projectId: "superb-tendril-224107",
+  storageBucket: "superb-tendril-224107.appspot.com",
+  messagingSenderId: "702844795474",
+  appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
+  measurementId: "G-XGZ2PTLG4B"
+}
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

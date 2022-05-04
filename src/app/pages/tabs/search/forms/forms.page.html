@@ -18,7 +18,7 @@
       <br>
       <div>
         <ion-label>{{env.track | titlecase }}</ion-label>
-        <ion-select class="form-select form-select-sm" aria-label=".form-select-sm " aria-placeholder="Select Track"
+        <ion-select class="form-select form-select-sm" aria-label=".form-select-sm " placeholder="{{env.selectTrack}}"
           #trackSelect (ionChange)="changeTrack(trackSelect.value)" interface="popover" id="trackPicker">
           <ion-select-option *ngFor="let track of tracks" [value]="track">{{track.name}}</ion-select-option>
         </ion-select>
@@ -27,24 +27,29 @@
 
       <div class="select">
         <ion-label>{{env.date | titlecase }}</ion-label>
-        <input type="date" id="datePicker" [(ngModel)]="selectDay" [min]="minDay | date:'yyyy-MM-dd'" (change)="activeHour()" />
+        <input type="date" id="datePicker" [(ngModel)]="selectDay" [min]="minDay | date:'yyyy-MM-dd'"
+          (change)="activeHour()" />
       </div>
       <br>
-      <div class="select" [class.hide]="hoursEmpty">
+
+      <div class="select" [hidden]="hoursEmpty">
         <ion-label>{{env.hour | titlecase }}</ion-label>
-        <ion-datetime  disabled="true" displayFormat="HH:mm" pickerFormat="HH:mm" [hourValues]="hours" name="datetime"
-          minuteValues="0" placeholder="{{env.selectHour}}" id="hourPicker" [(ngModel)]="selectHour" text-right></ion-datetime>
+        <ion-select class="form-select form-select-sm" interface="popover" aria-label=".form-select-sm "
+          placeholder="{{env.selectHour}}" id="hourPicker" (ionChange)="changeHour(hourSelect.value)" #hourSelect>
+          <ion-select-option *ngFor="let hourElement of hoursFree" [value]="hourElement">{{hourElement.hour}}:{{hourElement.minutes}}</ion-select-option>
+        </ion-select>
       </div>
-      <p [class.hide]="!hoursEmpty" id="messageHours">{{env.emptyHours}}</p>
+      <p [hidden]="!hoursEmpty" id="messageHours">{{env.emptyHours}}</p>
 
       <br><br><br>
-      <div class="nameReserve" [class.hide]="hoursEmpty">
+      <div class="nameReserve" [hidden]="hoursEmpty">
         <ion-label>{{env.reserveName}}</ion-label>
+        <ion-label> VERSION 1.14</ion-label>
         <br>
         <input class="form-control" type="text" [(ngModel)]="nameReserve" placeholder={{env.yourName}}>
       </div>
     </div>
-    <div id="blockButton" [class.hide]="hoursEmpty">
+    <div id="blockButton" [hidden]="hoursEmpty">
       <ion-button id="buttonForms" color="tertiary" (click)="checkReserve()">{{env.reserver}}</ion-button>
     </div>
   </div>

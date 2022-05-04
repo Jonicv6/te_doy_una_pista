@@ -2,8 +2,24 @@ ion-content ion-toolbar {
   --background: translucent;
 }
 
-#container{  
+#containerLogin{  
   margin-top: 50% !important; 
+}
+
+#containerLogout{
+  height: 25px;
+}
+
+#containerLogout > ion-button{
+  padding: 0;
+  width: 100%;
+  left: 0px;
+  right: 0px;
+}
+
+#containerCalendar{
+  height: 100%;
+  background-color: white;
 }
 
 #textLogin{  
@@ -11,7 +27,7 @@ ion-content ion-toolbar {
   text-align: center;
 }
 
-#buttonLogin{
+.buttonLogin{
   margin: 0px;
   position: absolute;
   padding: 0 10%;
@@ -20,7 +36,7 @@ ion-content ion-toolbar {
   right: 15%;
 }
 
-#buttonLogin > p{
+.buttonLogin > p{
   color: black;  
   text-align: center;
   margin: 5px 0px;

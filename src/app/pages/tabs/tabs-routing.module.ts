@@ -14,57 +14,32 @@ const routes: Routes = [
       },
       {
         path: 'search',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./search/search.module').then(m => m.SearchPageModule)
-          },
-          {
-            path: 'forms/:id/:sport',
-            children: [
-              {
-                path: '',
-                loadChildren: () => import('./search/forms/forms.module').then(m => m.FormsPageModule)
-              }
-            ]
-          }
-        ]
+        loadChildren: () =>
+          import('./search/search.module').then(m => m.SearchPageModule)
+      },
+      {
+        path: 'forms/:id/:sport',
+        loadChildren: () => import('./search/forms/forms.module').then(m => m.FormsPageModule)
       },
       {
         path: 'maps',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./maps/maps.module').then(m => m.MapsPageModule)
-          }
-        ]
+        loadChildren: () => import('./maps/maps.module').then(m => m.MapsPageModule)
       },
       {
         path: 'reserve',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./reserve/reserve.module').then(m => m.ReservePageModule)
-          }
-        ]
+        loadChildren: () => import('./reserve/reserve.module').then(m => m.ReservePageModule)
       },
       {
         path: 'calendar',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./calendar/calendar.module').then(m => m.CalendarPageModule)
-          }
-        ]
-      },
-
+        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarPageModule)
+      }
     ]
   },
-
+  {
+    path: '',
+    redirectTo: 'tabs/search',
+    pathMatch: 'full'
+  },
 ];
 
 @NgModule({

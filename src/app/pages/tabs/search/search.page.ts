@@ -40,7 +40,7 @@ export class SearchPage {
      //Activamos el loading y cargamos los datos
     await this.presentLoading(environment.textLoading);
     this.loading.present();
-
+    
     //Extraemos las ciudad de los SportCenters
     await this.sportCenterDataService.getSportCenters()
     .toPromise().then(result => {
@@ -53,7 +53,9 @@ export class SearchPage {
           }
         };
         this.city = this.citys[0];
-      });
+      }).catch((e) => {
+        console.log("TERMINADO ERROR: "+e);
+      });;
 
     //Leemos los deportes que existen
     await this.trackDataService.getTracks()
@@ -75,6 +77,8 @@ export class SearchPage {
       
       //Una vez cargado ambos, realiza la busqueda por primera vez
       this.search(this.city, this.sport);
+
+      
   }
 
 

@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { CalendarPage } from './calendar.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { DxSchedulerModule } from 'devextreme-angular';
+import { CalendarPageRoutingModule } from './calendar-routing.module';
 
 @NgModule({
   imports: [
@@ -14,7 +16,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     ExploreContainerComponentModule,
     ComponentsModule,
-    RouterModule.forChild([{ path: '', component: CalendarPage }])
+    DxSchedulerModule,
+    CalendarPageRoutingModule,
+    //RouterModule.forChild([{ path: '', component: CalendarPage }])
   ],
   declarations: [CalendarPage]
 })

@@ -33,6 +33,10 @@ ion-content {
   width: 75%;
 }
 
+ion-select{
+  color: black;
+}
+
 ion-select::part(icon) {
   display: none !important;
 }
@@ -66,7 +70,10 @@ ion-label {
 }
 
 #hourPicker{
-  color:floralwhite;
+  color: black !important;
+  visibility: hidden;
+  height: 30px;
+  width: 75%;
 }
 
 .nameReserve {

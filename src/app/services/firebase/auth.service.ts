@@ -1,146 +1,109 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Router } from '@angular/router';
-import { auth } from 'firebase';
-import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Observable } from 'rxjs';
+import { firebaseConfig } from 'src/environments/environment';
+
+import firebase from 'firebase/compat/app';
+
 
 @Injectable({
   providedIn: 'root',
 })
+/*export class AuthService {
+  CLIENT_ID = '';
+  API_KEY = '';
+
+  DISCOVERY_DOC= 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+
+  SCOPES = '';
+
+  tokenClient;
+  gapiInited = false;
+  gisInited = false;
+
+
+  gapiLoaded(){
+    gapi.load('client', this.initializeGapiClient);
+    
+  }
+  
+
+  async initializeGapiClient() {
+    await gapi.client.init({
+      apiKey: firebaseConfig.apiKey,
+      discoveryDocs: [this.DISCOVERY_DOC],
+    });
+    this.gapiInited = true;
+    this.maybeEnableButtons();
+  }
+
+
+  maybeEnableButtons() {
+    if (this.gapiInited && this.gisInited) {
+      //document.getElementById('authorize_button').style.visibility = 'visible';
+    }
+  }
+}
+
+
+*/
+/* COPIA DE SEGURIDAD
+*/
 export class AuthService {
-  user: firebase.User;
-  /*public user$: Observable<User>;
+  user$: Observable<firebase.User>;
+  calendarItems: any [];
+  gapi = globalThis.gapi;
 
-  constructor(public afAuth: AngularFireAuth, private afs: AngularFirestore) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap((user) => {
-        if (user) {
-          return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-        }
-        return of(null);
-      })
-    );
+  constructor(public afAuth: AngularFireAuth) {
+    //this.initLogin();
+    //this.user$ = afAuth.authState;
   }
 
-  async resetPassword(email: string): Promise<void> {
-    try {
-      return this.afAuth.sendPasswordResetEmail(email);
-    } catch (error) {
-      console.log('Error->', error);
-    }
+  initLogin() {
+    this.gapi.load('client', () => {
+      console.log('Cliente cargado')
+
+      this.gapi.client.init({
+        apiKey:  firebaseConfig.apiKey,
+        clientId: "702844795474-sptsblpjbe4nciq0qb577516s6tpni38.apps.googleusercontent.com",
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/calendar' 
+      
+      });
+
+
+      this.gapi.client.load('calendar', 'v3', () => {console.log('Calendario cargado')});
+    })
+    throw new Error('Method not implemented.');
   }
 
-  async loginGoogle(): Promise<User> {
-    try {
-      const { user } = await this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-      this.updateUserData(user);
-      return user;
-    } catch (error) {
-      console.log('Error->', error);
-    }
+  async login(){
+    const googleAuth =  this.gapi.auth.authorize.arguments.getAuthInstance();
+    const googleUser =  await googleAuth.signIn();
+
+    const token = googleUser.getAuthResponse().id_token;
+
+    console.log(googleUser);
+
+    const credential =  firebase.auth.GoogleAuthProvider.credential(token);
+
+    await this.afAuth.signInAndRetrieveDataWithCredential(credential);
   }
 
-  async register(email: string, password: string): Promise<User> {
-    try {
-      const { user } = await this.afAuth.createUserWithEmailAndPassword(email, password);
-      await this.sendVerifcationEmail();
-      return user;
-    } catch (error) {
-      console.log('Error->', error);
-    }
-  }
-
-  async login(email: string, password: string): Promise<User> {
-    try {
-      const { user } = await this.afAuth.signInWithEmailAndPassword(email, password);
-      this.updateUserData(user);
-      return user;
-    } catch (error) {
-      console.log('Error->', error);
-    }
-  }
-
-  async sendVerifcationEmail(): Promise<void> {
-    try {
-      return (await this.afAuth.currentUser).sendEmailVerification();
-    } catch (error) {
-      console.log('Error->', error);
-    }
-  }
-
-  isEmailVerified(user: User): boolean {
-    return user.emailVerified === true ? true : false;
-  }
-
-  async logout(): Promise<void> {
-    try {
-      await this.afAuth.signOut();
-    } catch (error) {
-      console.log('Error->', error);
-    }
-  }
-
-  private updateUserData(user: User) {
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-
-    const data: User = {
-      uid: user.uid,
-      email: user.email,
-      emailVerified: user.emailVerified,
-      displayName: user.displayName,
-    };
-
-    return userRef.set(data, { merge: true });
-  }*/
-
-  constructor(private AFauth : AngularFireAuth, 
-    private router : Router, private db : AngularFirestore, private google: GooglePlus) { }
-
-  login(email:string, password:string){
-
-    return new Promise((resolve, rejected) =>{
-      this.AFauth.auth.signInWithEmailAndPassword(email, password).then(user => {
-        resolve(user);
-      }).catch(err => rejected(err));
+  async getCalendar(){
+    const events = await  this.gapi.client.request.arguments.calendar.events.list({
+      calendarId: 'primary',
+      timeMin: new Date().toISOString(),
+      showDeleted: false,
+      singleEvents: true,
+      maxResults: 10,
+      orderBy: 'startTime'
     });
 
-   
-  }
+    console.log(events);
 
-  logout(){
-    this.AFauth.auth.signOut().then(() => {
-      this.router.navigate(['/login']);
-    })
-  }
-
-  register(email : string, password : string, name : string){
-
-    return new Promise ((resolve, reject) => {
-      this.AFauth.auth.createUserWithEmailAndPassword(email, password).then( res =>{
-          // console.log(res.user.uid);
-        const uid = res.user.uid;
-          this.db.collection('users').doc(uid).set({
-            name : name,
-            uid : uid
-          })
-        
-        resolve(res)
-      }).catch( err => reject(err))
-    })
-    
+    this.calendarItems = events.result.items;
 
   }
-
-  loginWithGoogle(){
-    return this.google.login({}).then(result =>{
-      const user_data_google = result;
-
-      //Recibimos el accesstoken y se lo mandamos a Firebase
-      alert(user_data_google.accessToken);
-      return this.AFauth.auth.signInWithCredential(auth.GoogleAuthProvider.credential(null, user_data_google.accessToken))
-    })
-  }
-
   
 }

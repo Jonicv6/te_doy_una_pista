@@ -17,11 +17,15 @@
     "lib": [
       "es2018",
       "dom"
+    ],
+    "skipLibCheck": true,
+    "types": [
+      "gapi", "gapi.auth2", "gapi.client", 
     ]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "enableIvy":false
-  }
+  },
 }

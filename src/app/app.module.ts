@@ -10,14 +10,22 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ComponentsModule } from "./components/components.module";
 import { HttpClientModule } from "@angular/common/http";
-import { DatePipe } from "@angular/common";
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFireModule } from "@angular/fire";
+import { DatePipe } from "@angular/common"; 
 import { environment } from "src/environments/environment";
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AuthService } from "./services/firebase/auth.service";
 import { FirebaseUIModule, firebase, firebaseui } from "firebaseui-angular";
+import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
+import { FormsModule } from '@angular/forms';
+
+import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFirestore, AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+
+import { DxSchedulerModule, DxDataGridModule } from 'devextreme-angular';
+
+import { firebaseConfig } from '../environments/environment';
 
 const firebaseUiAuthConfig: firebaseui.auth.Config = {
   signInFlow: 'popup',
@@ -33,13 +41,18 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
 @NgModule({
     declarations: [AppComponent],
     imports: [
+        AngularFireModule,
         AngularFireAuthModule,
-        AngularFireModule.initializeApp(environment.firebaseConfig),
+        AngularFirestoreModule,
+        AngularFireDatabaseModule,
+        AngularFireModule.initializeApp(firebaseConfig),
         BrowserModule,
+        FormsModule,
         HttpClientModule,
         IonicModule.forRoot(),
         AppRoutingModule,
         ComponentsModule,
+        DxSchedulerModule,
         FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -48,13 +61,14 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
         GooglePlus,
         StatusBar,
         DatePipe,
-        AuthService,
         SplashScreen,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     ],
     bootstrap: [AppComponent]
 })
 export class AppModule { };
+
+
 /*function firebaseUiAuthConfig(firebaseUiAuthConfig: any): any[] | import("@angular/core").Type<any> | import("@angular/core").ModuleWithProviders<{}> {
   throw new Error("Function not implemented.");
 }*/

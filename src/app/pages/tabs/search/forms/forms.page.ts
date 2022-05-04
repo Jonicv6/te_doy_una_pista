@@ -11,6 +11,9 @@ import { DatePipe } from '@angular/common'
 import { Reserve } from 'src/models/reserve';
 import Swal from 'sweetalert2';
 import { ReserveLocal } from 'src/models/reserveLocal';
+import { threadId } from 'worker_threads';
+import { Hour } from 'src/models/hours';
+
 
 //@Input() sportCenter:any;
 @Component({
@@ -26,8 +29,8 @@ export class FormsPage implements OnInit {
   selectDay: string = undefined;
   minDay: string = new Date().toLocaleDateString('en-US');
   actualHour: string = new Date().toLocaleTimeString().split(":")[0];
-  defaultHours: any[] = environment.hoursOpen;
-  hours: string[] = [];
+  defaultHours: Hour[] = environment.hoursOpen;
+  hoursFree: Hour[] = [];
   hoursEmpty: boolean = false;
   tracks: Track[] = [];
   selectTrack: Track = undefined;
@@ -79,7 +82,7 @@ export class FormsPage implements OnInit {
   changeTrack(trackAux: Track) {
     this.selectTrack = trackAux;
     this.selectDay = undefined;
-    this.hours = [];
+    this.hoursFree = [];
     this.checkHoursEmpty();
   }
 
@@ -134,48 +137,57 @@ export class FormsPage implements OnInit {
             }
           });
 
-          this.hours = []  //Reiniciamos la variable
+          this.hoursFree = []  //Reiniciamos la variable
           //Rellenamos la variable hours con una diferencia minima de dos horas
-          for (let hour of this.defaultHours) {
+          for (let hourElement of this.defaultHours) {
             //Transformamos temporalmente la variable minDay 
             let today = this.datepipe.transform(this.minDay, 'dd-MM-yyyy');
             //Rellenamos las horas libres segun si es el dia seleccionado o no
             //Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
             //Ni en las pistas que interseccionen
-            if (today === formatDate && !hoursReserveThisTrackDay.includes(hour) && (!hoursReserveTrackIntersection.includes(hour) || hoursReserveTrackIntersection == [])) {
-              if (Number.parseInt(hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
-                this.hours.push(hour);
+            if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) && (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection == [])) {
+              if (Number.parseInt(hourElement.hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
+                this.hoursFree.push(hourElement);
               }
-            } else if (today != this.selectDay && !hoursReserveThisTrackDay.includes(hour) && !hoursReserveTrackIntersection.includes(hour)) {
-              this.hours.push(hour);
+            } else if (today != this.selectDay && !hoursReserveThisTrackDay.includes(hourElement.hour) && !hoursReserveTrackIntersection.includes(hourElement.hour)) {
+              this.hoursFree.push(hourElement);
             }
           }
-
+          console.log(this.hoursFree);
           this.checkHoursEmpty();
 
         });
     }
   }
 
+  changeHour(selectHourForm){
+    this.selectHour = selectHourForm.hour+":"+selectHourForm.minutes;
+    console.log(this.selectHour);
+  }
+
   checkHoursEmpty() {
     //Si hay un dia seleccionado y no hay horas disponible mostrará un mensaje
-    if (this.hours.length == 0 && this.selectDay != undefined) {
+    if (this.hoursFree.length == 0 && this.selectDay != undefined) {
       this.hoursEmpty = true;
-    } else if (this.selectDay != undefined) {
-      //Si el dia está seleccionado
-      document.getElementById("hourPicker").setAttribute("disabled", 'false');
-      document.getElementById("hourPicker").style.color = "white";
-      this.hoursEmpty = false;
     } else {
-      //Si el dia no está seleccionado
-      document.getElementById("hourPicker").setAttribute("value", "");
-      document.getElementById("hourPicker").setAttribute("disabled", 'true');
-      document.getElementById("hourPicker").style.color = "floralwhite !important";
+      //No muestra el mensaje al haber al menos una hora disponible
       this.hoursEmpty = false;
+      if (this.selectDay != undefined) {
+        //Si el dia está seleccionado visualizamos el selector de Horas
+        document.getElementById("hourPicker").style.visibility = "visible";
+        document.getElementById("hourPicker").style.color = "white";
+        this.hoursEmpty = false;
+      } else {
+        //Si el dia no está seleccionado ocultamos el selector de Horas
+        document.getElementById("hourPicker").style.visibility = "hidden";
+        document.getElementById("hourPicker").style.color = "floralwhite !important";
+
+      }
     }
   }
 
   async checkReserve() {
+
     //Si algún campo está vacio salta el alert
     if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null)) {
       Swal.fire({
@@ -186,14 +198,14 @@ export class FormsPage implements OnInit {
       })
     } else {
       //Recoge los datos seleccionados
-      let selectHourAux = this.selectHour.split("T")[1].split(":")[0];
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
       //Creamos la variable Reserva
-      let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
+      let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
 
       //Comprobamos si la pista esta disponible antes de guardarla
       let reserveAvailable = await this.checkDateReserveEmpty(reserve);
+
       if (reserveAvailable) {
         //Creamos la reserva en la base de datos
         this.reserveDataService.createReserve(reserve).subscribe(r => {
@@ -204,7 +216,7 @@ export class FormsPage implements OnInit {
           }
 
           //Creamos la variable que guardaremos en local, con el id de la reserva creada
-          let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: selectHourAux + ":00", user: this.nameReserve };
+          let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
 
