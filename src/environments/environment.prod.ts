@@ -110,7 +110,10 @@ export const firebaseConfig= {
   storageBucket: "superb-tendril-224107.appspot.com",
   messagingSenderId: "702844795474",
   appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
-  measurementId: "G-XGZ2PTLG4B"
+  measurementId: "G-XGZ2PTLG4B",
+  client_id: "702844795474-sbh3uc19otjoi43n1esknkgmq431l1j5.apps.googleusercontent.com",
+  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+  scope: "https://www.googleapis.com/auth/calendar"
 }
 /*
  * For easier debugging in development mode, you can import the following file

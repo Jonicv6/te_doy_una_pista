@@ -1,21 +1,21 @@
 <ion-content color="primary" [fullscreen]="true">
     <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
     <script src="apis.google.com/js/api.js"></script>
-    <div id="containerLogin" [hidden]="checkLogin">
+    <!--<div id="containerLogin" [hidden]="checkLogin">
         <p id="textLogin" >{{env.textLogin}}</p>
 
-        <ion-button class="buttonLogin" color="tertiary" text="" (click)="pruebaGapi()">
+        <ion-button class="buttonLogin" color="tertiary" text="" (click)="loginGoogle()">
             <p>{{env.buttonLogin}}</p>
         </ion-button>
 
-    </div>
-    <div id="containerLogout" [hidden]="!checkLogin" >
+    </div> -->
+    <div id="containerLogout">
         <ion-button id class="buttonLogin" color="tertiary" text="" (click)="logoutGoogle()" >
             <p>{{env.buttonLogout}}</p>
         </ion-button>   
     </div>
 
-    <div id="containerCalendar" [hidden]="!checkLogin">
+    <div id="containerCalendar">
         <dx-scheduler timeZone="Europe/Madrid" 
         [editing]="false"
         startDateExpr="start.dateTime"

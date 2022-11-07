@@ -32,6 +32,10 @@ const routes: Routes = [
       {
         path: 'calendar',
         loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarPageModule)
+      },
+      {
+        path: 'login',
+        loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
       }
     ]
   },
@@ -39,7 +43,8 @@ const routes: Routes = [
     path: '',
     redirectTo: 'tabs/search',
     pathMatch: 'full'
-  },
+  }
+
 ];
 
 @NgModule({
