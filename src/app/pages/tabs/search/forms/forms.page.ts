@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { ReserveLocal } from 'src/models/reserveLocal';
 import { threadId } from 'worker_threads';
 import { Hour } from 'src/models/hours';
+import { LoadingController } from '@ionic/angular';
 
 
 //@Input() sportCenter:any;
@@ -36,6 +37,7 @@ export class FormsPage implements OnInit {
   selectTrack: Track = undefined;
   selectHour: string = undefined;
   nameReserve: string = undefined;
+  loading: any;
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -43,12 +45,14 @@ export class FormsPage implements OnInit {
     private trackDataService: TrackDataService,
     private sportCenterDataService: SportCenterDataService,
     private reserveDataService: ReserveDataService,
-    private datepipe: DatePipe) {
+    private datepipe: DatePipe,
+    private loadingCtrl: LoadingController,) {
 
   }
 
   ngOnInit() {
     this.getData();
+    this.localData();
   }
 
   //Se borra el cache de la vista cuando pasa a activa
@@ -56,9 +60,14 @@ export class FormsPage implements OnInit {
   //en esa misma pista
   ionViewWillEnter() {
     this.getData();
+    this.localData();
   }
 
   async getData() {
+    //Activamos el loading y cargamos los datos
+    await this.presentLoading(environment.textLoading);
+    this.loading.present();
+
     //Recogemos los datos enviados desde la página Search
     let id = this.activedRoute.snapshot.params['id'];
     this.sport = this.activedRoute.snapshot.params['sport'];
@@ -76,6 +85,28 @@ export class FormsPage implements OnInit {
       .toPromise().then(result => {
         this.tracks = result;
       });
+  }
+
+  async localData() {
+
+    setTimeout(async () => {
+      //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
+      if (localStorage.getItem('profile') != null) {
+        let dataLocal = await JSON.parse(localStorage.getItem('profile'));
+        this.nameReserve = dataLocal['name'];
+      }
+
+      //Desactivamos el mensaje de carga
+      this.loading.dismiss();
+    }, 1500);
+
+  }
+
+  async presentLoading(message: string) {
+    this.loading = await this.loadingCtrl.create({
+      message,
+      duration: 1500
+    });
   }
 
 
@@ -160,8 +191,8 @@ export class FormsPage implements OnInit {
     }
   }
 
-  changeHour(selectHourForm){
-    this.selectHour = selectHourForm.hour+":"+selectHourForm.minutes;
+  changeHour(selectHourForm) {
+    this.selectHour = selectHourForm.hour + ":" + selectHourForm.minutes;
     console.log(this.selectHour);
   }
 
@@ -226,7 +257,7 @@ export class FormsPage implements OnInit {
             icon: 'success',
             heightAuto: false,
           });
-          this.route.navigateByUrl('tabs/search');
+          this.route.navigateByUrl('tabs/reserve');
         }
         );
       } else {
@@ -295,5 +326,6 @@ export class FormsPage implements OnInit {
       return true;
     }
   }
+
 
 }
