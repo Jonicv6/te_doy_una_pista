@@ -27,10 +27,17 @@ ion-label h2 {
 }
 
 ion-input,
-ion-select{
+ion-select {
   color: white;
 }
 
-ion-button p{
+ion-button p {
   color: white;
-} 
+}
+
+#version {
+  bottom: 0px;
+  position: absolute;
+  right: 5px;
+  margin: 0px;
+}
