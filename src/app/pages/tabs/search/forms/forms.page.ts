@@ -145,7 +145,7 @@ export class FormsPage implements OnInit {
             //Rellenamos las horas libres segun si es el dia seleccionado o no
             //Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
             //Ni en las pistas que interseccionen
-            if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) && (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection == [])) {
+            if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) && (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection.length == 0)) {
               if (Number.parseInt(hourElement.hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
                 this.hoursFree.push(hourElement);
               }
