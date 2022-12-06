@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { TrackDataService } from 'src/app/services/track-data.service';
+import { getSystemErrorMap } from 'util';
+import { Console } from 'console';
 
 declare var google;
 
@@ -24,7 +26,7 @@ export class MapsPage implements OnInit, AfterContentInit {
   longitude_ubication: any;
   sports: any[] = [];
   init: boolean = true;
-  sport: any;
+  sport: any = null;
   env = environment
 
   @ViewChild('mapElement', { read: ElementRef, static: false }) mapElement: ElementRef;
@@ -48,6 +50,7 @@ export class MapsPage implements OnInit, AfterContentInit {
           });
         }
       });
+
   }
 
   ngAfterContentInit(): void {
@@ -58,12 +61,9 @@ export class MapsPage implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    this.presentLoading(environment.textWait);
-    setTimeout(() => {
-
-      this.loading.dismiss();
-      this.showMap();
-    }, 1500);
+      //Primero busca en los archivos localos los datos del perfil
+      //En caso de no tener valores guardados, carga el mapa indicando que debe de seleccionar un deporte.    
+      this.getDataLocal();
   }
 
   async presentLoading(message: string) {
@@ -72,12 +72,33 @@ export class MapsPage implements OnInit, AfterContentInit {
       //duration:2000
     });
     await this.loading.present();
+    
   }
 
-  changeSport(sport) {
-    let centerList: any;
-    this.sportCenters = [];
+  async getDataLocal() {
+    //Presenta el texto de carga
+    this.presentLoading(environment.textWait);
+    setTimeout(async () => {
+      //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
+      if (localStorage.getItem('profile') != null) {
+        let dataLocal = await JSON.parse(localStorage.getItem('profile'));
+        this.sport = dataLocal['sport'];
+      }
 
+      //En caso de que ese fichero no existe, carga el mapa sin ningún deporte seleccionado.
+      if (this.sport == null) {
+        this.showMap();
+      }
+
+    //Desactivamos el mensaje de carga
+    this.loading.dismiss();
+    }, 4000);
+    
+  }
+
+  //Este metodo es llamado cada vez que se modifica el valor del deporte en el Select del mapa
+  changeSport(sport) {
+    this.sportCenters = [];
     this.presentLoading(environment.textLoading);
     setTimeout(() => {
       //Consultamos a la base de datos y obtenemos la ubicación
@@ -90,6 +111,8 @@ export class MapsPage implements OnInit, AfterContentInit {
                 let sports = item.sport.split("-");
 
                 for (let auxList of result) {
+                  //Condicion:
+                  /*Si el deporte está en la lista de las pistas de la lista de pabellones y que no se repita por pabellon */
                   if (sports.indexOf(sport) != -1 &&
                     auxList.idSportCenter === item.sportCenter &&
                     this.sportCenters.indexOf(auxList) == -1) {
@@ -104,11 +127,13 @@ export class MapsPage implements OnInit, AfterContentInit {
         });
       this.loading.dismiss();
     }, 1500);
+
   }
 
 
   //Métodos necesarios para visualizar el mapa correctamente
   showMap() {
+    
     this.geolocation.getCurrentPosition().then((resp) => {
       this.latitude_ubication = resp.coords.latitude;
       this.longitude_ubication = resp.coords.longitude;
@@ -118,6 +143,7 @@ export class MapsPage implements OnInit, AfterContentInit {
         lng: this.longitude_ubication
       };
 
+      //Introducimos los datos de configuracion del mapa
       this.map = new google.maps.Map(
         this.mapElement.nativeElement,
         {
@@ -150,18 +176,24 @@ export class MapsPage implements OnInit, AfterContentInit {
 
       this.map.setCenter(pos); //Centramos el mapa en la ubicación actual
 
-      if (this.sportCenters.length == 0 && this.sport != null) {
-        alert(environment.emptySportCenter)
-      }
-      else {
+      if (this.sportCenters.length != 0) {
         this.addMarkersToMap(this.sportCenters);   //Añadimos las marcas de posición de los lugares
       }
     }).catch((error) => {
       console.log(environment.errorLocation, error);
     });
 
+    //Una vez finalizada la carga, si no ha encontrado ningún pabellón, se notifica al usuario de ello.
+    if (this.sportCenters.length == 0 && this.sport != null) {
+      alert(environment.emptySportCenter);
+    } else if (this.sport == null) {
+      //Sino tiene ningún deporte selecciona, se notificará al usuario de ello
+      alert(environment.selectSportMap);
+    }
+
   }
 
+  //Metodo para añadir marcar de los polideportivos al mapa
   addMarkersToMap(sportCenters) {
     const icon = {
       url: environment.iconSportCenterURL,
@@ -182,6 +214,7 @@ export class MapsPage implements OnInit, AfterContentInit {
     }
   }
 
+  //Metodo para introducir información a la ventana del polideportivo cuando se hace click en la marca
   addInfoWindowToMarker(marker) {
 
     //Damos formato a la ventana del mapa
