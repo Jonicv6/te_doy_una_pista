@@ -33,7 +33,6 @@ export class SearchPage {
   }
 
   ngOnInit() {
-    console.log("INIT");
     this.getData();
     this.localData();
 
@@ -41,7 +40,6 @@ export class SearchPage {
 
   async getData() {
     
-    console.log("GETDATA");
     //Activamos el loading y cargamos los datos
     await this.presentLoading(environment.textLoading);
     this.loading.present();
@@ -84,7 +82,6 @@ export class SearchPage {
   /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
   async search(city, sport) {
     
-    console.log("SEARCH");
     this.sportCenters = [];
     this.sportAux = sport; //Guardamos el valor de deportes
 
@@ -119,8 +116,6 @@ export class SearchPage {
   }
 
   async localData() {
-    
-    console.log("LOCALDATA");
     setTimeout(async () => {
       //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
