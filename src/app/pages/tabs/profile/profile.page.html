@@ -1,0 +1,52 @@
+<ion-content>
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>{{env.titleMyProfile| titlecase}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-list>
+                <ion-item>
+                    <ion-label position="stacked">
+                        <h2>{{env.titleProfile| titlecase}}</h2>
+                    </ion-label>
+                    <ion-input type="text" name="name" [(ngModel)]="name"> </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">
+                        <h2>{{env.titleEmail| titlecase}}</h2>
+                    </ion-label>
+                    <ion-input type="email" name="email"
+                        pattern="^([a-zA-Z0-9_\-\,]+)@([a-zA-Z0-9_\-\,]{2,})\.([a-zA-Z]{2,})" [(ngModel)]="email">
+                    </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">
+                        <h2>{{env.titleUbication| titlecase}}</h2>
+                    </ion-label>
+                    <ion-select interface="popover" *ngIf="citys" [(ngModel)]="city">
+                        <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="stacked">
+                        <h2>{{env.titleSport| titlecase}}</h2>
+                    </ion-label>
+                    <ion-select interface="popover" [(ngModel)]="sport">
+                        <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
+                    </ion-select>
+
+                </ion-item>
+
+            </ion-list>
+
+            <ion-button id="buttonSave" expand="full" (click)="saveData()">
+                <p>{{env.save}}</p>
+            </ion-button>
+
+            <p>
+                {{env.titleProfileDescription}}
+            </p>
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>

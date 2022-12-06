@@ -18,7 +18,7 @@ const routes: Routes = [
           import('./search/search.module').then(m => m.SearchPageModule)
       },
       {
-        path: 'forms/:id/:sport',
+        path: 'search/forms/:id/:sport',
         loadChildren: () => import('./search/forms/forms.module').then(m => m.FormsPageModule)
       },
       {
@@ -26,16 +26,16 @@ const routes: Routes = [
         loadChildren: () => import('./maps/maps.module').then(m => m.MapsPageModule)
       },
       {
+        path: 'maps/sportcenter/:id',
+        loadChildren: () => import('./maps/sportcenter/sportcenter.module').then(m => m.SportcenterPageModule)
+      },
+      {
         path: 'reserve',
         loadChildren: () => import('./reserve/reserve.module').then(m => m.ReservePageModule)
       },
       {
-        path: 'calendar',
-        loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarPageModule)
-      },
-      {
-        path: 'login',
-        loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
+        path: 'profile',
+        loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
       }
     ]
   },
@@ -44,6 +44,7 @@ const routes: Routes = [
     redirectTo: 'tabs/search',
     pathMatch: 'full'
   }
+
 
 ];
 
