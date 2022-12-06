@@ -26,9 +26,10 @@ export const environment = {
 
   //Variables nombre
   search: "buscar",
+  save: "guardar",
   maps: "mapa",
   reserves: "reservas",
-  calendar: "calendario",
+  profile: "perfil",
   city: "ciudad",
   sport: "deporte",
   track: "pista",
@@ -38,9 +39,15 @@ export const environment = {
   reserveName: "Nombre de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
-  buttonLogin: "Iniciar sesión",
-  buttonLogout: "Cerrar sesión",
   titleApp: "¿Te doy una pista?",
+
+  //Variables usadas en la página Profile
+  titleMyProfile: "Mi perfil",
+  titleProfile: "Nombre de usuario",
+  titleEmail: "Correo electrónico",
+  titleUbication: "Ubicación",
+  titleSport: "Deporte favorito",
+  titleProfileDescription: "Estos datos se usarán para completar los datos de las reservas y poder enviarle una copia de la misma.",
 
   //Variables
   hoursOpen: [{ idHour: 1, hour: "08", minutes: "00" }, { idHour: 2, hour: "09", minutes: "00" },
@@ -58,9 +65,11 @@ export const environment = {
   titleErrorSelectDay: "Error Fecha",
   titleDeleteReserve: "¿Está seguro?",
   titleDeleted: "¡Borrado!",
+  titleSaveProfile: "Datos Guardados",
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
+  textSaveProfile: "Se han guardado tus datos, a partir de ahora se autocompletarán en los formularios de reserva",
 
 
   //Botones SweetAlert
@@ -71,7 +80,6 @@ export const environment = {
   textWait: "Espere por favor",
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
-  textLogin: "Para visualizar el calendario es necesario vincular una cuenta Google",
 
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
@@ -79,6 +87,7 @@ export const environment = {
   selectHour: "Seleccione una hora",
   selectCity: "Selecciona Ciudad",
   selectSport: "Seleccione Deporte",
+  selectSportMap: "Debes de seleccionar un deporte",
 
   //Mensajes de vacio
   emptySportCenter: "Actualmente no hay ningún polideportivo disponible",
