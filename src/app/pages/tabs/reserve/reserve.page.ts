@@ -24,6 +24,10 @@ export class ReservePage {
   }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter(){
+    //Refresca los datos cada vez que la pestaña está en vista activa.
     this.getDataLocal();
   }
 
@@ -61,6 +65,10 @@ export class ReservePage {
     })
   }
 
+  commentReserve(reserve){
+    console.log("Completar opinion");
+  }
+
   doRefresh(event) {
     this.getDataLocal();
     //Cuando finalice la lectura de datos, cancelamos el refresh.
@@ -95,14 +103,16 @@ export class ReservePage {
     });
   }
 
+  //Metodo para ordenar las reserva, de forma que la mas próxima esté primera
   orderReserves(){
     this.listReserves.sort((a:ReserveLocal, b:ReserveLocal) => {
 
       //Reformulamos las variables de fecha 
       let arrayA = a.date.split('-');
       let arrayB = b.date.split('-');
+
       //Se comparan las fechas con la siguiente forma -> yyyy-MM-DDThh:mm
-      return +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour) - +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour)
+      return +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour) - +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour) 
     });
   }
 
