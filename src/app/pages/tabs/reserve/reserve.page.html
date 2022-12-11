@@ -1,36 +1,48 @@
 <ion-content>
+
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
   <div id="contentList">
     <ion-virtual-scroll id="reserveList">
-      <ion-card id="cardReserve" *ngFor="let reserve of listReserves" [ngClass]="{'reservePast': (reserve.time == -1), 
+
+      <mat-tab-group dynamicHeight>
+        <mat-tab label="First" class="tabs">
+          <ion-card id="cardReserve" *ngFor="let reserve of listReserves" [ngClass]="{'reservePast': (reserve.time == -1), 
         'reserveToday': reserve.time == 0}">
-        <div>
-          <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
-          <ion-card-content id="dateReserve">
-            <h6>{{ reserve.track.name }}</h6>
-            <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
-            <ion-icon name="time"></ion-icon> {{ reserve.hour }}
-            <p>Nombre de la reserva: '{{ reserve.user }}'</p>
-          </ion-card-content>
-        </div>
+            <div>
+              <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
+              <ion-card-content id="dateReserve">
+                <h6>{{ reserve.track.name }}</h6>
+                <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
+                <ion-icon name="time"></ion-icon> {{ reserve.hour }}
+                <p>Nombre de la reserva: '{{ reserve.user }}'</p>
+              </ion-card-content>
+            </div>
 
-        <div id="containerButtons">
-          <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
-            (click)="deleteReserve(reserve)">
-            <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
-          </ion-button>
+            <div id="containerButtons">
+              <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
+                (click)="deleteReserve(reserve)">
+                <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
+              </ion-button>
 
-          <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
-            (click)="commentReserve(reserve)">
-            <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
-          </ion-button>
-        </div>
-      </ion-card>
-      <div class="message" *ngIf="!listReserves || listReserves.length==0">
-        <ion-label> {{env.emptyReserveLocal }} </ion-label>
-      </div>
+              <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
+                (click)="commentReserve(reserve)">
+                <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-card>
+          <div class="message" *ngIf="!listReserves || listReserves.length==0">
+            <ion-label> {{env.emptyReserveLocal }} </ion-label>
+          </div>
+        </mat-tab>
+        <mat-tab label="Second" class="tabs">
+          The Second Content
+
+
+        </mat-tab>
+      </mat-tab-group>
+
     </ion-virtual-scroll>
   </div>
 </ion-content>

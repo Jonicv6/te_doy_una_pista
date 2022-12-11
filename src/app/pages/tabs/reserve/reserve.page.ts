@@ -1,9 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { environment } from 'src/environments/environment';
 import { ReserveLocal } from 'src/models/reserveLocal';
 import Swal from 'sweetalert2';
+import {MatTabsModule} from '@angular/material/tabs';
+
 
 @Component({
   selector: 'app-reserve',
@@ -11,13 +14,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['reserve.page.scss']
 })
 export class ReservePage {
-
+  sportAux = null;
   listReserves: ReserveLocal[] = [];
   env = environment;
   today = new Date().toLocaleDateString('en-US');
   actualHour: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   constructor(
+    public navCtrl: NavController,
     private reserveDataService: ReserveDataService,
     private datepipe: DatePipe) {
       this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
@@ -67,6 +71,8 @@ export class ReservePage {
 
   commentReserve(reserve){
     console.log("Completar opinion");
+    this.navCtrl.navigateForward('tabs/search/forms/' + reserve.sportcenter.idSportCenter + "/" + this.sportAux);
+
   }
 
   doRefresh(event) {
@@ -115,6 +121,15 @@ export class ReservePage {
       return +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour) - +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour) 
     });
   }
+
+
+  openModal(id: string) {
+    //this.modalService.open(id);
+}
+
+closeModal(id: string) {
+    //this.modalService.close(id);
+}
 
 
 
