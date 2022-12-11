@@ -40,6 +40,8 @@ export const environment = {
   yourName: "Su nombre",
   back: "Volver",
   titleApp: "¿Te doy una pista?",
+  score: "Puntuación",
+  comments: "Opiniones",
 
   //Variables usadas en la página Profile
   titleMyProfile: "Mi perfil",
