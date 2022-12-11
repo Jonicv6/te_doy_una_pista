@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { SportcenterPage } from './sportcenter.page';
-import { SportcenterPageRoutingModule } from './sportcenter-routing.module';
+import { CommentPage } from './comment.page';
+import { CommentPageRoutingModule } from './comment-routing.module';
 
 
 @NgModule({
@@ -11,8 +11,8 @@ import { SportcenterPageRoutingModule } from './sportcenter-routing.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    SportcenterPageRoutingModule
+    CommentPageRoutingModule
   ],
-  declarations: [SportcenterPage]
+  declarations: [CommentPage]
 })
 export class SportcenterPageModule {}

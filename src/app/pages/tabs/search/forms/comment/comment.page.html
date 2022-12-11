@@ -4,7 +4,7 @@
 
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button id="backButton" defaultHref="/tabs/maps" [text]="env.back">
+      <ion-back-button id="backButton"  [text]="env.back">
       </ion-back-button>
     </ion-buttons>
   </ion-toolbar>
@@ -17,27 +17,31 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let comment of listComments">
-          <ion-label position="stacked">
+        <ion-item>
+          <ion-label>
+            {{env.score| titlecase}}
+          </ion-label>
+
+          <ion-select placeholder="EMPTY" class="commentForm">
+            <ion-select-option *ngFor="let i of listScore" value="i">{{i}}</ion-select-option>
+          </ion-select>
+
+
+          <ion-label>
             <h4>{{comment.text| titlecase}}</h4>
             <p>{{comment.text}}</p>
           </ion-label>
 
         </ion-item>
         <ion-item>
-          <ion-input type="text" name="comment" [(ngModel)]="newComment"> </ion-input>
+          <ion-input class="commentForm" type="text" name="comment" [(ngModel)]="newComment"> </ion-input>
         </ion-item>
       </ion-list>
-
+      <br>
+      <br>
       <ion-button id="buttonSave" expand="full" (click)="saveComment()">
         <p>{{env.save}}</p>
       </ion-button>
-      <br>
-      <br>
-
-      <div>
-        LISTA DE COMENTARIOS
-      </div>
     </ion-card-content>
   </ion-card>
 

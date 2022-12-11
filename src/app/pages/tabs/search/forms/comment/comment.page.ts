@@ -4,11 +4,11 @@ import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-sportcenter',
-  templateUrl: './sportcenter.page.html',
-  styleUrls: ['./sportcenter.page.scss'],
+  selector: 'app-comment',
+  templateUrl: './comment.page.html',
+  styleUrls: ['./comment.page.scss'],
 })
-export class SportcenterPage implements OnInit {
+export class CommentPage implements OnInit {
 
   env = environment;
   comment = {user:"SportExample", text: "texto prueba"};
@@ -16,6 +16,8 @@ export class SportcenterPage implements OnInit {
   sportcenter = {name:"SportExampleCenter", text: "texto prueba"};
   listComments: any[] = [];
   loading: any;
+
+  listScore = [1,2,3,4,5,6,7,8,9,10];
 
   constructor(
     private sportCenterDataService: SportCenterDataService,
