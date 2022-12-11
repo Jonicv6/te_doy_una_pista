@@ -23,6 +23,7 @@ export const environment = {
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
+  commentPoint: "/comment/",
 
   //Variables nombre
   search: "buscar",
