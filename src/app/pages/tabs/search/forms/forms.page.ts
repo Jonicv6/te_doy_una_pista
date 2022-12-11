@@ -14,6 +14,7 @@ import { ReserveLocal } from 'src/models/reserveLocal';
 import { threadId } from 'worker_threads';
 import { Hour } from 'src/models/hours';
 import { LoadingController } from '@ionic/angular';
+import { getElement } from 'devextreme-angular';
 
 
 //@Input() sportCenter:any;
@@ -32,12 +33,13 @@ export class FormsPage implements OnInit {
   actualHour: string = new Date().toLocaleTimeString().split(":")[0];
   defaultHours: Hour[] = environment.hoursOpen;
   hoursFree: Hour[] = [];
-  hoursEmpty: boolean = false;
+  hoursEmpty: boolean = true;
   tracks: Track[] = [];
   selectTrack: Track = undefined;
   selectHour: string = undefined;
   nameReserve: string = undefined;
   loading: any;
+  closeComment: boolean = true;
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -202,16 +204,15 @@ export class FormsPage implements OnInit {
       this.hoursEmpty = true;
     } else {
       //No muestra el mensaje al haber al menos una hora disponible
-      this.hoursEmpty = false;
+      //
       if (this.selectDay != undefined) {
         //Si el dia está seleccionado visualizamos el selector de Horas
         document.getElementById("hourPicker").style.visibility = "visible";
-        document.getElementById("hourPicker").style.color = "white";
         this.hoursEmpty = false;
       } else {
         //Si el dia no está seleccionado ocultamos el selector de Horas
         document.getElementById("hourPicker").style.visibility = "hidden";
-        document.getElementById("hourPicker").style.color = "floralwhite !important";
+        this.hoursEmpty = true;
 
       }
     }
@@ -325,6 +326,25 @@ export class FormsPage implements OnInit {
     } else {
       return true;
     }
+  }
+
+  readComment(){
+    if(this.closeComment){
+      this.closeComment = false;
+    }else{
+      this.closeComment = true;
+    }
+
+    let listComments = document.getElementById('comments');
+    //Si la clase está en el elemento, la elimina, sino, la añade.
+    listComments.classList.toggle('openComment');
+    listComments.classList.toggle('closeComment');
+
+
+    let containerComment = document.getElementById('containerComment');
+    containerComment.classList.toggle('moveButtonOpen');
+    containerComment.classList.toggle('moveButtonClose');
+    
   }
 
 
