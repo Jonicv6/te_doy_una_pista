@@ -1,8 +1,8 @@
-import { SportCenter } from "./sportcenter";
+import { Track } from "./track";
 
 export interface Comment {
     idComment: number;
-    sportCenter: SportCenter;
+    track: Track;
     user: string;
     comment: string;
     score: number;
