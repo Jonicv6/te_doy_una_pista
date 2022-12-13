@@ -64,6 +64,13 @@
 
       <div id="comments" class="closeComment" >
         LISTA DE COMENTARIOS
+        <ion-virtual-scroll id="scrollComments">
+          <ion-card *ngFor="let comment of listComments">
+            <ion-card-title> {{ comment.user }} </ion-card-title>
+            <p>{{ comment.text }}</p>
+            <p>{{ comment.date }}</p>
+          </ion-card>
+        </ion-virtual-scroll>
       </div>
     </div>
 

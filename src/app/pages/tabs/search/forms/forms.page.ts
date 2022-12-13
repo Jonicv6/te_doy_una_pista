@@ -4,6 +4,7 @@ import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { SendParamsService } from 'src/app/services/send-params.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
+import { CommentDataService } from 'src/app/services/comment-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
 import { Track } from 'src/models/track';
@@ -15,6 +16,7 @@ import { threadId } from 'worker_threads';
 import { Hour } from 'src/models/hours';
 import { LoadingController } from '@ionic/angular';
 import { getElement } from 'devextreme-angular';
+import { Comment } from 'src/models/comment';
 
 
 //@Input() sportCenter:any;
@@ -40,6 +42,7 @@ export class FormsPage implements OnInit {
   nameReserve: string = undefined;
   loading: any;
   closeComment: boolean = true;
+  listComments: Comment[];
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -47,6 +50,7 @@ export class FormsPage implements OnInit {
     private trackDataService: TrackDataService,
     private sportCenterDataService: SportCenterDataService,
     private reserveDataService: ReserveDataService,
+    private commentDataService: CommentDataService,
     private datepipe: DatePipe,
     private loadingCtrl: LoadingController,) {
 
@@ -117,6 +121,7 @@ export class FormsPage implements OnInit {
     this.selectDay = undefined;
     this.hoursFree = [];
     this.checkHoursEmpty();
+    this.loadComment();
   }
 
 
@@ -186,7 +191,7 @@ export class FormsPage implements OnInit {
               this.hoursFree.push(hourElement);
             }
           }
-          console.log(this.hoursFree);
+          //console.log(this.hoursFree);
           this.checkHoursEmpty();
 
         });
@@ -328,10 +333,10 @@ export class FormsPage implements OnInit {
     }
   }
 
-  readComment(){
-    if(this.closeComment){
+  readComment() {
+    if (this.closeComment) {
       this.closeComment = false;
-    }else{
+    } else {
       this.closeComment = true;
     }
 
@@ -344,7 +349,17 @@ export class FormsPage implements OnInit {
     let containerComment = document.getElementById('containerComment');
     containerComment.classList.toggle('moveButtonOpen');
     containerComment.classList.toggle('moveButtonClose');
-    
+
+  }
+
+  async loadComment() {
+    await this.commentDataService.getComments().toPromise().then((result: Comment[]) => {
+      //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
+      this.listComments= result.filter(
+        (i: Comment) => i.track == this.selectTrack);
+
+      console.log(result);
+    });
   }
 
 
