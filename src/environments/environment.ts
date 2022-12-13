@@ -97,6 +97,7 @@ export const environment = {
   emptySearch: "Sin resultados. Inténtelo de nuevo.",
   emptyHours: "No hay horas libres, seleccione otro día.",
   emptyReserveLocal: "No has reservado ninguna pista todavía. Desliza hacía abajo para actualizar la lista",
+  emptyComments: "No existen opiniones de esta pista",
 
   //Mensajes de exito
   successReserve: "Ha realizado su reserva con éxito",
