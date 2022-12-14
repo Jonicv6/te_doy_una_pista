@@ -4,6 +4,6 @@ export interface Comment {
     idComment: number;
     track: Track;
     user: string;
-    comment: string;
+    text: string;
     score: number;
 }
