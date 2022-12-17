@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Comment } from 'src/models/comment';
+import { Track } from 'src/models/track';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,8 @@ export class CommentDataService {
     this._comment = value;
   }
 
-  public getComments(): Observable<any> {
-    return this.http.get(environment.endPoint + environment.commentPoint);
+  public getComments(track:Track): Observable<any> {
+    return this.http.get(environment.endPoint + environment.commentPoint + track.idTrack);
   }
 
   public createComment(comment:Comment) {
