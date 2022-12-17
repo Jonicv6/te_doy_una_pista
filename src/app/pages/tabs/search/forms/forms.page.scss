@@ -1,5 +1,5 @@
-#backButton{
-  background-color:dodgerblue;
+#backButton {
+  background-color: dodgerblue;
   border-radius: 20px;
   color: white;
   padding: 0px 5px;
@@ -13,7 +13,7 @@ ion-toolbar {
   visibility: hidden !important;
 }
 
-h3{
+h3 {
   color: var(--ion-color-tertiary);
 }
 
@@ -27,14 +27,13 @@ ion-content {
   height: 100%;
 }
 
-
-#trackPicker {  
+#trackPicker {
   float: right;
   height: 30px;
   width: 75%;
 }
 
-ion-select{
+ion-select {
   color: black;
 }
 
@@ -47,7 +46,7 @@ ion-label {
 }
 
 .select > ion-label {
-  width:25%;
+  width: 25%;
   float: left;
   padding-right: 15px;
 }
@@ -69,7 +68,7 @@ ion-label {
   border-radius: 5px;
 }
 
-#hourPicker{
+#hourPicker {
   color: black !important;
   visibility: hidden;
   height: 30px;
@@ -83,7 +82,7 @@ ion-label {
   margin-bottom: 5%;
 }
 
-.nameReserve input{
+.nameReserve input {
   text-align: center;
 }
 
@@ -91,11 +90,11 @@ ion-label {
   text-align: center;
 }
 
-#buttonForms{
+#buttonForms {
   --ion-color-contrast: black !important;
 }
 
-#buttonComments{
+#buttonComments {
   --ion-color-contrast: white !important;
   margin: 0px -20px;
   z-index: 3;
@@ -105,66 +104,92 @@ ion-label {
   text-align: center;
 }
 
-.openComment{
-  position:fixed;
+.openComment {
+  position: fixed;
   width: 100%;
   height: 100%;
   background-color: var(--ion-color-tertiary) !important;
-  margin: inherit;  
+  margin: inherit;
   left: 5%;
   right: 5%;
   padding: 0px;
 }
 
-.closeComment{
-  height:0;
+.closeComment {
+  height: 0;
 }
 
-.moveButtonOpen{
+.moveButtonOpen {
   position: absolute;
   top: 15%;
   width: 100%;
-  margin:0px -18px;
-  transition: all 1s linear;  
+  margin: 0px -18px;
+  transition: all 1s linear;
   z-index: 2;
 }
 
-.moveButtonClose{
+.moveButtonClose {
   position: absolute;
   bottom: 55px;
   width: 100%;
-  margin:0px -18px;
-  transition: all 1s linear;  
+  margin: 0px -18px;
+  transition: all 1s linear;
   z-index: 2;
 }
 
-.hide{
+.hide {
   height: 0px;
 }
 
-
-
-
-#scrollComments{  
-  background-color: var(--ion-color-primary) !important;
+#scrollComments {
+  background-color: var(--ion-color-tertiary) !important;
+  height: 80% !important;
   overflow: auto;
-  margin-top: auto;
-  margin-bottom: 17%;
-  height: 100%  !important;
+  padding-bottom: 3%;
 }
 
+#scrollComments > p {
+  color: black !important;
+  text-align: center;
+  margin-top: 25%;
+}
 
-ion-card{
+ion-card {
   background-color: var(--ion-color-secondary);
   padding: 10px;
 }
 
-ion-card-title{
-  color:white;
+ion-card-title {
+  color: white;
 }
 
-ion-card p{
+ion-card p {
   color: var(--ion-color-tertiary);
 }
 
+ion-card #infoComment {
+  clear: both;
+}
 
+ion-card #dateComment {
+  margin-bottom: 0px;
+  margin-top: 10px;
+  float: right;
+  color: white;
+}
+
+ion-card #scoreComment {
+  font-size: x-large;
+  float: left;
+}
+
+ion-card #scoreComment > span {
+  vertical-align: top;
+  color: white;
+}
+
+ion-card #scoreComment > ion-icon {
+  padding-top: 1px;
+  vertical-align: text-top;
+  color: var(--ion-color-tertiary);
+}

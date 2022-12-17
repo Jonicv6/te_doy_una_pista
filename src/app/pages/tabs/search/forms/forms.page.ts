@@ -42,7 +42,8 @@ export class FormsPage implements OnInit {
   nameReserve: string = undefined;
   loading: any;
   closeComment: boolean = true;
-  listComments: Comment[];
+  listComments: Comment[] = [];
+  listCommentsEmpty: boolean = false;
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -333,6 +334,7 @@ export class FormsPage implements OnInit {
     }
   }
 
+  // Metodo que se usa cada vez que se hacemos click en el botón Opiniones para mostrar u ocultar el panel de opiniones.
   readComment() {
     if (this.closeComment) {
       this.closeComment = false;
@@ -340,10 +342,10 @@ export class FormsPage implements OnInit {
       this.closeComment = true;
     }
 
-    let listComments = document.getElementById('comments');
+    let listCommentsElement = document.getElementById('comments');
     //Si la clase está en el elemento, la elimina, sino, la añade.
-    listComments.classList.toggle('openComment');
-    listComments.classList.toggle('closeComment');
+    listCommentsElement.classList.toggle('openComment');
+    listCommentsElement.classList.toggle('closeComment');
 
 
     let containerComment = document.getElementById('containerComment');
@@ -352,14 +354,30 @@ export class FormsPage implements OnInit {
 
   }
 
+  // Metodo usado para cargar y filtrar las opiniones
   async loadComment() {
-    await this.commentDataService.getComments().toPromise().then((result: Comment[]) => {
+    this.listComments = [];
+    this.listComments = await this.commentDataService.getComments(this.selectTrack).toPromise(); //.then((result: Comment[]) => {
       //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
-      this.listComments= result.filter(
-        (i: Comment) => i.track == this.selectTrack);
+      //result.forEach( comment => {
+       // console.log(comment);
+        //if(comment.track === this.selectTrack.idTrack){
+          //this.listComments.push(comment);
+        //}
+      //});
 
-      console.log(result);
-    });
+      if(this.listComments.length != 0){
+        this.listCommentsEmpty = false;
+      }else{
+        this.listCommentsEmpty = true;
+      }
+      
+
+        
+        //console.log(result);
+        console.log(this.selectTrack);
+      console.log(this.listComments);
+    //});
   }
 
 

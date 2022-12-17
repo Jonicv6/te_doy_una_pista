@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
@@ -36,7 +36,7 @@
         <ion-label>{{env.hour | titlecase }}</ion-label>
         <ion-select class="form-select form-select-sm" interface="popover" aria-label=".form-select-sm "
           placeholder="{{env.selectHour}}" id="hourPicker" (ionChange)="changeHour(hourSelect.value)" #hourSelect>
-          <ion-select-option  *ngFor="let hourElement of hoursFree"
+          <ion-select-option *ngFor="let hourElement of hoursFree"
             [value]="hourElement">{{hourElement.hour}}:{{hourElement.minutes}}</ion-select-option>
         </ion-select>
       </div>
@@ -53,7 +53,7 @@
 
       <ion-button id="buttonForms" color="tertiary" (click)="checkReserve()">{{env.reserver| titlecase}}</ion-button>
     </div>
-    <div id="containerComment" class="moveButtonClose">
+    <div id="containerComment" class="moveButtonClose" *ngIf="selectTrack!=undefined">
       <ion-button id="buttonComments" expand="block" color="primary" (click)="readComment()">
         <ion-icon name="caret-up-outline" *ngIf="closeComment"></ion-icon>
         <ion-icon name="caret-down-outline" *ngIf="!closeComment"></ion-icon>
@@ -62,14 +62,20 @@
         <ion-icon name="caret-up-outline" *ngIf="closeComment"></ion-icon>
       </ion-button>
 
-      <div id="comments" class="closeComment" >
-        LISTA DE COMENTARIOS
+      <div id="comments" class="closeComment">
         <ion-virtual-scroll id="scrollComments">
           <ion-card *ngFor="let comment of listComments">
             <ion-card-title> {{ comment.user }} </ion-card-title>
             <p>{{ comment.text }}</p>
-            <p>{{ comment.date }}</p>
+            <div id="infoComment">
+              <div id="scoreComment">
+                <span> {{ comment.score }}/5 </span>
+                <ion-icon name="star"></ion-icon>
+              </div>
+              <p id="dateComment">{{ comment.date }}</p>
+            </div>
           </ion-card>
+          <p id="emptyComment" *ngIf="listCommentsEmpty">{{ env.emptyComments }}</p>
         </ion-virtual-scroll>
       </div>
     </div>
