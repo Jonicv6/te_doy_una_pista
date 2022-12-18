@@ -4,6 +4,7 @@ import { SportCenterDataService } from 'src/app/services/sport-center-data.servi
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
@@ -20,12 +21,22 @@ export class ProfilePage implements OnInit {
   citys: any[] = [];
   sports: any[] = [];
   loading: any;
+  profileForm: FormGroup;
+  isSubmitted: boolean = false;
 
   constructor(
     private sportCenterDataService: SportCenterDataService,
     private loadingCtrl: LoadingController,
-    private trackDataService: TrackDataService
-  ) { }
+    private trackDataService: TrackDataService,
+    private formBuilder: FormBuilder
+  ) {
+    this.profileForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.pattern('^([a-zA-Z0-9_\\-\\,]+)@([a-zA-Z0-9_\\-\\,]{2,})\.([a-zA-Z]{2,})$')]],
+      city: ['', [Validators.required]],
+      sport: ['', [Validators.required]]
+    })
+  }
 
   ngOnInit() {
     this.getData();
@@ -65,13 +76,16 @@ export class ProfilePage implements OnInit {
         }
         this.sport = this.sports[0];
       });
-    
+
     await this.getDataLocal();
 
     //Paramos el loading
     this.loading.dismiss();
   }
 
+  get errorControl() {
+    return this.profileForm.controls;
+  }
 
   async presentLoading(message: string) {
     this.loading = await this.loadingCtrl.create({
@@ -81,26 +95,40 @@ export class ProfilePage implements OnInit {
   }
 
   //Método que guarda a nivel local los datos del usuario
-  saveData(){
-    let profile = { name: this.name, email: this.email, city: this.city, sport: this.sport };
+  saveData() {
 
-    localStorage.setItem('profile', JSON.stringify(profile));
+    //Indicamos el estado para los mensajes de aviso
+    if (!this.profileForm.valid) {
+      Swal.fire({
+        title: this.env.titleSaveProfileError,
+        text: this.env.errorSaveProfile,
+        icon: 'error',
+        heightAuto: false,
+      });
+      return false;
+    } else {
+      let profile = { name: this.name, email: this.email, city: this.city, sport: this.sport };
 
-    Swal.fire({
-      title: this.env.titleSaveProfile,
-      text: this.env.textSaveProfile,
-      icon: 'success',
-      heightAuto: false,
-    });
+      localStorage.setItem('profile', JSON.stringify(profile));
+
+      Swal.fire({
+        title: this.env.titleSaveProfile,
+        text: this.env.textSaveProfile,
+        icon: 'success',
+        heightAuto: false,
+      });
+    }
   }
 
   //metodo para leer los datos locales
   async getDataLocal() {
     let dataLocal = await JSON.parse(localStorage.getItem('profile'));
-    this.name = dataLocal['name'];
-    this.email = dataLocal['email'];
-    this.city = dataLocal['city'];
-    this.sport = dataLocal['sport'];
+    if (dataLocal != null) {
+      this.name = dataLocal['name'];
+      this.email = dataLocal['email'];
+      this.city = dataLocal['city'];
+      this.sport = dataLocal['sport'];
+    }
   }
 
 }

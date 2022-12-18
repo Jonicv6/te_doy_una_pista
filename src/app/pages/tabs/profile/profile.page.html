@@ -4,44 +4,61 @@
             <ion-card-title>{{env.titleMyProfile| titlecase}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-            <ion-list>
-                <ion-item>
-                    <ion-label position="stacked">
-                        <h2>{{env.titleProfile| titlecase}}</h2>
-                    </ion-label>
-                    <ion-input type="text" name="name" [(ngModel)]="name"> </ion-input>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">
-                        <h2>{{env.titleEmail| titlecase}}</h2>
-                    </ion-label>
-                    <ion-input type="email" name="email"
-                        pattern="^([a-zA-Z0-9_\-\,]+)@([a-zA-Z0-9_\-\,]{2,})\.([a-zA-Z]{2,})" [(ngModel)]="email">
-                    </ion-input>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">
-                        <h2>{{env.titleUbication| titlecase}}</h2>
-                    </ion-label>
-                    <ion-select interface="popover" *ngIf="citys" [(ngModel)]="city">
-                        <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
-                    </ion-select>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">
-                        <h2>{{env.titleSport| titlecase}}</h2>
-                    </ion-label>
-                    <ion-select interface="popover" [(ngModel)]="sport">
-                        <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
-                    </ion-select>
+            <form [formGroup]="profileForm" (ngSubmit)="saveData()" novalidate>
+                <ion-list>
+                    <ion-item>
+                        <ion-label position="stacked">
+                            <h2>{{env.titleProfile| titlecase}}</h2>
+                        </ion-label>
+                        <ion-input type="text" name="name" formControlName="name" [(ngModel)]="name"> </ion-input>
+                        <!-- Error messages -->
+                        <span class="error ion-padding" *ngIf="errorControl.name.errors?.required">
+                            {{env.errorNameRequired }}
+                        </span>
+                        <span class="error ion-padding" *ngIf="errorControl.name.errors?.minlength">
+                            {{env.errorNameLength }}
+                        </span>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">
+                            <h2>{{env.titleEmail| titlecase}}</h2>
+                        </ion-label>
+                        <ion-input type="email" name="email" formControlName="email"
+                            pattern="^([a-zA-Z0-9_\-\,]+)@([a-zA-Z0-9_\-\,]{2,})\.([a-zA-Z]{2,})" [(ngModel)]="email">
+                        </ion-input>
+                        <!-- Error messages -->
+                        <span class="error ion-padding" *ngIf="errorControl.email.errors?.required">
+                            {{env.errorEmailRequired }}
+                        </span>
+                        <span class="error ion-padding" *ngIf="errorControl.email.errors?.pattern">
+                            {{env.errorEmailFormat }}
+                        </span>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">
+                            <h2>{{env.titleUbication| titlecase}}</h2>
+                        </ion-label>
+                        <ion-select interface="popover" formControlName="city" [(ngModel)]="city">
+                            <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="stacked">
+                            <h2>{{env.titleSport| titlecase}}</h2>
+                        </ion-label>
+                        <ion-select interface="popover" [(ngModel)]="sport" formControlName="sport">
+                            <ion-select-option *ngFor="let sport of sports"
+                                [value]="sport">{{sport}}</ion-select-option>
+                        </ion-select>
 
-                </ion-item>
+                    </ion-item>
 
-            </ion-list>
+                </ion-list>
 
-            <ion-button id="buttonSave" expand="full" (click)="saveData()">
-                <p>{{env.save}}</p>
-            </ion-button>
+                <ion-button id="buttonSave" expand="full" type="submit">
+                    <p>{{env.save}}</p>
+                </ion-button>
+            </form>
 
             <p>
                 {{env.titleProfileDescription}}
