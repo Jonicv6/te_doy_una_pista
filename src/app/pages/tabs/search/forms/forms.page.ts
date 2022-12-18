@@ -112,7 +112,7 @@ export class FormsPage implements OnInit {
   async presentLoading(message: string) {
     this.loading = await this.loadingCtrl.create({
       message,
-      duration: 1500
+      duration: 750
     });
   }
 

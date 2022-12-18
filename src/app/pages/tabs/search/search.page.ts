@@ -111,7 +111,7 @@ export class SearchPage {
   async presentLoading(message: string) {
     this.loading = await this.loadingCtrl.create({
       message,
-      duration: 10000
+      duration: 1000
     });
   }
 
@@ -126,7 +126,7 @@ export class SearchPage {
       //Una vez cargado ambos, realiza la busqueda por primera vez
       this.search(this.city, this.sport);
 
-    }, 4000);
+    }, 1000);
   }
 
 
