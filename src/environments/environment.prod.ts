@@ -69,6 +69,7 @@ export const environment = {
   titleDeleteReserve: "¿Está seguro?",
   titleDeleted: "¡Borrado!",
   titleSaveProfile: "Datos Guardados",
+  titleSaveProfileError: "Datos Erróneos",
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
@@ -111,7 +112,14 @@ export const environment = {
   errorReserve: "Error en la reserva, seleccione otros datos.",
   errorLocation: "Error en la localización",
   errorDataReserve: "Rellene todos los datos de la reserva.",
-  errorSelectDay: "Debe seleccionar primero una pista."
+  errorSelectDay: "Debe seleccionar primero una pista.",
+  errorSaveProfile: "Debe de cumplimentar los datos correctamente",
+
+  //Mensajes de Error de Validación
+  errorNameLength: "El nombre debe tener una longitud minima de 2 caracteres",
+  errorNameRequired: "Nombre es un dato requerido",
+  errorEmailRequired: "Email es un dato requerido",
+  errorEmailFormat: "El formato del Email es incorrecto"
 };
 
 
