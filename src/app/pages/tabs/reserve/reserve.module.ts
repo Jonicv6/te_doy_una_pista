@@ -7,6 +7,7 @@ import { ReservePage } from './reserve.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 import { ComponentsModule } from 'src/app/components/components.module';
 import {MatTabsModule} from '@angular/material/tabs';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 
@@ -18,6 +19,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     ExploreContainerComponentModule,
     ComponentsModule,
     MatTabsModule,
+    ScrollingModule,
     RouterModule.forChild([{ path: '', component: ReservePage }])
   ],
   declarations: [ReservePage]
