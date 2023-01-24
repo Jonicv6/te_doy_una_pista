@@ -18,12 +18,36 @@ ion-title {
   height: 100%;
 }
 
-#reserveList {
+.reserveList {
   background-color: var(--ion-color-primary) !important;
   overflow: auto;
   margin-top: auto;
-  margin-bottom: 0;
+  margin-bottom: 45px;
   height: 100% !important;
+}
+
+#contentButtons {
+  width: 100%;
+  display: inline-block;  
+  border-bottom: 1px black solid;
+}
+
+.buttonsType{
+  display: inline-block;
+  width: 50%;
+  margin: 0;
+  padding: 0;
+}
+
+.buttonActive{
+  color: var(--ion-color-tertiary) !important;
+  --background: var(--ion-color-primary-shade) !important;
+  --border-radius: 0px;
+  
+}
+
+.mat-drawer {
+  overflow-y: scroll;
 }
 
 ion-card {
@@ -31,6 +55,7 @@ ion-card {
   padding: 10px;
   display: flex;
   justify-content: space-between;
+  color: white;
 }
 
 h6 {
@@ -38,7 +63,7 @@ h6 {
 }
 
 .message {
-  background-color: white;
+  background-color: white; 
   opacity: 50%;
   padding: 5px;
   margin: 50% 15px;
@@ -91,21 +116,24 @@ h6 {
   color: black !important;
 }
 
-#cardReserve ion-card-title {
-  color: var(--ion-color-tertiary);
+.reserveFuture * {
+  color:white !important;
 }
 
-#cardReserve ion-card-content,
-h6 {
+#dateReserve, #dateReserve h6 {
   color: white;
-}
-
-#dateReserve {
-  color: var(--ion-color-tertiary-shade);
 }
 
 #iconTrash {
   color: black !important;
+}
+
+#iconComment, #iconMeter{
+  color: var(--ion-color-tertiary) !important;
+}
+
+.reserveToday #iconMeter{
+  color: white !important;
 }
 
 

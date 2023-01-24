@@ -1,48 +1,74 @@
 <ion-content>
-
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
+  <div id="contentButtons">
+    <ion-button (click)="showFuture()" [ngClass]="{'buttonActive': checkReserveFuture}" class="buttonsType">Próximas</ion-button>
+    <ion-button (click)="showPast()" [ngClass]="{'buttonActive': checkReservePast}" class="buttonsType">Realizadas</ion-button>
+  </div>
   <div id="contentList">
-    <ion-virtual-scroll id="reserveList">
+    <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
+      *ngIf="checkReservePast">
+      <ion-card class="cardReserve"
+        *cdkVirtualFor="let reserve of listReservesPendingObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserve.time == -1), 
+   'reserveToday': reserve.time == 0}">
+        <div>
+          <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
+          <ion-card-content id="dateReserve">
+            <h6>{{ reserve.track.name }}</h6>
+            <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
+            <ion-icon name="time"></ion-icon> {{ reserve.hour }}
+            <p>Nombre de la reserva: '{{ reserve.user }}'</p>
+          </ion-card-content>
+        </div>
 
-      <mat-tab-group dynamicHeight>
-        <mat-tab label="First" class="tabs">
-          <ion-card id="cardReserve" *ngFor="let reserve of listReserves" [ngClass]="{'reservePast': (reserve.time == -1), 
-        'reserveToday': reserve.time == 0}">
-            <div>
-              <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
-              <ion-card-content id="dateReserve">
-                <h6>{{ reserve.track.name }}</h6>
-                <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
-                <ion-icon name="time"></ion-icon> {{ reserve.hour }}
-                <p>Nombre de la reserva: '{{ reserve.user }}'</p>
-              </ion-card-content>
-            </div>
+        <div id="containerButtons">
+          <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
+            (click)="deleteReserve(reserve)">
+            <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
 
-            <div id="containerButtons">
-              <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
-                (click)="deleteReserve(reserve)">
-                <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
-              </ion-button>
+          <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
+            (click)="commentReserve(reserve)">
+            <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card>
+      <div class="message" *ngIf="!listReservesPending || listReservesPending.length==0">
+        <ion-label> {{env.emptyReserveLocal }} </ion-label>
+      </div>
+    </cdk-virtual-scroll-viewport>
 
-              <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
-                (click)="commentReserve(reserve)">
-                <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
-              </ion-button>
-            </div>
-          </ion-card>
-          <div class="message" *ngIf="!listReserves || listReserves.length==0">
-            <ion-label> {{env.emptyReserveLocal }} </ion-label>
-          </div>
-        </mat-tab>
-        <mat-tab label="Second" class="tabs">
-          The Second Content
+    <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
+      *ngIf="checkReserveFuture">
+      <ion-card class="cardReserve"
+        *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserveCompleted.time == -1), 
+   'reserveToday': reserveCompleted.time == 0}">
+        <div>
+          <ion-card-title> {{ reserveCompleted.sportCenter.name }} </ion-card-title>
+          <ion-card-content class="dateReserve">
+            <h6>{{ reserveCompleted.track.name }}</h6>
+            <ion-icon name="calendar"></ion-icon> {{ reserveCompleted.date }}
+            <ion-icon name="time"></ion-icon> {{ reserveCompleted.hour }}
+            <p>Nombre de la reserva: '{{ reserveCompleted.user }}'</p>
+          </ion-card-content>
+        </div>
 
+        <div id="containerButtons">
+          <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
+            (click)="deleteReserve(reserveCompleted)">
+            <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
+          </ion-button>
 
-        </mat-tab>
-      </mat-tab-group>
-
-    </ion-virtual-scroll>
+          <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
+            (click)="commentInfoMeter(reserveCompleted)">
+            <ion-icon id="iconMeter" slot="icon-only" name="partly-sunny"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card>
+      <div class="message" *ngIf="!listReservesCompleted || listReservesCompleted.length==0">
+        <ion-label> {{env.emptyReserveLocal }} </ion-label>
+      </div>
+    </cdk-virtual-scroll-viewport>
   </div>
 </ion-content>

@@ -1,11 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { environment } from 'src/environments/environment';
 import { ReserveLocal } from 'src/models/reserveLocal';
 import Swal from 'sweetalert2';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -13,19 +15,23 @@ import {MatTabsModule} from '@angular/material/tabs';
   templateUrl: 'reserve.page.html',
   styleUrls: ['reserve.page.scss']
 })
-export class ReservePage {
+export class ReservePage implements OnInit {
   sportAux = null;
-  listReserves: ReserveLocal[] = [];
+  listReservesPending: ReserveLocal[] = [];
+  listReservesCompleted: ReserveLocal[] = [];
   env = environment;
   today = new Date().toLocaleDateString('en-US');
   actualHour: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  checkReserveFuture = true;
+  checkReservePast = false;
+  listReservesPendingObservable: any;
+  listReservesCompletedObservable: BehaviorSubject<ReserveLocal[]>;
 
   constructor(
-    public navCtrl: NavController,
-    private reserveDataService: ReserveDataService,
-    private datepipe: DatePipe) {
-      this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
-  }
+  public navCtrl: NavController,
+  private reserveDataService: ReserveDataService,
+  private datepipe: DatePipe) {
+  this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy'); }
 
   ngOnInit() {
   }
@@ -33,6 +39,10 @@ export class ReservePage {
   ionViewWillEnter(){
     //Refresca los datos cada vez que la pestaña está en vista activa.
     this.getDataLocal();
+  }
+
+  trackByFn(index, item) {
+    return index; // or item.id
   }
 
   deleteReserve(reserve) {
@@ -48,12 +58,12 @@ export class ReservePage {
       cancelButtonText: this.env.buttonCancelDelete
     }).then((result) => {
       if (result.isConfirmed) {
-        if (this.listReserves.includes(reserve)) {
+        if (this.listReservesPending.includes(reserve)) {
           //Borramos la reserva de la lista
-          let index = this.listReserves.indexOf(reserve);
-          this.listReserves.splice(index, 1);
+          let index = this.listReservesPending.indexOf(reserve);
+          this.listReservesPending.splice(index, 1);
           //Actualizamos la lista en local
-          localStorage.setItem('reserves', JSON.stringify(this.listReserves));
+          localStorage.setItem('reserves', JSON.stringify(this.listReservesPending));
           //Borramos la reserva de la base de datos
           this.reserveDataService.deleteReserve(reserve).subscribe(r => {
             console.log(r);
@@ -69,9 +79,13 @@ export class ReservePage {
     })
   }
 
+  commentInfoMeter(reserve){
+
+  }
+
   commentReserve(reserve){
     console.log("Completar opinion");
-    this.navCtrl.navigateForward('tabs/search/forms/' + reserve.sportcenter.idSportCenter + "/" + this.sportAux);
+    //this.navCtrl.navigateForward('tabs/search/forms/' + reserve.sportcenter.idSportCenter + "/" + this.sportAux);
 
   }
 
@@ -84,52 +98,77 @@ export class ReservePage {
 
   //metodo para leer los datos locales
   async getDataLocal() {
-    this.listReserves = await JSON.parse(localStorage.getItem('reserves'));
+    this.listReservesPending = [];
+    this.listReservesCompleted = [];
+
+    let list: ReserveLocal[] = await JSON.parse(localStorage.getItem('reserves'));
     await this.orderReserves();
 
-    this.listReserves.forEach(reserve => {
+    list.forEach(reserve => {
       let reserveDate = reserve.date.split("-");
       let todayDate = this.today.split("-");
 
 
       // TODO: ARREGLAR FORMULA PARA CAMBIAR TARJETA DE RESERVA 
-      if (reserve.date == this.today){
+      if (reserve.date == this.today) {
         reserve.time = 0;
-      } else if(
+        this.listReservesPending.push(reserve);
+      } else if (
         //EXPLICACION: Dia menor pero mismo mes y año - Mes menor pero mismo año - Año menor
-        (reserveDate[0]<todayDate[0] && reserveDate[1]==todayDate[1] && reserveDate[2]==todayDate[2]) || 
-        (reserveDate[1]<todayDate[1] && reserveDate[2]==todayDate[2] ) || 
-        (reserveDate[2]<todayDate[2]) || (reserve.date == this.today && reserve.hour[0] <= this.actualHour[0])){
-        console.log ("RESERVA: "+reserve.date +" - TODAY: "+this.today+" - RESERVE HOUR: "+reserve.hour+" - HOUR: "+this.actualHour )
+        (reserveDate[0] < todayDate[0] && reserveDate[1] == todayDate[1] && reserveDate[2] == todayDate[2]) ||
+        (reserveDate[1] < todayDate[1] && reserveDate[2] == todayDate[2]) ||
+        (reserveDate[2] < todayDate[2]) || (reserve.date == this.today && reserve.hour[0] <= this.actualHour[0])) {
 
+        this.listReservesPending.push(reserve);
+        console.log("RESERVA: " + reserve.date + " - TODAY: " + this.today + " - RESERVE HOUR: " + reserve.hour + " - HOUR: " + this.actualHour);
         reserve.time = -1;
-      }else{
+      } else {
         reserve.time = 1;
+
+        this.listReservesCompleted.push(reserve)
       }
     });
+    this.listReservesCompletedObservable = new BehaviorSubject(this.listReservesCompleted);
+    this.listReservesPendingObservable = new BehaviorSubject(this.listReservesPending);
+    console.log("LISTRESERVES:");
+    console.log(this.listReservesPending);
+    console.log("LISTRESERVESCOMPLETED:");
+    console.log(this.listReservesCompleted);
   }
 
   //Metodo para ordenar las reserva, de forma que la mas próxima esté primera
   orderReserves(){
-    this.listReserves.sort((a:ReserveLocal, b:ReserveLocal) => {
+    this.listReservesPending.sort((a: ReserveLocal, b: ReserveLocal) => {
 
       //Reformulamos las variables de fecha 
       let arrayA = a.date.split('-');
       let arrayB = b.date.split('-');
 
       //Se comparan las fechas con la siguiente forma -> yyyy-MM-DDThh:mm
-      return +new Date(arrayA[2]+"-"+arrayA[1]+"-"+arrayA[0]+"T"+a.hour) - +new Date(arrayB[2]+"-"+arrayB[1]+"-"+arrayB[0]+"T"+b.hour) 
+      return +new Date(arrayA[2] + "-" + arrayA[1] + "-" + arrayA[0] + "T" + a.hour) - +new Date(arrayB[2] + "-" + arrayB[1] + "-" + arrayB[0] + "T" + b.hour)
     });
+  }
+
+  showFuture(){
+    console.log("ShowFuture");
+    this.checkReserveFuture=true;
+    this.checkReservePast=false;
+  }
+
+  showPast(){
+    console.log("ShowPast");
+    this.checkReserveFuture=false;
+    this.checkReservePast=true;
   }
 
 
   openModal(id: string) {
     //this.modalService.open(id);
-}
+  }
 
-closeModal(id: string) {
+  closeModal(id: string) {
     //this.modalService.close(id);
-}
+  }
 
 
 
