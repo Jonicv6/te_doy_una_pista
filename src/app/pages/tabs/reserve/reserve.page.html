@@ -8,29 +8,29 @@
   </div>
   <div id="contentList">
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
-      *ngIf="checkReservePast">
+      *ngIf="checkReserveFuture">
       <ion-card class="cardReserve"
-        *cdkVirtualFor="let reserve of listReservesPendingObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserve.time == -1), 
-   'reserveToday': reserve.time == 0}">
+        *cdkVirtualFor="let reservePending of listReservesPendingObservable | async ; trackBy: trackByFn" [ngClass]="{'reserveFuture': (reservePending.time == 1), 
+   'reserveToday': reservePending.time == 0}">
         <div>
-          <ion-card-title> {{ reserve.sportCenter.name }} </ion-card-title>
-          <ion-card-content id="dateReserve">
-            <h6>{{ reserve.track.name }}</h6>
-            <ion-icon name="calendar"></ion-icon> {{ reserve.date }}
-            <ion-icon name="time"></ion-icon> {{ reserve.hour }}
-            <p>Nombre de la reserva: '{{ reserve.user }}'</p>
+          <ion-card-title> {{ reservePending.sportCenter.name }} </ion-card-title>
+          <ion-card-content class="dateReserve">
+            <h6>{{ reservePending.track.name }}</h6>
+            <ion-icon name="calendar"></ion-icon> {{ reservePending.date }}
+            <ion-icon name="time"></ion-icon> {{ reservePending.hour }}
+            <p>Nombre de la reserva: '{{ reservePending.user }}'</p>
           </ion-card-content>
         </div>
 
         <div id="containerButtons">
           <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
-            (click)="deleteReserve(reserve)">
+            (click)="deleteReserve(reservePending)">
             <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
           </ion-button>
 
           <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
-            (click)="commentReserve(reserve)">
-            <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
+            (click)="commentInfoMeter(reservePending)">
+            <ion-icon id="iconMeter" slot="icon-only" name="partly-sunny"></ion-icon>
           </ion-button>
         </div>
       </ion-card>
@@ -39,14 +39,14 @@
       </div>
     </cdk-virtual-scroll-viewport>
 
+
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
-      *ngIf="checkReserveFuture">
+      *ngIf="checkReservePast">
       <ion-card class="cardReserve"
-        *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserveCompleted.time == -1), 
-   'reserveToday': reserveCompleted.time == 0}">
+        *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserveCompleted.time == -1)}">
         <div>
           <ion-card-title> {{ reserveCompleted.sportCenter.name }} </ion-card-title>
-          <ion-card-content class="dateReserve">
+          <ion-card-content id="dateReserve">
             <h6>{{ reserveCompleted.track.name }}</h6>
             <ion-icon name="calendar"></ion-icon> {{ reserveCompleted.date }}
             <ion-icon name="time"></ion-icon> {{ reserveCompleted.hour }}
@@ -61,8 +61,8 @@
           </ion-button>
 
           <ion-button id="buttonCommentReserve" class="iconsReserve" size="small" expand="block" shape="round"
-            (click)="commentInfoMeter(reserveCompleted)">
-            <ion-icon id="iconMeter" slot="icon-only" name="partly-sunny"></ion-icon>
+            (click)="commentReserve(reserveCompleted)">
+            <ion-icon id="iconComment" slot="icon-only" name="chatbubbles"></ion-icon>
           </ion-button>
         </div>
       </ion-card>
@@ -70,5 +70,7 @@
         <ion-label> {{env.emptyReserveLocal }} </ion-label>
       </div>
     </cdk-virtual-scroll-viewport>
+
+    
   </div>
 </ion-content>

@@ -25,18 +25,19 @@ export class ReservePage implements OnInit {
   checkReserveFuture = true;
   checkReservePast = false;
   listReservesPendingObservable: any;
-  listReservesCompletedObservable: BehaviorSubject<ReserveLocal[]>;
+  listReservesCompletedObservable: any;
 
   constructor(
-  public navCtrl: NavController,
-  private reserveDataService: ReserveDataService,
-  private datepipe: DatePipe) {
-  this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy'); }
+    public navCtrl: NavController,
+    private reserveDataService: ReserveDataService,
+    private datepipe: DatePipe) {
+    this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
+  }
 
   ngOnInit() {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     //Refresca los datos cada vez que la pestaña está en vista activa.
     this.getDataLocal();
   }
@@ -74,16 +75,36 @@ export class ReservePage implements OnInit {
               heightAuto: false
             })
           });
+          this.getDataLocal();
+        }
+
+        if (this.listReservesCompleted.includes(reserve)) {
+          //Borramos la reserva de la lista
+          let index = this.listReservesCompleted.indexOf(reserve);
+          this.listReservesCompleted.splice(index, 1);
+          //Actualizamos la lista en local
+          localStorage.setItem('reserves', JSON.stringify(this.listReservesCompleted));
+          //Borramos la reserva de la base de datos
+          this.reserveDataService.deleteReserve(reserve).subscribe(r => {
+            console.log(r);
+            Swal.fire({
+              title: this.env.titleDeleted,
+              text: this.env.successReserveDeleted,
+              icon: 'success',
+              heightAuto: false
+            })
+          });
+          this.getDataLocal();
         }
       }
     })
   }
 
-  commentInfoMeter(reserve){
+  commentInfoMeter(reserve) {
 
   }
 
-  commentReserve(reserve){
+  commentReserve(reserve) {
     console.log("Completar opinion");
     //this.navCtrl.navigateForward('tabs/search/forms/' + reserve.sportcenter.idSportCenter + "/" + this.sportAux);
 
@@ -102,65 +123,74 @@ export class ReservePage implements OnInit {
     this.listReservesCompleted = [];
 
     let list: ReserveLocal[] = await JSON.parse(localStorage.getItem('reserves'));
-    await this.orderReserves();
 
     list.forEach(reserve => {
       let reserveDate = reserve.date.split("-");
       let todayDate = this.today.split("-");
 
+      //console.log(reserve.hour.substring(0, 2) + " -  " + this.actualHour.substring(0, 2))
 
-      // TODO: ARREGLAR FORMULA PARA CAMBIAR TARJETA DE RESERVA 
-      if (reserve.date == this.today) {
+      // Primer filtro, si la reserva es hoy y aún no se ha cumplido la hora y/o minutos
+      if (reserve.date == this.today &&
+        (reserve.hour.substring(0, 2) > this.actualHour.substring(0, 2) ||
+          reserve.hour.substring(0, 2) == this.actualHour.substring(0, 2) && reserve.hour.substring(3, 4) >= this.actualHour.substring(3, 4))) {
         reserve.time = 0;
         this.listReservesPending.push(reserve);
       } else if (
-        //EXPLICACION: Dia menor pero mismo mes y año - Mes menor pero mismo año - Año menor
-        (reserveDate[0] < todayDate[0] && reserveDate[1] == todayDate[1] && reserveDate[2] == todayDate[2]) ||
-        (reserveDate[1] < todayDate[1] && reserveDate[2] == todayDate[2]) ||
-        (reserveDate[2] < todayDate[2]) || (reserve.date == this.today && reserve.hour[0] <= this.actualHour[0])) {
-
+        //EXPLICACION: Dia posterior pero mismo mes y año - Mes posterior pero mismo año - Año posterior
+        //En caso de que no sea la misma fecha, ni la hora del evento, se convierte en un evento futuro
+        (reserveDate[0] > todayDate[0] && reserveDate[1] == todayDate[1] && reserveDate[2] == todayDate[2]) ||
+        (reserveDate[1] > todayDate[1] && reserveDate[2] == todayDate[2]) ||
+        (reserveDate[2] > todayDate[2])) {
         this.listReservesPending.push(reserve);
-        console.log("RESERVA: " + reserve.date + " - TODAY: " + this.today + " - RESERVE HOUR: " + reserve.hour + " - HOUR: " + this.actualHour);
-        reserve.time = -1;
-      } else {
         reserve.time = 1;
 
+        //console.log("RESERVA: " + reserve.date + " - TODAY: " + this.today + " - RESERVE HOUR: " + reserve.hour + " - HOUR: " + this.actualHour);
+
+      } else {
+        reserve.time = -1;
         this.listReservesCompleted.push(reserve)
       }
     });
+
+    this.listReservesCompleted.sort((objA, objB) => {
+      return this.orderArrayDate(objA, objB);
+    });
+
+    this.listReservesPending.sort((objA, objB) => {
+      return this.orderArrayDate(objA, objB);
+    });
+
     this.listReservesCompletedObservable = new BehaviorSubject(this.listReservesCompleted);
     this.listReservesPendingObservable = new BehaviorSubject(this.listReservesPending);
-    console.log("LISTRESERVES:");
-    console.log(this.listReservesPending);
-    console.log("LISTRESERVESCOMPLETED:");
-    console.log(this.listReservesCompleted);
+
+    //console.log("LISTRESERVES:");
+    //console.log(this.listReservesPending);
+    //console.log("LISTRESERVESCOMPLETED:");
+    //console.log(this.listReservesCompleted);
   }
 
   //Metodo para ordenar las reserva, de forma que la mas próxima esté primera
-  orderReserves(){
-    this.listReservesPending.sort((a: ReserveLocal, b: ReserveLocal) => {
+  orderArrayDate(objA, objB){
+    let dateA = objA.date.split('-');
+    let dateB = objB.date.split('-');
 
-      //Reformulamos las variables de fecha 
-      let arrayA = a.date.split('-');
-      let arrayB = b.date.split('-');
-
-      //Se comparan las fechas con la siguiente forma -> yyyy-MM-DDThh:mm
-      return +new Date(arrayA[2] + "-" + arrayA[1] + "-" + arrayA[0] + "T" + a.hour) - +new Date(arrayB[2] + "-" + arrayB[1] + "-" + arrayB[0] + "T" + b.hour)
-    });
+    let comparativeA = new Date(Number(dateA[0]),Number(dateA[1]),Number(dateA[2]));
+    let comparativeB = new Date(Number(dateB[0]),Number(dateB[1]),Number(dateB[2]));
+    return comparativeA.getTime() - comparativeB.getTime();
   }
 
-  showFuture(){
+  showFuture() {
     console.log("ShowFuture");
-    this.checkReserveFuture=true;
-    this.checkReservePast=false;
+    this.checkReserveFuture = true;
+    this.checkReservePast = false;
   }
 
-  showPast(){
+  showPast() {
     console.log("ShowPast");
-    this.checkReserveFuture=false;
-    this.checkReservePast=true;
+    this.checkReserveFuture = false;
+    this.checkReservePast = true;
   }
-
 
   openModal(id: string) {
     //this.modalService.open(id);
