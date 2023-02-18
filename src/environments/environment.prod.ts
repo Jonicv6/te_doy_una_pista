@@ -18,12 +18,16 @@ export const environment = {
     appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
     measurementId: "G-XGZ2PTLG4B"
   },*/
-  //Variables Host
+  //Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
   commentPoint: "/comment/",
+
+  //Variables OpenWeatherAPI
+  openMeteoURI:"https://api.open-meteo.com/v1/forecast?",
+  openMeteoParam: "&current_weather=true&timezone=Europe%2FMadrid",
 
   //Variables nombre
   search: "buscar",

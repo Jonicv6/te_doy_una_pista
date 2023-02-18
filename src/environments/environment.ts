@@ -18,13 +18,17 @@ export const environment = {
     appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
     measurementId: "G-XGZ2PTLG4B"
   },*/
-  //Variables Host
+  //Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
   commentPoint: "/comment/",
 
+  //Variables OpenWeatherAPI
+  openMeteoURI:"https://api.open-meteo.com/v1/forecast?",
+  openMeteoParam: "&hourly=temperature_2m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto",
+ 
   //Variables nombre
   search: "buscar",
   save: "guardar",
