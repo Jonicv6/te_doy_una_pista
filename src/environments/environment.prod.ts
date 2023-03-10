@@ -27,8 +27,8 @@ export const environment = {
 
   //Variables OpenWeatherAPI
   openMeteoURI:"https://api.open-meteo.com/v1/forecast?",
-  openMeteoParam: "&current_weather=true&timezone=Europe%2FMadrid",
-
+  openMeteoParam: "&hourly=temperature_2m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto",
+ 
   //Variables nombre
   search: "buscar",
   save: "guardar",
@@ -56,7 +56,7 @@ export const environment = {
   titleSport: "Deporte favorito",
   titleProfileDescription: "Estos datos se usarán para completar los datos de las reservas y poder enviarle una copia de la misma.",
 
-  //Variables
+  //Horas disponibles
   hoursOpen: [{ idHour: 1, hour: "08", minutes: "00" }, { idHour: 2, hour: "09", minutes: "00" },
   { idHour: 3, hour: "10", minutes: "00" }, { idHour: 4, hour: "11", minutes: "00" },
   { idHour: 5, hour: "12", minutes: "00" }, { idHour: 6, hour: "13", minutes: "00" },
@@ -111,6 +111,7 @@ export const environment = {
   //Iconos
   iconMapURL: "assets/icon/sports/alfiler.png",
   iconSportCenterURL: "assets/icon/sports/estadio-ubicacion.png",
+  iconsWeatherURL: "assets/icon/Weather_Icons.png",
 
   //Mensajes de Error 
   errorReserve: "Error en la reserva, seleccione otros datos.",
