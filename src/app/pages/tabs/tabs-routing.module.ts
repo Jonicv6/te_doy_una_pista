@@ -22,10 +22,6 @@ const routes: Routes = [
         loadChildren: () => import('./search/forms/forms.module').then(m => m.FormsPageModule)
       },
       {
-        path: '/search/forms/comment/:id',
-        loadChildren: () => import('./search/forms/comment/comment.module').then(m => m.SportcenterPageModule)
-      },
-      {
         path: 'maps',
         loadChildren: () => import('./maps/maps.module').then(m => m.MapsPageModule)
       },
