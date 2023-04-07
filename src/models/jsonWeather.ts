@@ -8,5 +8,6 @@ export interface WeatherAPI {
     weathercode_hour: number;
     temperature_max: number;
     temperature_min: number;
-    windspeed_max: number;          
+    windspeed_max: number;
+    image_weather: string;          
 }
