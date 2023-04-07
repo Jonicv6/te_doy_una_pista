@@ -8,6 +8,8 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { ComponentsModule } from 'src/app/components/components.module';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import { ModalWeather } from './modals/modalWeather';
+import { ModalComment } from './modals/modalComment';
 
 
 
@@ -22,6 +24,6 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     ScrollingModule,
     RouterModule.forChild([{ path: '', component: ReservePage }])
   ],
-  declarations: [ReservePage]
+  declarations: [ReservePage, ModalWeather, ModalComment]
 })
 export class ReservePageModule {}

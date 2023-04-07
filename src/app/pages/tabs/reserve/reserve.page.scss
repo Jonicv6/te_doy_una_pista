@@ -28,7 +28,7 @@ ion-title {
 
 #contentButtons {
   width: 100%;
-  display: inline-block;  
+  display: inline-block;
   border-bottom: 1px black solid;
 }
 
@@ -42,11 +42,10 @@ ion-title {
   --border-radius: 0px;
 }
 
-.buttonActive{
+.buttonActive {
   color: white !important;
   --background: var(--ion-color-primary) !important;
   --border-radius: 0px;
-  
 }
 
 .mat-drawer {
@@ -66,7 +65,7 @@ h6 {
 }
 
 .message {
-  background-color: white; 
+  background-color: white;
   opacity: 50%;
   padding: 5px;
   margin: 50% 15px;
@@ -120,14 +119,15 @@ h6 {
 }
 
 .reserveFuture * {
-  color:white !important;
+  color: white !important;
 }
 
 .reserveFuture div ion-card-title {
-  color:var(--ion-color-tertiary) !important;
+  color: var(--ion-color-tertiary) !important;
 }
 
-#dateReserve, #dateReserve h6 {
+#dateReserve,
+#dateReserve h6 {
   color: white;
 }
 
@@ -135,16 +135,76 @@ h6 {
   color: black !important;
 }
 
-#iconComment, #iconMeter{
+#iconComment,
+#iconMeter {
   color: var(--ion-color-tertiary) !important;
 }
 
-.reserveToday #iconMeter{
+.reserveToday #iconMeter {
   color: white !important;
 }
 
+#image_Weather {
+  width: 116px;
+  height: 116px;
+  background-image: url("../../../../../src/assets/Weather_Icons.png");
+  background-repeat: no-repeat;
+  display: inline-block;
+  background-position: 0% 0%;
+  margin: 0% 30%;
+}
 
-
-mdc-tab__text-label{
+mdc-tab__text-label {
   color: red;
 }
+
+ion-backdrop {
+  background: black;
+  opacity: 0.6;
+}
+
+ion-title {
+  color: black;
+}
+
+#modalComment .native-textarea {
+  padding-right: 9px !important;
+}
+
+#modalComment {
+  margin: 10px;
+}
+
+#panelComment{
+  --padding-end: 10px !important;
+  --min-height: 100%;
+  --background: var(--ion-color-secondary-shade) !important;
+  --color: white;
+  border-radius: 10px;
+}
+
+#modalComment ion-button {
+  position: absolute;
+  bottom: 0px;
+  left: 35%;
+  right: 35%;
+  --background: var(--ion-color-tertiary) !important;  
+  color: black;
+}
+
+#modalComment ion-button button{
+  margin: 5px;
+}
+
+#panelScore{
+  --color: white !important;
+}
+
+#panelScore ion-icon{  
+  color: var(--ion-color-tertiary);
+}
+
+#modalWeather .input-wrapper {
+  display: block !important;
+}
+

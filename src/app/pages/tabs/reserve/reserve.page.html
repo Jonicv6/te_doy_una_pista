@@ -1,4 +1,5 @@
-<ion-content>
+<ion-content>  
+  <ion-backdrop [visible]="modalActive" *ngIf="modalActive"></ion-backdrop>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
@@ -6,7 +7,8 @@
     <ion-button (click)="showFuture()" [ngClass]="{'buttonActive': checkReserveFuture}" class="buttonsType">Próximas</ion-button>
     <ion-button (click)="showPast()" [ngClass]="{'buttonActive': checkReservePast}" class="buttonsType">Realizadas</ion-button>
   </div>
-  <div id="contentList">
+  <div id="contentList"> 
+
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
       *ngIf="checkReserveFuture">
       <ion-card class="cardReserve"
@@ -73,4 +75,5 @@
 
     
   </div>
+
 </ion-content>
