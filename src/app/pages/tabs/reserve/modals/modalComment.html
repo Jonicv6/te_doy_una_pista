@@ -1,0 +1,30 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{env.titleModalComment}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">{{env.back}}</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div id="box-modal">
+        <div id="container">
+            <div id="modalComment">
+                <ion-textarea id="panelComment" placeholder="{{env.placeHolderComment}}" height="100%" rows="10"  maxlength="150" [(ngModel)]="comment"></ion-textarea>
+                <ion-item id="panelScore">
+                    <ion-label >{{env.score}}</ion-label>
+                    <ion-select value="1" multiple="false" placeholder="{{env.selectScore}}" [(ngModel)]="score">
+                        <ion-select-option value="1">1</ion-select-option>
+                        <ion-select-option value="2">2</ion-select-option>
+                        <ion-select-option value="3">3</ion-select-option>
+                        <ion-select-option value="4">4</ion-select-option>
+                        <ion-select-option value="5">5</ion-select-option>
+                    </ion-select>
+                    <ion-icon name="star"></ion-icon>
+                </ion-item>
+                <ion-button (click)="submit()">{{env.buttonComment}}</ion-button>
+            </div>
+        </div>
+    </div>
+
+</ion-content>
