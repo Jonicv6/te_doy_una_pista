@@ -24,11 +24,28 @@ export const environment = {
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
   commentPoint: "/comment/",
+  nodemailerPoint: "/email/",
 
   //Variables OpenWeatherAPI
   openMeteoURI:"https://api.open-meteo.com/v1/forecast?",
   openMeteoParam: "&hourly=temperature_2m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto",
  
+  //Variables usadas en el ModalWeather
+  titleModalWeather: "Estado del Clima",
+  precipitation: "Precipitación",
+  temperature_hour: "Temperatura en esa hora",
+  precipitation_hour: "Lluvia en esa hora",
+  temperature_max: "Temperatura Máxima",
+  temperature_min: "Temperatura Minima",
+  windspeed_max: "Velocidad del viento",
+
+  //Variables usadas en el ModalComment
+  titleModalComment: "Comparte tu opinión",
+  placeHolderComment:"Escribe tu opinión...",
+  selectScore: "Selecciona un valor",
+  buttonComment: "Enviar",
+  
+
   //Variables nombre
   search: "buscar",
   save: "guardar",
@@ -74,6 +91,8 @@ export const environment = {
   titleDeleted: "¡Borrado!",
   titleSaveProfile: "Datos Guardados",
   titleSaveProfileError: "Datos Erróneos",
+  titleErrorComment: "Comentario erroneo", 
+  titleSuccessComment: "Comentario realizado", 
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
@@ -107,6 +126,7 @@ export const environment = {
   //Mensajes de exito
   successReserve: "Ha realizado su reserva con éxito",
   successReserveDeleted: "Se ha eliminado con éxito",
+  successComment: "Ha realizado el comentario con éxito",
 
   //Iconos
   iconMapURL: "assets/icon/sports/alfiler.png",
@@ -118,7 +138,8 @@ export const environment = {
   errorLocation: "Error en la localización",
   errorDataReserve: "Rellene todos los datos de la reserva.",
   errorSelectDay: "Debe seleccionar primero una pista.",
-  errorSaveProfile: "Debe de cumplimentar los datos correctamente",
+  errorSaveProfile: "Debe de cumplimentar los datos correctamente",  
+  errorComment: "Faltan datos por completar",
 
   //Mensajes de Error de Validación
   errorNameLength: "El nombre debe tener una longitud minima de 2 caracteres",
