@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{env.titleModalWeather}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">{{env.back}}</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div id="box-modal">
+        <div id="container">
+            <div id="image_Weather"></div>
+            <div id="modalWeather">
+                <ion-item>
+                    <p>{{env.temperature_hour}}: <b>{{weatherData.temperature_hour}}</b> ºC<br>
+                    {{env.precipitation_hour}}: <b>{{weatherData.precipitation_hour}}</b> mm<br>
+                    {{env.temperature_max}}: <b>{{weatherData.temperature_max}}</b> ºC<br>
+                    {{env.temperature_min}}: <b>{{weatherData.temperature_min}}</b> ºC<br>
+                    {{env.windspeed_max}}: <b>{{weatherData.windspeed_max}}</b> km/h
+                    </p>
+                </ion-item>
+            </div>
+        </div>
+    </div>
+
+</ion-content>
