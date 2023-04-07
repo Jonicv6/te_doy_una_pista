@@ -27,3 +27,18 @@
 
 /* FirebaseUI */
 @import '~firebaseui/dist/firebaseui.css';
+
+.ion-modal ion-backdrop{
+    background-color: black;
+    
+  }
+
+.ion-page .ion-modal{
+      
+  width: fit-content!important;
+  min-width: 80%;
+  height: 50%;
+  margin: 50% 10% 50% 10%;
+  border-radius: 6px!important;
+  box-shadow: 0 28px 48px #0006!important;
+  }
