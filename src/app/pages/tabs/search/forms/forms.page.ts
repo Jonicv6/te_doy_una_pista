@@ -17,6 +17,8 @@ import { Hour } from 'src/models/hours';
 import { LoadingController } from '@ionic/angular';
 import { getElement } from 'devextreme-angular';
 import { Comment } from 'src/models/comment';
+import { EmailService } from 'src/app/services/email.service';
+import { Email } from 'src/models/email';
 
 
 //@Input() sportCenter:any;
@@ -53,7 +55,8 @@ export class FormsPage implements OnInit {
     private reserveDataService: ReserveDataService,
     private commentDataService: CommentDataService,
     private datepipe: DatePipe,
-    private loadingCtrl: LoadingController,) {
+    private loadingCtrl: LoadingController,
+    private emailService: EmailService) {
 
   }
 
@@ -246,7 +249,7 @@ export class FormsPage implements OnInit {
 
       if (reserveAvailable) {
         //Creamos la reserva en la base de datos
-        this.reserveDataService.createReserve(reserve).subscribe(r => {
+        this.reserveDataService.createReserve(reserve).subscribe( async r => {
 
           let listReserveLocal: ReserveLocal[] = [];
           if (JSON.parse(localStorage.getItem('reserves')) != null) {
@@ -257,7 +260,16 @@ export class FormsPage implements OnInit {
           let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-
+          let email:Email = {
+            from: "Nueva Reserva",
+            to: "jonicv_6@hotmail.com",
+            subject: "Nueva reserva realizada",
+            text:"Se ha realizado una nueva reserva",
+            html: "<table><th>TABLA DE LA RESERVA</th></table>"
+          }
+          console.log("ANTES DE ENVIAR CORREO");
+          await this.emailService.sendMail(email);
+          console.log("DESPUES DE ENVIAR CORREO");
           Swal.fire({
             title: this.env.titleSuccessReserve,
             text: this.env.successReserve,
@@ -368,17 +380,30 @@ export class FormsPage implements OnInit {
 
       if(this.listComments.length != 0){
         this.listCommentsEmpty = false;
+        console.log(this.listComments);
+        this.listComments.sort((objA, objB) => {
+          return this.orderArrayDate(objA, objB);
+        });
       }else{
         this.listCommentsEmpty = true;
       }
       
-
+      
         
         //console.log(result);
-        console.log(this.selectTrack);
-      console.log(this.listComments);
+        //console.log(this.selectTrack);
     //});
   }
 
+  //Metodo para ordenar las opiniones, de forma que la mas próxima esté primera
+  //Primero compara el año, luego el mes y luego el dia
+  orderArrayDate(objA, objB) {
+    let dateA = objA.date.split('-');
+    let dateB = objB.date.split('-');
+
+    let comparativeA = new Date(Number(dateA[2]), Number(dateA[1]), Number(dateA[0]));
+    let comparativeB = new Date(Number(dateB[2]), Number(dateB[1]), Number(dateB[0]));
+    return comparativeB.getTime() - comparativeA.getTime();
+  }
 
 }
