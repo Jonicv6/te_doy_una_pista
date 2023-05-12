@@ -42,6 +42,7 @@ export class FormsPage implements OnInit {
   selectTrack: Track = undefined;
   selectHour: string = undefined;
   nameReserve: string = undefined;
+  emailReserve: string = undefined;
   loading: any;
   closeComment: boolean = true;
   listComments: Comment[] = [];
@@ -104,6 +105,7 @@ export class FormsPage implements OnInit {
       if (localStorage.getItem('profile') != null) {
         let dataLocal = await JSON.parse(localStorage.getItem('profile'));
         this.nameReserve = dataLocal['name'];
+        this.emailReserve = dataLocal['email'];
       }
 
       //Desactivamos el mensaje de carga
@@ -249,7 +251,7 @@ export class FormsPage implements OnInit {
 
       if (reserveAvailable) {
         //Creamos la reserva en la base de datos
-        this.reserveDataService.createReserve(reserve).subscribe( async r => {
+        this.reserveDataService.createReserve(reserve).subscribe(async r => {
 
           let listReserveLocal: ReserveLocal[] = [];
           if (JSON.parse(localStorage.getItem('reserves')) != null) {
@@ -260,55 +262,74 @@ export class FormsPage implements OnInit {
           let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-          let email:Email = {
+
+          if (this.emailReserve != null) {
+            Swal.fire({
+              title: 'Ingrese un valor',
+              input: 'text',
+              inputPlaceholder: 'Escriba aquí',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              showLoaderOnConfirm: true,
+              preConfirm: (valor) => {
+                // Aquí puedes realizar acciones con el valor ingresado por el usuario
+                console.log(`El valor ingresado es: ${valor}`);
+              }
+            });
+          }
+
+
+          let email: Email = {
             from: "Nueva Reserva - Tedoyunapista",
-            to: "jonimarmon@gmail.com",
+            to: this.emailReserve,
             subject: "Nueva reserva realizada",
-            text:"Se ha realizado una nueva reserva",
-            html:  "<table border='1'>"+
-            "<caption>DATOS DE LA RESERVA</caption>"+
-              "<tr>"+
-                "<td>"+ environment.sportcenter.toUpperCase().toString()+
-                "</td>"+
-                "<td>"+ reserveLocal.sportCenter.name+
-                "</td>"+
-              "</tr>"+
-              "<tr>"+
-                "<td>"+ environment.track.toUpperCase().toString()+
-                "</td>"+
-                "<td>"+ reserveLocal.track.name+
-                "</td>"+
-              "</tr>"+
-              "<tr>"+
-                "<td>"+ environment.date.toUpperCase().toString()+
-                "</td>"+
-                "<td>"+ reserveLocal.date+
-                "</td>"+
-              "</tr>"+
-              "<tr>"+
-                "<td>"+ environment.hour.toUpperCase().toString()+
-                "</td>"+
-                "<td>"+ reserveLocal.hour +
-                "</td>"+
-              "</tr>"+
-              "<tr>"+
-                "<td>"+ environment.reserveName.toUpperCase().toString() +
-                "</td>"+
-                "<td>"+ reserveLocal.user +
-                "</td>"+
-              "</tr>"+
-              "<tr>"+
-                "<td>"+ environment.titleUbication.toUpperCase().toString() +
-                "</td>"+
-                "<td>"+ "https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude +
-                "</td>"+
-              "</tr>"+
-            "</table>"
+            text: "Se ha realizado una nueva reserva",
+            html: "<table border='1'>" +
+              "<caption>DATOS DE LA RESERVA</caption>" +
+              "<tr>" +
+              "<td>" + environment.sportcenter.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + reserveLocal.sportCenter.name +
+              "</td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>" + environment.track.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + reserveLocal.track.name +
+              "</td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>" + environment.date.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + reserveLocal.date +
+              "</td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>" + environment.hour.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + reserveLocal.hour +
+              "</td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>" + environment.reserveName.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + reserveLocal.user +
+              "</td>" +
+              "</tr>" +
+              "<tr>" +
+              "<td>" + environment.titleUbication.toUpperCase().toString() +
+              "</td>" +
+              "<td>" + "https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude +
+              "</td>" +
+              "</tr>" +
+              "</table>"
           }
           console.log("ANTES DE ENVIAR CORREO");
           let log = await this.emailService.sendMail(email);
           console.log(log);
           console.log("DESPUES DE ENVIAR CORREO");
+
           Swal.fire({
             title: this.env.titleSuccessReserve,
             text: this.env.successReserve,
@@ -409,28 +430,28 @@ export class FormsPage implements OnInit {
   async loadComment() {
     this.listComments = [];
     this.listComments = await this.commentDataService.getComments(this.selectTrack).toPromise(); //.then((result: Comment[]) => {
-      //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
-      //result.forEach( comment => {
-       // console.log(comment);
-        //if(comment.track === this.selectTrack.idTrack){
-          //this.listComments.push(comment);
-        //}
-      //});
+    //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
+    //result.forEach( comment => {
+    // console.log(comment);
+    //if(comment.track === this.selectTrack.idTrack){
+    //this.listComments.push(comment);
+    //}
+    //});
 
-      if(this.listComments.length != 0){
-        this.listCommentsEmpty = false;
-        console.log(this.listComments);
-        this.listComments.sort((objA, objB) => {
-          return this.orderArrayDate(objA, objB);
-        });
-      }else{
-        this.listCommentsEmpty = true;
-      }
-      
-      
-        
-        //console.log(result);
-        //console.log(this.selectTrack);
+    if (this.listComments.length != 0) {
+      this.listCommentsEmpty = false;
+      console.log(this.listComments);
+      this.listComments.sort((objA, objB) => {
+        return this.orderArrayDate(objA, objB);
+      });
+    } else {
+      this.listCommentsEmpty = true;
+    }
+
+
+
+    //console.log(result);
+    //console.log(this.selectTrack);
     //});
   }
 
