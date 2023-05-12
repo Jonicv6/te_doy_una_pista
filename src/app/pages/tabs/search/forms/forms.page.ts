@@ -8,7 +8,7 @@ import { CommentDataService } from 'src/app/services/comment-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
 import { Track } from 'src/models/track';
-import { DatePipe } from '@angular/common'
+import { DatePipe, UpperCasePipe } from '@angular/common'
 import { Reserve } from 'src/models/reserve';
 import Swal from 'sweetalert2';
 import { ReserveLocal } from 'src/models/reserveLocal';
@@ -261,14 +261,53 @@ export class FormsPage implements OnInit {
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
           let email:Email = {
-            from: "Nueva Reserva",
-            to: "jonicv_6@hotmail.com",
+            from: "Nueva Reserva - Tedoyunapista",
+            to: "jonimarmon@gmail.com",
             subject: "Nueva reserva realizada",
             text:"Se ha realizado una nueva reserva",
-            html: "<table><th>TABLA DE LA RESERVA</th></table>"
+            html:  "<table border='1'>"+
+            "<caption>DATOS DE LA RESERVA</caption>"+
+              "<tr>"+
+                "<td>"+ environment.sportcenter.toUpperCase().toString()+
+                "</td>"+
+                "<td>"+ reserveLocal.sportCenter.name+
+                "</td>"+
+              "</tr>"+
+              "<tr>"+
+                "<td>"+ environment.track.toUpperCase().toString()+
+                "</td>"+
+                "<td>"+ reserveLocal.track.name+
+                "</td>"+
+              "</tr>"+
+              "<tr>"+
+                "<td>"+ environment.date.toUpperCase().toString()+
+                "</td>"+
+                "<td>"+ reserveLocal.date+
+                "</td>"+
+              "</tr>"+
+              "<tr>"+
+                "<td>"+ environment.hour.toUpperCase().toString()+
+                "</td>"+
+                "<td>"+ reserveLocal.hour +
+                "</td>"+
+              "</tr>"+
+              "<tr>"+
+                "<td>"+ environment.reserveName.toUpperCase().toString() +
+                "</td>"+
+                "<td>"+ reserveLocal.user +
+                "</td>"+
+              "</tr>"+
+              "<tr>"+
+                "<td>"+ environment.titleUbication.toUpperCase().toString() +
+                "</td>"+
+                "<td>"+ "https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude +
+                "</td>"+
+              "</tr>"+
+            "</table>"
           }
           console.log("ANTES DE ENVIAR CORREO");
-          await this.emailService.sendMail(email);
+          let log = await this.emailService.sendMail(email);
+          console.log(log);
           console.log("DESPUES DE ENVIAR CORREO");
           Swal.fire({
             title: this.env.titleSuccessReserve,
