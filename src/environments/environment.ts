@@ -47,6 +47,7 @@ export const environment = {
   
 
   //Variables nombre
+  sportcenter: "pabellón",
   search: "buscar",
   save: "guardar",
   maps: "mapa",
