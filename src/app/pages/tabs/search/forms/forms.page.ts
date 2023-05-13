@@ -43,6 +43,7 @@ export class FormsPage implements OnInit {
   selectHour: string = undefined;
   nameReserve: string = undefined;
   emailReserve: string = undefined;
+  emailReserveTEMP: string = undefined;
   loading: any;
   closeComment: boolean = true;
   listComments: Comment[] = [];
@@ -232,7 +233,7 @@ export class FormsPage implements OnInit {
   async checkReserve() {
 
     //Si algún campo está vacio salta el alert
-    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null)) {
+    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null || "") || this.emailReserveTEMP == (undefined || null || "")) {
       Swal.fire({
         title: this.env.titleErrorDataReserve,
         text: this.env.errorDataReserve,
@@ -262,23 +263,10 @@ export class FormsPage implements OnInit {
           let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-
-          if (this.emailReserve != null) {
-            Swal.fire({
-              title: 'Ingrese un valor',
-              input: 'text',
-              inputPlaceholder: 'Escriba aquí',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              showLoaderOnConfirm: true,
-              preConfirm: (valor) => {
-                // Aquí puedes realizar acciones con el valor ingresado por el usuario
-                console.log(`El valor ingresado es: ${valor}`);
-              }
-            });
+          console.log(this.emailReserveTEMP);
+          if(this.emailReserve==undefined){
+            this.emailReserve = this.emailReserveTEMP;
           }
-
 
           let email: Email = {
             from: "Nueva Reserva - Tedoyunapista",
