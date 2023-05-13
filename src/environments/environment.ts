@@ -60,6 +60,7 @@ export const environment = {
   hour: "hora",
   reserver: "reservar",
   reserveName: "Nombre de la Reserva",
+  reserveEmail: "Correo de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
   titleApp: "¿Te doy una pista?",
