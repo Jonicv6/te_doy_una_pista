@@ -47,6 +47,9 @@
         <ion-label>{{env.reserveName}}</ion-label>
         <br>
         <input class="form-control" type="text" [(ngModel)]="nameReserve" placeholder={{env.yourName}}>
+        <ion-label *ngIf="emailReserve==undefined">{{env.reserveEmail}}</ion-label>
+        <br>
+        <input *ngIf="emailReserve==undefined" class="form-control" type="email" [(ngModel)]="emailReserveTEMP" placeholder={{env.titleEmail}}>
       </div>
     </div>
     <div id="blockButton" [hidden]="hoursEmpty">
