@@ -5,6 +5,7 @@ import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { ConnectionService } from 'src/app/services/connection.service';
 
 @Component({
   selector: 'app-profile',
@@ -28,7 +29,8 @@ export class ProfilePage implements OnInit {
     private sportCenterDataService: SportCenterDataService,
     private loadingCtrl: LoadingController,
     private trackDataService: TrackDataService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private connectionService: ConnectionService
   ) {
     this.profileForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -44,8 +46,8 @@ export class ProfilePage implements OnInit {
 
   async getData() {
     //Activamos el loading y cargamos los datos
-    await this.presentLoading(environment.textLoading);
-    this.loading.present();
+    await this.connectionService.presentLoading(environment.textLoading);
+    this.connectionService.loading.present();
 
     //Extraemos las ciudad de los SportCenters
     await this.sportCenterDataService.getSportCenters()
@@ -59,9 +61,13 @@ export class ProfilePage implements OnInit {
           }
         };
         this.city = this.citys[0];
-      }).catch((e) => {
-        console.log("TERMINADO ERROR: " + e);
-      });;
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR PROFILE: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });
 
     //Leemos los deportes que existen
     await this.trackDataService.getTracks()
@@ -75,23 +81,22 @@ export class ProfilePage implements OnInit {
           });
         }
         this.sport = this.sports[0];
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR PROFILE: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
       });
 
     await this.getDataLocal();
 
     //Paramos el loading
-    this.loading.dismiss();
+    this.connectionService.loading.dismiss();
   }
 
   get errorControl() {
     return this.profileForm.controls;
-  }
-
-  async presentLoading(message: string) {
-    this.loading = await this.loadingCtrl.create({
-      message,
-      duration: 100
-    });
   }
 
   //Método que guarda a nivel local los datos del usuario

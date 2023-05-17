@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { LoadingController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
+import Swal from 'sweetalert2';
+import { ConnectionService } from 'src/app/services/connection.service';
 
 @Component({
   selector: 'app-search',
@@ -17,7 +19,6 @@ export class SearchPage {
   sport: string;
   sportCenters: SportCenter[] = [];
   sportCenterData = [];
-  loading: any;
   init: boolean = true;
   empty: boolean = false;
   city: any;
@@ -27,92 +28,66 @@ export class SearchPage {
   constructor(
     public navCtrl: NavController,
     private sportCenterDataService: SportCenterDataService,
-    private loadingCtrl: LoadingController,
-    private trackDataService: TrackDataService) {
+    private trackDataService: TrackDataService,
+    private connectionService: ConnectionService) {
 
   }
 
   ngOnInit() {
     this.getData();
-    this.localData();
-
   }
 
   async getData() {
-    
+
     //Activamos el loading y cargamos los datos
-    await this.presentLoading(environment.textLoading);
-    this.loading.present();
+    await this.connectionService.presentLoading(environment.textLoading);
+    this.connectionService.loading.present();
 
-      //Extraemos las ciudad de los SportCenters
-      await this.sportCenterDataService.getSportCenters()
-        .toPromise().then(result => {
-          //Recorremos los datos 
-          for (let i of result) {
-            //Si la ciudad está repetida, se descarta
-            if (!this.citys.includes(i.city)) {
-              this.citys.push(i.city);
-              //console.log(i.city);
-            }
-          };
-          this.city = this.citys[0];
-        }).catch((e) => {
-          console.log("TERMINADO ERROR: " + e);
-        });;
-
-      //Leemos los deportes que existen
-      await this.trackDataService.getTracks()
-        .toPromise().then(result => {
-          for (let i of result) {
-            let auxiliar = i.sport.split("-");
-            auxiliar.forEach(element => {
-              if (!this.sports.includes(element)) {
-                this.sports.push(element);
-              }
-            });
-
-          }
-          this.sport = this.sports[0];
-
-        });
-
-  }
-
-
-  /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
-  async search(city, sport) {
-    
-    this.sportCenters = [];
-    this.sportAux = sport; //Guardamos el valor de deportes
-
-    //Cambiamos los valores de los boolean
-    this.init = false;
-
-    //Buscamos los SportCenters según la ciudad y el deporte indicado
-    await this.sportCenterDataService.getSportCentersCityAndSport(city, sport)
+    //Extraemos las ciudad de los SportCenters
+    await this.sportCenterDataService.getSportCenters()
       .toPromise().then(result => {
-        this.sportCenters = result;
-
-        if (this.sportCenters.length == 0) {
-          this.empty = true;
-        } else {
-          this.empty = false;
-        }
-        
-      //Desactivamos el mensaje de carga
-      this.loading.dismiss();
+        //Recorremos los datos 
+        for (let i of result) {
+          //Si la ciudad está repetida, se descarta
+          if (!this.citys.includes(i.city)) {
+            this.citys.push(i.city);
+            //console.log(i.city);
+          }
+        };
+        this.city = this.citys[0];
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR GETSPORTCENTERS: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
       });
 
+    //Leemos los deportes que existen
+    await this.trackDataService.getTracks()
+      .toPromise().then(result => {
+        for (let i of result) {
+          let auxiliar = i.sport.split("-");
+          auxiliar.forEach(element => {
+            if (!this.sports.includes(element)) {
+              this.sports.push(element);
+            }
+          });
 
+        }
+        this.sport = this.sports[0];
 
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR GETTRACKS: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });
 
-  }
+    //Si todo ha ido bien, cargamos los datos predeterminados guardados en local.
+    this.localData();
 
-  async presentLoading(message: string) {
-    this.loading = await this.loadingCtrl.create({
-      message,
-      duration: 1000
-    });
   }
 
   async localData() {
@@ -129,6 +104,37 @@ export class SearchPage {
     }, 1000);
   }
 
+  /* ------------ Realizamos la búsqueda según los valores elegidos ----------- */
+  async search(city, sport) {
+
+    this.sportCenters = [];
+    this.sportAux = sport; //Guardamos el valor de deportes
+
+    //Cambiamos los valores de los boolean
+    this.init = false;
+
+    //Buscamos los SportCenters según la ciudad y el deporte indicado
+    await this.sportCenterDataService.getSportCentersCityAndSport(city, sport)
+      .toPromise().then(result => {
+        this.sportCenters = result;
+
+        if (this.sportCenters.length == 0) {
+          this.empty = true;
+        } else {
+          this.empty = false;
+        }
+
+        //Desactivamos el mensaje de carga
+        this.connectionService.loading.dismiss();
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR SEARCH: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.search(city, sport);
+        });
+      });
+
+  }
 
 
   openPage(center) {

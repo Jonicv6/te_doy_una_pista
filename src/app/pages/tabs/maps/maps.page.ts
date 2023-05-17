@@ -3,11 +3,12 @@ import { SportCenterDataService } from '../../../services/sport-center-data.serv
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SportCenter } from 'src/models/sportcenter';
 import { Observable } from 'rxjs';
-import { LoadingController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { getSystemErrorMap } from 'util';
 import { Console } from 'console';
+import { ConnectionService } from 'src/app/services/connection.service';
+import Swal from 'sweetalert2';
 
 declare var google;
 
@@ -30,26 +31,12 @@ export class MapsPage implements OnInit, AfterContentInit {
   env = environment
 
   @ViewChild('mapElement', { read: ElementRef, static: false }) mapElement: ElementRef;
-  loading: any;
 
   constructor(
     private geolocation: Geolocation,
     private sportCenterDataService: SportCenterDataService,
-    private loadingCtrl: LoadingController,
-    private trackDataService: TrackDataService) {
-
-    //Leemos la lista de deportes
-    this.trackDataService.getTracks()
-      .subscribe(result => {
-        for (let i of result) {
-          let auxiliar = i.sport.split("-");
-          auxiliar.forEach(element => {
-            if (!this.sports.includes(element)) {
-              this.sports.push(element);
-            }
-          });
-        }
-      });
+    private trackDataService: TrackDataService,
+    private connectionService: ConnectionService) {
 
   }
 
@@ -61,23 +48,43 @@ export class MapsPage implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-      //Primero busca en los archivos localos los datos del perfil
-      //En caso de no tener valores guardados, carga el mapa indicando que debe de seleccionar un deporte.    
-      this.getDataLocal();
+    //Primero descargamos los deportes que contiene la base de datos
+    this.getData();
+
   }
 
-  async presentLoading(message: string) {
-    this.loading = await this.loadingCtrl.create({
-      message
-      //duration:2000
-    });
-    await this.loading.present();
-    
+  async getData() {
+    //Activamos el loading y cargamos los datos
+    await this.connectionService.presentLoading(environment.textLoading);
+    //Leemos la lista de deportes
+    await this.trackDataService.getTracks()
+      .toPromise().then(result => {
+        for (let i of result) {
+          let auxiliar = i.sport.split("-");
+          auxiliar.forEach(element => {
+            if (!this.sports.includes(element)) {
+              this.sports.push(element);
+            }
+          });
+        }
+      }).catch(async (e) => {
+        await this.connectionService.showErrorConnection().then(() => {
+          console.log("ERROR MAPS: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });
+
+    //Primero busca en los archivos localos los datos del perfil
+    //En caso de no tener valores guardados, carga el mapa indicando que debe de seleccionar un deporte.    
+    this.getDataLocal();
   }
+
 
   async getDataLocal() {
     //Presenta el texto de carga
-    this.presentLoading(environment.textWait);
+    this.connectionService.presentLoading(environment.textWait);
+    this.connectionService.loading.present();
     setTimeout(async () => {
       //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
@@ -90,21 +97,21 @@ export class MapsPage implements OnInit, AfterContentInit {
         this.showMap();
       }
 
-    //Desactivamos el mensaje de carga
-    this.loading.dismiss();
+      //Desactivamos el mensaje de carga
+      this.connectionService.loading.dismiss();
     }, 4000);
-    
+
   }
 
   //Este metodo es llamado cada vez que se modifica el valor del deporte en el Select del mapa
   changeSport(sport) {
     this.sportCenters = [];
-    this.presentLoading(environment.textLoading);
+    this.connectionService.presentLoading(environment.textLoading);
     setTimeout(() => {
       //Consultamos a la base de datos y obtenemos la ubicación
       // de todos los lugares disponibles para hacer deporte 
       this.sportCenterDataService.getSportCenters()
-        .subscribe(result => {
+        .toPromise().then(result => {
           this.trackDataService.getTracks()
             .subscribe(resultTrack => {
               resultTrack.filter(item => {
@@ -124,8 +131,14 @@ export class MapsPage implements OnInit, AfterContentInit {
               //Recargarmos el mapa con los nuevos datos
               this.showMap();
             });
-        });
-      this.loading.dismiss();
+        }).catch(async (e) => {
+          await this.connectionService.showErrorConnection().then(() => {
+            console.log("ERROR MAPS: " + e.message);
+            //Una vez finaliza la muestra del error, vuelve a intentar cargar
+            this.getData();
+          });
+        });;
+      this.connectionService.loading.dismiss();
     }, 1500);
 
   }
@@ -133,7 +146,7 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   //Métodos necesarios para visualizar el mapa correctamente
   showMap() {
-    
+
     this.geolocation.getCurrentPosition().then((resp) => {
       this.latitude_ubication = resp.coords.latitude;
       this.longitude_ubication = resp.coords.longitude;
@@ -179,9 +192,11 @@ export class MapsPage implements OnInit, AfterContentInit {
       if (this.sportCenters.length != 0) {
         this.addMarkersToMap(this.sportCenters);   //Añadimos las marcas de posición de los lugares
       }
-    }).catch((error) => {
-      console.log(environment.errorLocation, error);
-    });
+    }).catch(async (e) => {
+      await this.connectionService.showErrorConnection().then(() => {
+        console.log("ERROR MAPS: " + e.message);
+      });
+    });;
 
     //Una vez finalizada la carga, si no ha encontrado ningún pabellón, se notifica al usuario de ello.
     if (this.sportCenters.length == 0 && this.sport != null) {
