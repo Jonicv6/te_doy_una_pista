@@ -6,6 +6,7 @@ import { config } from "process";
 
 export const environment = {
   production: true,
+  version: "1.0.1",
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   /*firebaseConfig: {
@@ -60,6 +61,7 @@ export const environment = {
   hour: "hora",
   reserver: "reservar",
   reserveName: "Nombre de la Reserva",
+  reserveEmail: "Correo de la Reserva",
   yourName: "Su nombre",
   back: "Volver",
   titleApp: "¿Te doy una pista?",
@@ -93,7 +95,8 @@ export const environment = {
   titleSaveProfile: "Datos Guardados",
   titleSaveProfileError: "Datos Erróneos",
   titleErrorComment: "Comentario erroneo", 
-  titleSuccessComment: "Comentario realizado", 
+  titleSuccessComment: "Comentario realizado",
+  titleErrorConnection: "Error de conexión",
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
@@ -103,6 +106,7 @@ export const environment = {
   //Botones SweetAlert
   buttonConfirmDelete: "Sí, borralo.",
   buttonCancelDelete: "No lo borres",
+  buttonRetry: "Reintentar",
 
   //Mensajes 
   textWait: "Espere por favor",
@@ -141,6 +145,7 @@ export const environment = {
   errorSelectDay: "Debe seleccionar primero una pista.",
   errorSaveProfile: "Debe de cumplimentar los datos correctamente",  
   errorComment: "Faltan datos por completar",
+  errorConnection: "No se ha recibido respuesta del servidor",
 
   //Mensajes de Error de Validación
   errorNameLength: "El nombre debe tener una longitud minima de 2 caracteres",
