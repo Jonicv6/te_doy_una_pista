@@ -117,9 +117,11 @@ export class ReservePage implements OnInit {
   }
 
   commentInfoMeter(reserve) {
-    this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter).toPromise().then(sportcenterWeather => {
+    this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter)
+    .toPromise().then(sportcenterWeather => {
       let request = this.OpenMeteoAPI.getWeatherWithCoord(sportcenterWeather.latitude, sportcenterWeather.longitude,
-        reserve.date, reserve.hour).toPromise().then(
+        reserve.date, reserve.hour)
+        .toPromise().then(
           resultWeather => {
 
             //console.log(resultWeather);
@@ -267,7 +269,15 @@ export class ReservePage implements OnInit {
             //console.log(this.Json_EditWeather);
             this.presentModalWeather();
           }
-        );
+        ).catch(async (e) => {
+          await this.sweetAlertService.showErrorConnection().then(() => {
+            console.log("ERROR MODALWEATHER: " + e.message);
+          });
+        });
+    }).catch(async (e) => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        console.log("ERROR GETSPORTCENTER ID: " + e.message);
+      });
     });
   }
 
