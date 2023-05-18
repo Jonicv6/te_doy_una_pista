@@ -16,8 +16,8 @@ import { WeatherAPI } from 'src/models/jsonWeather';
 import { ModalWeather } from './modals/modalWeather';
 import { ModalComment } from './modals/modalComment';
 import { CommentDataService } from 'src/app/services/comment-data.service';
-import { Comment } from 'src/models/comment';
 import { Reserve } from 'src/models/reserve';
+import { SweetAlertService } from 'src/app/services/sweetAlert.service';
 
 
 @Component({
@@ -46,7 +46,8 @@ export class ReservePage implements OnInit {
     private OpenMeteoAPI: OpenMeteoAPI,
     private datepipe: DatePipe,
     public modalController: ModalController,
-    private commentDataService: CommentDataService) {
+    private commentDataService: CommentDataService,
+    private sweetAlertService: SweetAlertService) {
     this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
   }
 
@@ -91,12 +92,8 @@ export class ReservePage implements OnInit {
           //Borramos la reserva de la base de datos
           this.reserveDataService.deleteReserve(reserve).subscribe(r => {
             console.log(r);
-            Swal.fire({
-              title: this.env.titleDeleted,
-              text: this.env.successReserveDeleted,
-              icon: 'success',
-              heightAuto: false
-            })
+
+            this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success');
           });
           this.getDataLocal();
         }
@@ -110,12 +107,8 @@ export class ReservePage implements OnInit {
           //Borramos la reserva de la base de datos
           this.reserveDataService.deleteReserve(reserve).subscribe(r => {
             console.log(r);
-            Swal.fire({
-              title: this.env.titleDeleted,
-              text: this.env.successReserveDeleted,
-              icon: 'success',
-              heightAuto: false
-            })
+
+            this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success');
           });
           this.getDataLocal();
         }
@@ -303,7 +296,7 @@ export class ReservePage implements OnInit {
 
   }
 
-  async presentModalComment(reserve:Reserve) {
+  async presentModalComment(reserve: Reserve) {
     //Preparamos el modal, indicando la clase CSS y esperamos al cierre de esta para recoger los datos.
     const modal = await this.modalController.create({
       component: ModalComment,
@@ -318,15 +311,9 @@ export class ReservePage implements OnInit {
       if (dataReturned.data.dismissed !== true) {
         console.log(dataReturned);
         //Verificamos que los datos devueltos del Modal no sean nulos.
-        if (dataReturned.data.comment==null || dataReturned.data.score == null){
-          Swal.fire({
-            title: this.env.titleErrorComment,
-            text: this.env.errorComment,
-            icon: 'error',
-            heightAuto: false
-          })
-
-        }else {
+        if (dataReturned.data.comment == null || dataReturned.data.score == null) {
+          this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
+        } else {
           //Una vez verificados, lo guardamos en la base de datos.
           let comment = <any>{
             "track": reserve.track.idTrack,
@@ -337,15 +324,10 @@ export class ReservePage implements OnInit {
           }
           console.log(comment);
           this.commentDataService.createComment(comment).subscribe(r => {
-            let resultado = <any> r;
+            let resultado = <any>r;
             console.log(resultado.Status);
-            if(resultado.Status == "Comment Saved"){
-              Swal.fire({
-                title: this.env.titleSuccessComment,
-                text: this.env.successComment,
-                icon: 'success',
-                heightAuto: false
-              })
+            if (resultado.Status == "Comment Saved") {
+              this.sweetAlertService.showAlert(this.env.titleSuccessComment, this.env.successComment, 'success');
             }
           });
         }

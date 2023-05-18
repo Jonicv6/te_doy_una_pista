@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ɵɵNgOnChangesFeature } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { SendParamsService } from 'src/app/services/send-params.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
@@ -8,20 +8,18 @@ import { CommentDataService } from 'src/app/services/comment-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
 import { Track } from 'src/models/track';
-import { DatePipe, UpperCasePipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { Reserve } from 'src/models/reserve';
 import Swal from 'sweetalert2';
 import { ReserveLocal } from 'src/models/reserveLocal';
-import { threadId } from 'worker_threads';
 import { Hour } from 'src/models/hours';
-import { LoadingController } from '@ionic/angular';
-import { getElement } from 'devextreme-angular';
 import { Comment } from 'src/models/comment';
 import { EmailService } from 'src/app/services/email.service';
 import { Email } from 'src/models/email';
+import { SweetAlertService } from 'src/app/services/sweetAlert.service';
 
 
-//@Input() sportCenter:any;
+// @Input() sportCenter:any;
 @Component({
   selector: 'app-forms',
   templateUrl: './forms.page.html',
@@ -44,7 +42,6 @@ export class FormsPage implements OnInit {
   nameReserve: string = undefined;
   emailReserve: string = undefined;
   emailReserveTEMP: string = undefined;
-  loading: any;
   closeComment: boolean = true;
   listComments: Comment[] = [];
   listCommentsEmpty: boolean = false;
@@ -57,8 +54,8 @@ export class FormsPage implements OnInit {
     private reserveDataService: ReserveDataService,
     private commentDataService: CommentDataService,
     private datepipe: DatePipe,
-    private loadingCtrl: LoadingController,
-    private emailService: EmailService) {
+    private emailService: EmailService,
+    private sweetAlertService: SweetAlertService) {
 
   }
 
@@ -67,42 +64,44 @@ export class FormsPage implements OnInit {
     this.localData();
   }
 
-  //Se borra el cache de la vista cuando pasa a activa
-  //Asi el formulario este vacio al entrar en el caso de haber hecho una reserva
-  //en esa misma pista
+  // Se borra el cache de la vista cuando pasa a activa
+  // Asi el formulario este vacio al entrar en el caso de haber hecho una reserva
+  // en esa misma pista
   ionViewWillEnter() {
     this.getData();
     this.localData();
   }
 
+  // Obtiene los datos necesarios para mostrar en el formulario
   async getData() {
-    //Activamos el loading y cargamos los datos
-    await this.presentLoading(environment.textLoading);
-    this.loading.present();
+    // Activamos el loading y cargamos los datos
+    await this.sweetAlertService.presentLoading(environment.textLoading);
+    this.sweetAlertService.loading.present();
 
-    //Recogemos los datos enviados desde la página Search
+    // Recogemos los datos enviados desde la página Search
     let id = this.activedRoute.snapshot.params['id'];
     this.sport = this.activedRoute.snapshot.params['sport'];
 
-    //Esperamos que devuelva los datos del pabellon
+    // Esperamos que devuelva los datos del pabellon
     await this.sportCenterDataService.getSportCenter(id).toPromise().then(r => {
 
       this.sportCenter = r;
-      //Por fallo en la variable, debo de usar una exclusiva para el titulo
+      // Por fallo en la variable, debo de usar una exclusiva para el titulo
       this.sportCenterName = this.sportCenter.name;
     });
 
-    //Esperamos que devuelva los datos de las pistas de ese pabellon y ese deporte
+    // Esperamos que devuelva los datos de las pistas de ese pabellon y ese deporte
     await this.trackDataService.getTrackSportCenter(id, this.sport)
       .toPromise().then(result => {
         this.tracks = result;
       });
   }
 
+  // Carga los datos locales guardados del usuario
   async localData() {
 
     setTimeout(async () => {
-      //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
+      // Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
         let dataLocal = await JSON.parse(localStorage.getItem('profile'));
         this.nameReserve = dataLocal['name'];
@@ -110,16 +109,9 @@ export class FormsPage implements OnInit {
       }
 
       //Desactivamos el mensaje de carga
-      this.loading.dismiss();
+      this.sweetAlertService.loading.dismiss();
     }, 1500);
 
-  }
-
-  async presentLoading(message: string) {
-    this.loading = await this.loadingCtrl.create({
-      message,
-      duration: 750
-    });
   }
 
 
@@ -233,13 +225,12 @@ export class FormsPage implements OnInit {
   async checkReserve() {
 
     //Si algún campo está vacio salta el alert
-    if (this.selectTrack == undefined || this.selectDay == undefined || this.selectHour == undefined || this.nameReserve == (undefined || null || "") || this.emailReserveTEMP == (undefined || null || "")) {
-      Swal.fire({
-        title: this.env.titleErrorDataReserve,
-        text: this.env.errorDataReserve,
-        icon: 'error',
-        heightAuto: false
-      })
+    if (this.selectTrack == undefined || this.selectDay == undefined || 
+      this.selectHour == undefined || this.nameReserve == (undefined || null || "") ||
+      this.emailReserveTEMP == (undefined || null || "")) {
+
+      this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
+      
     } else {
       //Recoge los datos seleccionados
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
@@ -317,24 +308,15 @@ export class FormsPage implements OnInit {
           let log = await this.emailService.sendMail(email);
           console.log(log);
           console.log("DESPUES DE ENVIAR CORREO");
-
-          Swal.fire({
-            title: this.env.titleSuccessReserve,
-            text: this.env.successReserve,
-            icon: 'success',
-            heightAuto: false,
-          });
+          //TODO: En caso de que el envio de error, notificarlo al usuario
+          
+          this.sweetAlertService.showAlert(this.env.titleSuccessReserve, this.env.successReserve, 'success');
           this.route.navigateByUrl('tabs/reserve');
         }
         );
       } else {
         //Mostramos error al realizar la reserva
-        Swal.fire({
-          title: this.env.titleErrorReserve,
-          text: this.env.errorReserve,
-          icon: 'error',
-          heightAuto: false
-        })
+        this.sweetAlertService.showAlert(this.env.titleErrorReserve,this.env.errorReserve,'error')
       }
     }
   }
@@ -435,8 +417,6 @@ export class FormsPage implements OnInit {
     } else {
       this.listCommentsEmpty = true;
     }
-
-
 
     //console.log(result);
     //console.log(this.selectTrack);

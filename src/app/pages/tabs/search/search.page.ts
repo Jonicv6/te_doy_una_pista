@@ -4,8 +4,7 @@ import { SportCenterDataService } from 'src/app/services/sport-center-data.servi
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
 import { SportCenter } from 'src/models/sportcenter';
-import Swal from 'sweetalert2';
-import { ConnectionService } from 'src/app/services/connection.service';
+import { SweetAlertService } from 'src/app/services/sweetAlert.service';
 
 @Component({
   selector: 'app-search',
@@ -29,7 +28,7 @@ export class SearchPage {
     public navCtrl: NavController,
     private sportCenterDataService: SportCenterDataService,
     private trackDataService: TrackDataService,
-    private connectionService: ConnectionService) {
+    private sweetAlertService: SweetAlertService) {
 
   }
 
@@ -40,8 +39,8 @@ export class SearchPage {
   async getData() {
 
     //Activamos el loading y cargamos los datos
-    await this.connectionService.presentLoading(environment.textLoading);
-    this.connectionService.loading.present();
+    await this.sweetAlertService.presentLoading(environment.textLoading);
+    this.sweetAlertService.loading.present();
 
     //Extraemos las ciudad de los SportCenters
     await this.sportCenterDataService.getSportCenters()
@@ -56,7 +55,7 @@ export class SearchPage {
         };
         this.city = this.citys[0];
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETSPORTCENTERS: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
@@ -78,7 +77,7 @@ export class SearchPage {
         this.sport = this.sports[0];
 
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETTRACKS: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
@@ -125,9 +124,9 @@ export class SearchPage {
         }
 
         //Desactivamos el mensaje de carga
-        this.connectionService.loading.dismiss();
+        this.sweetAlertService.loading.dismiss();
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR SEARCH: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.search(city, sport);

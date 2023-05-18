@@ -1,14 +1,9 @@
 import { Component, ViewChild, OnInit, AfterContentInit, ElementRef } from '@angular/core';
 import { SportCenterDataService } from '../../../services/sport-center-data.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { SportCenter } from 'src/models/sportcenter';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { TrackDataService } from 'src/app/services/track-data.service';
-import { getSystemErrorMap } from 'util';
-import { Console } from 'console';
-import { ConnectionService } from 'src/app/services/connection.service';
-import Swal from 'sweetalert2';
+import { SweetAlertService } from 'src/app/services/sweetAlert.service';
 
 declare var google;
 
@@ -36,7 +31,7 @@ export class MapsPage implements OnInit, AfterContentInit {
     private geolocation: Geolocation,
     private sportCenterDataService: SportCenterDataService,
     private trackDataService: TrackDataService,
-    private connectionService: ConnectionService) {
+    private sweetAlertService: SweetAlertService) {
 
   }
 
@@ -55,7 +50,7 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getData() {
     //Activamos el loading y cargamos los datos
-    await this.connectionService.presentLoading(environment.textLoading);
+    await this.sweetAlertService.presentLoading(environment.textLoading);
     //Leemos la lista de deportes
     await this.trackDataService.getTracks()
       .toPromise().then(result => {
@@ -68,7 +63,7 @@ export class MapsPage implements OnInit, AfterContentInit {
           });
         }
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR MAPS: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
@@ -83,8 +78,8 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getDataLocal() {
     //Presenta el texto de carga
-    this.connectionService.presentLoading(environment.textWait);
-    this.connectionService.loading.present();
+    this.sweetAlertService.presentLoading(environment.textWait);
+    this.sweetAlertService.loading.present();
     setTimeout(async () => {
       //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
@@ -98,7 +93,7 @@ export class MapsPage implements OnInit, AfterContentInit {
       }
 
       //Desactivamos el mensaje de carga
-      this.connectionService.loading.dismiss();
+      this.sweetAlertService.loading.dismiss();
     }, 4000);
 
   }
@@ -106,7 +101,7 @@ export class MapsPage implements OnInit, AfterContentInit {
   //Este metodo es llamado cada vez que se modifica el valor del deporte en el Select del mapa
   changeSport(sport) {
     this.sportCenters = [];
-    this.connectionService.presentLoading(environment.textLoading);
+    this.sweetAlertService.presentLoading(environment.textLoading);
     setTimeout(() => {
       //Consultamos a la base de datos y obtenemos la ubicación
       // de todos los lugares disponibles para hacer deporte 
@@ -132,13 +127,13 @@ export class MapsPage implements OnInit, AfterContentInit {
               this.showMap();
             });
         }).catch(async (e) => {
-          await this.connectionService.showErrorConnection().then(() => {
+          await this.sweetAlertService.showErrorConnection().then(() => {
             console.log("ERROR MAPS: " + e.message);
             //Una vez finaliza la muestra del error, vuelve a intentar cargar
             this.getData();
           });
         });;
-      this.connectionService.loading.dismiss();
+      this.sweetAlertService.loading.dismiss();
     }, 1500);
 
   }
@@ -193,7 +188,7 @@ export class MapsPage implements OnInit, AfterContentInit {
         this.addMarkersToMap(this.sportCenters);   //Añadimos las marcas de posición de los lugares
       }
     }).catch(async (e) => {
-      await this.connectionService.showErrorConnection().then(() => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
         console.log("ERROR MAPS: " + e.message);
       });
     });;

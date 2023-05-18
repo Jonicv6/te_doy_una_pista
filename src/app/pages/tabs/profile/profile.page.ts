@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { environment } from 'src/environments/environment';
-import Swal from 'sweetalert2';
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { ConnectionService } from 'src/app/services/connection.service';
+import { SweetAlertService } from 'src/app/services/sweetAlert.service';
 
 @Component({
   selector: 'app-profile',
@@ -21,16 +19,14 @@ export class ProfilePage implements OnInit {
   sport = "";
   citys: any[] = [];
   sports: any[] = [];
-  loading: any;
   profileForm: FormGroup;
   isSubmitted: boolean = false;
 
   constructor(
     private sportCenterDataService: SportCenterDataService,
-    private loadingCtrl: LoadingController,
     private trackDataService: TrackDataService,
     private formBuilder: FormBuilder,
-    private connectionService: ConnectionService
+    private sweetAlertService: SweetAlertService
   ) {
     this.profileForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -46,8 +42,8 @@ export class ProfilePage implements OnInit {
 
   async getData() {
     //Activamos el loading y cargamos los datos
-    await this.connectionService.presentLoading(environment.textLoading);
-    this.connectionService.loading.present();
+    await this.sweetAlertService.presentLoading(environment.textLoading);
+    this.sweetAlertService.loading.present();
 
     //Extraemos las ciudad de los SportCenters
     await this.sportCenterDataService.getSportCenters()
@@ -62,7 +58,7 @@ export class ProfilePage implements OnInit {
         };
         this.city = this.citys[0];
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR PROFILE: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
@@ -82,7 +78,7 @@ export class ProfilePage implements OnInit {
         }
         this.sport = this.sports[0];
       }).catch(async (e) => {
-        await this.connectionService.showErrorConnection().then(() => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR PROFILE: " + e.message);
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
@@ -92,7 +88,7 @@ export class ProfilePage implements OnInit {
     await this.getDataLocal();
 
     //Paramos el loading
-    this.connectionService.loading.dismiss();
+    this.sweetAlertService.loading.dismiss();
   }
 
   get errorControl() {
@@ -104,24 +100,14 @@ export class ProfilePage implements OnInit {
 
     //Indicamos el estado para los mensajes de aviso
     if (!this.profileForm.valid) {
-      Swal.fire({
-        title: this.env.titleSaveProfileError,
-        text: this.env.errorSaveProfile,
-        icon: 'error',
-        heightAuto: false,
-      });
+      this.sweetAlertService.showAlert(this.env.titleSaveProfileError, this.env.errorSaveProfile, 'error');
       return false;
     } else {
       let profile = { name: this.name, email: this.email, city: this.city, sport: this.sport };
 
       localStorage.setItem('profile', JSON.stringify(profile));
 
-      Swal.fire({
-        title: this.env.titleSaveProfile,
-        text: this.env.textSaveProfile,
-        icon: 'success',
-        heightAuto: false,
-      });
+      this.sweetAlertService.showAlert(this.env.titleSaveProfile, this.env.textSaveProfile, 'success');
     }
   }
 
