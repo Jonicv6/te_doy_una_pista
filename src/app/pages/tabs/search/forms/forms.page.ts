@@ -60,8 +60,7 @@ export class FormsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.getData();
-    this.localData();
+    
   }
 
   // Se borra el cache de la vista cuando pasa a activa
@@ -69,7 +68,6 @@ export class FormsPage implements OnInit {
   // en esa misma pista
   ionViewWillEnter() {
     this.getData();
-    this.localData();
   }
 
   // Obtiene los datos necesarios para mostrar en el formulario
@@ -83,18 +81,35 @@ export class FormsPage implements OnInit {
     this.sport = this.activedRoute.snapshot.params['sport'];
 
     // Esperamos que devuelva los datos del pabellon
-    await this.sportCenterDataService.getSportCenter(id).toPromise().then(r => {
+    await this.sportCenterDataService.getSportCenter(id)
+    .toPromise().then(r => {
 
       this.sportCenter = r;
       // Por fallo en la variable, debo de usar una exclusiva para el titulo
       this.sportCenterName = this.sportCenter.name;
-    });
+
+    }).catch(async (e) => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        console.log("ERROR GETSPORTCENTER: " + e.message);
+        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        this.getData();
+      });
+    });;
 
     // Esperamos que devuelva los datos de las pistas de ese pabellon y ese deporte
     await this.trackDataService.getTrackSportCenter(id, this.sport)
       .toPromise().then(result => {
         this.tracks = result;
+      }).catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETTRACK: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
       });
+    
+      
+    this.localData();
   }
 
   // Carga los datos locales guardados del usuario
@@ -167,12 +182,19 @@ export class FormsPage implements OnInit {
               break;
           }
 
-          await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, formatDate, typeTrackIntersection).toPromise().then(result => {
+          await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, formatDate, typeTrackIntersection)
+          .toPromise().then(result => {
             //Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
             for (let r in result) {
               hoursReserveTrackIntersection.push(result[r].hour.split(":")[0]);
             }
-          });
+          }).catch(async (e) => {
+            await this.sweetAlertService.showErrorConnection().then(() => {
+              console.log("ERROR GETHOURRESERVE: " + e.message);
+              //Una vez finaliza la muestra del error, vuelve a intentar cargar
+              this.getData();
+            });
+          });;
 
           this.hoursFree = []  //Reiniciamos la variable
           //Rellenamos la variable hours con una diferencia minima de dos horas
@@ -340,7 +362,8 @@ export class FormsPage implements OnInit {
     let TrackReserved = [];
 
     // Comprobamos si existe una reserva a la misma hora en una pista que interseccione con la seleccionada
-    await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, reserve.date, typeTrackIntersection).toPromise().then(result => {
+    await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, reserve.date, typeTrackIntersection)
+    .toPromise().then(result => {
       let resultFilter = result.filter(function (filterReserve) {
         if (filterReserve.hour === reserve.hour) {
           return filterReserve.hour;
@@ -351,10 +374,17 @@ export class FormsPage implements OnInit {
         TrackReserved.push(resultFilter);
       }
 
-    });
+    }).catch(async (e) => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        console.log("ERROR GETHOURRESERVE: " + e.message);
+        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        this.getData();
+      });
+    });;
 
     // Comprobamos si existe una reserva a la misma hora en la misma pista y fecha 
-    await this.reserveDataService.getReservesForTrackDate(reserve.track, reserve.date).toPromise().then(result => {
+    await this.reserveDataService.getReservesForTrackDate(reserve.track, reserve.date)
+    .toPromise().then(result => {
 
       let resultFilter = result.filter(function (filterReserve) {
         if (filterReserve.hour === reserve.hour) {
@@ -366,7 +396,13 @@ export class FormsPage implements OnInit {
         TrackReserved.push(resultFilter);
       }
 
-    });
+    }).catch(async (e) => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        console.log("ERROR GETRESERVE: " + e.message);
+        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        this.getData();
+      });
+    });;
 
     // Si no hay ninguna pista que interseccione a esa hora o la misma pista esté ocupada a esa hora, permite reservarla
     if (TrackReserved.length != 0) {
@@ -398,8 +434,19 @@ export class FormsPage implements OnInit {
 
   // Metodo usado para cargar y filtrar las opiniones
   async loadComment() {
-    this.listComments = [];
-    this.listComments = await this.commentDataService.getComments(this.selectTrack).toPromise(); //.then((result: Comment[]) => {
+    this.listComments = [];    
+    this.listCommentsEmpty = true;
+    this.listComments = await this.commentDataService.getComments(this.selectTrack)
+    .toPromise()
+    .catch(async (e) => {
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        console.log("ERROR GETCOMMENTS: " + e.message);
+        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        this.getData();
+      });
+    });; 
+    
+    //.then((result: Comment[]) => {
     //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
     //result.forEach( comment => {
     // console.log(comment);
