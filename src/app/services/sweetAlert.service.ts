@@ -6,13 +6,32 @@ import Swal from 'sweetalert2';
 @Injectable({
   providedIn: 'root'
 })
-export class ConnectionService {
+export class SweetAlertService {
 
   public loading: any;
   env = environment;
 
   constructor(
     private loadingCtrl: LoadingController) { }
+
+  public async showAlert(titleAlert, textAlert, typeAlert): Promise<boolean> {
+    this.loading.dismiss();
+    return new Promise<boolean>((resolve) => {
+      Swal.fire({
+        title: titleAlert,
+        text: textAlert,
+        icon: typeAlert,
+        heightAuto: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
+  }
+
 
   public async showErrorConnection(): Promise<boolean> {
     this.loading.dismiss();
