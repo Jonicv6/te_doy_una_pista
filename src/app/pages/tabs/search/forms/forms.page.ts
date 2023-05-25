@@ -60,7 +60,7 @@ export class FormsPage implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
 
   // Se borra el cache de la vista cuando pasa a activa
@@ -82,19 +82,19 @@ export class FormsPage implements OnInit {
 
     // Esperamos que devuelva los datos del pabellon
     await this.sportCenterDataService.getSportCenter(id)
-    .toPromise().then(r => {
+      .toPromise().then(r => {
 
-      this.sportCenter = r;
-      // Por fallo en la variable, debo de usar una exclusiva para el titulo
-      this.sportCenterName = this.sportCenter.name;
+        this.sportCenter = r;
+        // Por fallo en la variable, debo de usar una exclusiva para el titulo
+        this.sportCenterName = this.sportCenter.name;
 
-    }).catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR GETSPORTCENTER: " + e.message);
-        //Una vez finaliza la muestra del error, vuelve a intentar cargar
-        this.getData();
-      });
-    });;
+      }).catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETSPORTCENTER: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });;
 
     // Esperamos que devuelva los datos de las pistas de ese pabellon y ese deporte
     await this.trackDataService.getTrackSportCenter(id, this.sport)
@@ -107,8 +107,8 @@ export class FormsPage implements OnInit {
           this.getData();
         });
       });
-    
-      
+
+
     this.localData();
   }
 
@@ -183,18 +183,18 @@ export class FormsPage implements OnInit {
           }
 
           await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, formatDate, typeTrackIntersection)
-          .toPromise().then(result => {
-            //Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
-            for (let r in result) {
-              hoursReserveTrackIntersection.push(result[r].hour.split(":")[0]);
-            }
-          }).catch(async (e) => {
-            await this.sweetAlertService.showErrorConnection().then(() => {
-              console.log("ERROR GETHOURRESERVE: " + e.message);
-              //Una vez finaliza la muestra del error, vuelve a intentar cargar
-              this.getData();
-            });
-          });;
+            .toPromise().then(result => {
+              //Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
+              for (let r in result) {
+                hoursReserveTrackIntersection.push(result[r].hour.split(":")[0]);
+              }
+            }).catch(async (e) => {
+              await this.sweetAlertService.showErrorConnection().then(() => {
+                console.log("ERROR GETHOURRESERVE: " + e.message);
+                //Una vez finaliza la muestra del error, vuelve a intentar cargar
+                this.getData();
+              });
+            });;
 
           this.hoursFree = []  //Reiniciamos la variable
           //Rellenamos la variable hours con una diferencia minima de dos horas
@@ -204,7 +204,8 @@ export class FormsPage implements OnInit {
             //Rellenamos las horas libres segun si es el dia seleccionado o no
             //Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
             //Ni en las pistas que interseccionen
-            if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) && (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection.length == 0)) {
+            if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) &&
+              (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection.length == 0)) {
               if (Number.parseInt(hourElement.hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
                 this.hoursFree.push(hourElement);
               }
@@ -245,14 +246,17 @@ export class FormsPage implements OnInit {
   }
 
   async checkReserve() {
-
+    console.log("TEMPORAL: "+this.emailReserveTEMP);
+    console.log(this.emailReserveTEMP==undefined);
     //Si algún campo está vacio salta el alert
-    if (this.selectTrack == undefined || this.selectDay == undefined || 
-      this.selectHour == undefined || this.nameReserve == (undefined || null || "") ||
-      this.emailReserveTEMP == (undefined || null || "")) {
+    if (this.selectTrack == undefined || 
+      this.selectDay == undefined ||
+      this.selectHour == undefined || 
+      this.nameReserve == (undefined || null) || this.nameReserve === "" ||
+      this.emailReserveTEMP == (undefined || null) || this.emailReserveTEMP == "") {
 
       this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
-      
+
     } else {
       //Recoge los datos seleccionados
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
@@ -273,11 +277,14 @@ export class FormsPage implements OnInit {
           }
 
           //Creamos la variable que guardaremos en local, con el id de la reserva creada
-          let reserveLocal = <ReserveLocal>{ idReserve: r['idReserve'], sportCenter: this.sportCenter, track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
+          let reserveLocal = <ReserveLocal>{
+            idReserve: r['idReserve'], sportCenter: this.sportCenter,
+            track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve
+          };
           listReserveLocal.push(reserveLocal);
           localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
           console.log(this.emailReserveTEMP);
-          if(this.emailReserve==undefined){
+          if (this.emailReserve == undefined) {
             this.emailReserve = this.emailReserveTEMP;
           }
 
@@ -328,31 +335,31 @@ export class FormsPage implements OnInit {
           }
           console.log("ANTES DE ENVIAR CORREO");
           let log = await this.emailService.sendMail(email)
-          .toPromise().then((e)=>{
-            console.log(e);
-            console.log("CORREO ENVIADO");
-          })
-          .finally(()=>{
-            console.log("CORREO FINALIZADO");
-          })
-          .catch(async (e) => {
-            await this.sweetAlertService.showErrorConnection().then(() => {
-              console.log("ERROR SENDEMAIL: " + e.message);
-              //Una vez finaliza la muestra del error, vuelve a intentar cargar
-              this.getData();
-            });
-          });;
+            .toPromise().then((e) => {
+              console.log(e);
+              console.log("CORREO ENVIADO");
+            })
+            .finally(() => {
+              console.log("CORREO FINALIZADO");
+            })
+            .catch(async (e) => {
+              await this.sweetAlertService.showErrorConnection().then(() => {
+                console.log("ERROR SENDEMAIL: " + e.message);
+                //Una vez finaliza la muestra del error, vuelve a intentar cargar
+                this.getData();
+              });
+            });;
           console.log(log);
           console.log("DESPUES DE ENVIAR CORREO");
           //TODO: En caso de que el envio de error, notificarlo al usuario
-          
+
           this.sweetAlertService.showAlert(this.env.titleSuccessReserve, this.env.successReserve, 'success');
           this.route.navigateByUrl('tabs/reserve');
         }
         );
       } else {
         //Mostramos error al realizar la reserva
-        this.sweetAlertService.showAlert(this.env.titleErrorReserve,this.env.errorReserve,'error')
+        this.sweetAlertService.showAlert(this.env.titleErrorReserve, this.env.errorReserve, 'error')
       }
     }
   }
@@ -377,46 +384,46 @@ export class FormsPage implements OnInit {
 
     // Comprobamos si existe una reserva a la misma hora en una pista que interseccione con la seleccionada
     await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, reserve.date, typeTrackIntersection)
-    .toPromise().then(result => {
-      let resultFilter = result.filter(function (filterReserve) {
-        if (filterReserve.hour === reserve.hour) {
-          return filterReserve.hour;
+      .toPromise().then(result => {
+        let resultFilter = result.filter(function (filterReserve) {
+          if (filterReserve.hour === reserve.hour) {
+            return filterReserve.hour;
+          }
+        });
+
+        if (resultFilter.length != 0) {
+          TrackReserved.push(resultFilter);
         }
-      });
 
-      if (resultFilter.length != 0) {
-        TrackReserved.push(resultFilter);
-      }
-
-    }).catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR GETHOURRESERVE: " + e.message);
-        //Una vez finaliza la muestra del error, vuelve a intentar cargar
-        this.getData();
-      });
-    });;
+      }).catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETHOURRESERVE: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });;
 
     // Comprobamos si existe una reserva a la misma hora en la misma pista y fecha 
     await this.reserveDataService.getReservesForTrackDate(reserve.track, reserve.date)
-    .toPromise().then(result => {
+      .toPromise().then(result => {
 
-      let resultFilter = result.filter(function (filterReserve) {
-        if (filterReserve.hour === reserve.hour) {
-          return filterReserve.hour;
+        let resultFilter = result.filter(function (filterReserve) {
+          if (filterReserve.hour === reserve.hour) {
+            return filterReserve.hour;
+          }
+        });
+
+        if (resultFilter.length != 0) {
+          TrackReserved.push(resultFilter);
         }
-      });
 
-      if (resultFilter.length != 0) {
-        TrackReserved.push(resultFilter);
-      }
-
-    }).catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR GETRESERVE: " + e.message);
-        //Una vez finaliza la muestra del error, vuelve a intentar cargar
-        this.getData();
-      });
-    });;
+      }).catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETRESERVE: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });;
 
     // Si no hay ninguna pista que interseccione a esa hora o la misma pista esté ocupada a esa hora, permite reservarla
     if (TrackReserved.length != 0) {
@@ -448,18 +455,18 @@ export class FormsPage implements OnInit {
 
   // Metodo usado para cargar y filtrar las opiniones
   async loadComment() {
-    this.listComments = [];    
+    this.listComments = [];
     this.listCommentsEmpty = true;
     this.listComments = await this.commentDataService.getComments(this.selectTrack)
-    .toPromise()
-    .catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR GETCOMMENTS: " + e.message);
-        //Una vez finaliza la muestra del error, vuelve a intentar cargar
-        this.getData();
-      });
-    });; 
-    
+      .toPromise()
+      .catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETCOMMENTS: " + e.message);
+          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          this.getData();
+        });
+      });;
+
     //.then((result: Comment[]) => {
     //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
     //result.forEach( comment => {
