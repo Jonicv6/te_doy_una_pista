@@ -327,7 +327,21 @@ export class FormsPage implements OnInit {
               "</table>"
           }
           console.log("ANTES DE ENVIAR CORREO");
-          let log = await this.emailService.sendMail(email);
+          let log = await this.emailService.sendMail(email)
+          .toPromise().then((e)=>{
+            console.log(e);
+            console.log("CORREO ENVIADO");
+          })
+          .finally(()=>{
+            console.log("CORREO FINALIZADO");
+          })
+          .catch(async (e) => {
+            await this.sweetAlertService.showErrorConnection().then(() => {
+              console.log("ERROR SENDEMAIL: " + e.message);
+              //Una vez finaliza la muestra del error, vuelve a intentar cargar
+              this.getData();
+            });
+          });;
           console.log(log);
           console.log("DESPUES DE ENVIAR CORREO");
           //TODO: En caso de que el envio de error, notificarlo al usuario
