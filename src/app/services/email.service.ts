@@ -15,11 +15,11 @@ export class EmailService {
     'Content-Type': 'application/json'
   })
 
-  public sendMail(email:Email) {
+  public sendMail(email:Email): Observable<any> {
     
     console.log("ENVIAR CORREO");
     console.log(email);
-    return this.http.post(environment.endPoint + environment.nodemailerPoint, email, { headers: this.httpHeader}).subscribe();
+    return this.http.post(environment.endPoint + environment.nodemailerPoint, email, { headers: this.httpHeader});
   }
 
 }
