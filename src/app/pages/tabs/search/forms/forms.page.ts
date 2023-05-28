@@ -17,6 +17,7 @@ import { Comment } from 'src/models/comment';
 import { EmailService } from 'src/app/services/email.service';
 import { Email } from 'src/models/email';
 import { SweetAlertService } from 'src/app/services/sweetAlert.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 // @Input() sportCenter:any;
@@ -39,12 +40,12 @@ export class FormsPage implements OnInit {
   tracks: Track[] = [];
   selectTrack: Track = undefined;
   selectHour: string = undefined;
-  nameReserve: string = undefined;
   emailReserve: string = undefined;
-  emailReserveTEMP: string = undefined;
+  nameReserve: string = undefined;
   closeComment: boolean = true;
   listComments: Comment[] = [];
   listCommentsEmpty: boolean = false;
+  reserveForm: FormGroup;
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
@@ -55,7 +56,14 @@ export class FormsPage implements OnInit {
     private commentDataService: CommentDataService,
     private datepipe: DatePipe,
     private emailService: EmailService,
-    private sweetAlertService: SweetAlertService) {
+    private sweetAlertService: SweetAlertService,
+    private formBuilder: FormBuilder) {
+
+    // Validamos el nombre y el email (en caso de que sea necesario)
+    this.reserveForm = this.formBuilder.group({
+      nameReserve: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^(?!\\s)[a-zA-Z\\s]+$')]],
+      emailReserve: ['', [Validators.required, Validators.pattern('^([a-zA-Z0-9_\\-\\,]+)@([a-zA-Z0-9_\\-\\,]{2,})\\.([a-zA-Z]{2,})$')]]
+    })
 
   }
 
@@ -246,121 +254,125 @@ export class FormsPage implements OnInit {
   }
 
   async checkReserve() {
-    console.log("TEMPORAL: "+this.emailReserveTEMP);
-    console.log(this.emailReserveTEMP==undefined);
-    //Si algún campo está vacio salta el alert
-    if (this.selectTrack == undefined || 
-      this.selectDay == undefined ||
-      this.selectHour == undefined || 
-      this.nameReserve == (undefined || null) || this.nameReserve === "" ||
-      this.emailReserveTEMP == (undefined || null) || this.emailReserveTEMP == "") {
+    
+    try {
+      this.sweetAlertService.presentLoading(this.env.textSendEmail);
 
-      this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
+      //Si algún campo está vacio salta el alert
+      if (this.selectTrack == undefined ||
+        this.selectDay == undefined ||
+        this.selectHour == undefined ||
+        (!this.reserveForm.valid && this.emailReserve == undefined)) {
 
-    } else {
-      //Recoge los datos seleccionados
-      let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
+        this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
 
-      //Creamos la variable Reserva
-      let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
+      } else if (!this.reserveForm.valid && this.emailReserve != undefined) {
+        //Recoge los datos seleccionados
+        let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
-      //Comprobamos si la pista esta disponible antes de guardarla
-      let reserveAvailable = await this.checkDateReserveEmpty(reserve);
+        //Creamos la variable Reserva
+        let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
 
-      if (reserveAvailable) {
-        //Creamos la reserva en la base de datos
-        this.reserveDataService.createReserve(reserve).subscribe(async r => {
+        //Comprobamos si la pista esta disponible antes de guardarla
+        let reserveAvailable = await this.checkDateReserveEmpty(reserve);
 
-          let listReserveLocal: ReserveLocal[] = [];
-          if (JSON.parse(localStorage.getItem('reserves')) != null) {
-            listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
-          }
+        if (reserveAvailable) {
+          //Creamos la reserva en la base de datos
+          this.reserveDataService.createReserve(reserve).subscribe(async r => {
 
-          //Creamos la variable que guardaremos en local, con el id de la reserva creada
-          let reserveLocal = <ReserveLocal>{
-            idReserve: r['idReserve'], sportCenter: this.sportCenter,
-            track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve
-          };
-          listReserveLocal.push(reserveLocal);
-          localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-          console.log(this.emailReserveTEMP);
-          if (this.emailReserve == undefined) {
-            this.emailReserve = this.emailReserveTEMP;
-          }
+            let listReserveLocal: ReserveLocal[] = [];
+            if (JSON.parse(localStorage.getItem('reserves')) != null) {
+              listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
+            }
 
-          let email: Email = {
-            from: "Nueva Reserva - Tedoyunapista",
-            to: this.emailReserve,
-            subject: "Nueva reserva realizada",
-            text: "Se ha realizado una nueva reserva",
-            html: "<table border='1'>" +
-              "<caption>DATOS DE LA RESERVA</caption>" +
-              "<tr>" +
-              "<td>" + environment.sportcenter.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + reserveLocal.sportCenter.name +
-              "</td>" +
-              "</tr>" +
-              "<tr>" +
-              "<td>" + environment.track.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + reserveLocal.track.name +
-              "</td>" +
-              "</tr>" +
-              "<tr>" +
-              "<td>" + environment.date.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + reserveLocal.date +
-              "</td>" +
-              "</tr>" +
-              "<tr>" +
-              "<td>" + environment.hour.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + reserveLocal.hour +
-              "</td>" +
-              "</tr>" +
-              "<tr>" +
-              "<td>" + environment.reserveName.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + reserveLocal.user +
-              "</td>" +
-              "</tr>" +
-              "<tr>" +
-              "<td>" + environment.titleUbication.toUpperCase().toString() +
-              "</td>" +
-              "<td>" + "https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude +
-              "</td>" +
-              "</tr>" +
-              "</table>"
-          }
-          console.log("ANTES DE ENVIAR CORREO");
-          let log = await this.emailService.sendMail(email)
-            .toPromise().then((e) => {
-              console.log(e);
-              console.log("CORREO ENVIADO");
-            })
-            .finally(() => {
-              console.log("CORREO FINALIZADO");
-            })
-            .catch(async (e) => {
-              await this.sweetAlertService.showErrorConnection().then(() => {
-                console.log("ERROR SENDEMAIL: " + e.message);
-                //Una vez finaliza la muestra del error, vuelve a intentar cargar
-                this.getData();
+            //Creamos la variable que guardaremos en local, con el id de la reserva creada
+            let reserveLocal = <ReserveLocal>{
+              idReserve: r['idReserve'], sportCenter: this.sportCenter,
+              track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve
+            };
+            listReserveLocal.push(reserveLocal);
+            localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
+
+
+            let email: Email = {
+              from: "Nueva Reserva - Tedoyunapista",
+              to: this.emailReserve,
+              subject: "Nueva reserva realizada",
+              text: "Se ha realizado una nueva reserva",
+              html: "<table border='1'>" +
+                "<caption>DATOS DE LA RESERVA</caption>" +
+                "<tr>" +
+                "<td>" + environment.sportcenter.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + reserveLocal.sportCenter.name +
+                "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>" + environment.track.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + reserveLocal.track.name +
+                "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>" + environment.date.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + reserveLocal.date +
+                "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>" + environment.hour.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + reserveLocal.hour +
+                "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>" + environment.reserveName.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + reserveLocal.user +
+                "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td>" + environment.titleUbication.toUpperCase().toString() +
+                "</td>" +
+                "<td>" + "<a href=\"https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude + "\">" + this.env.titleUbication + "</a>" +
+                "</td>" +
+                "</tr>" +
+                "</table>"
+            }
+            console.log("ANTES DE ENVIAR CORREO");
+            await this.emailService.sendMail(email).toPromise()
+              .then((e) => {
+                console.log(e)
+              })
+              .finally(() => {
+
+                //console.log("CORREO FINALIZADO");
+                this.sweetAlertService.loading.dismiss();
+                this.sweetAlertService.showAlert(this.env.titleSuccessReserve, this.env.successReserve, 'success')
+                  .then(() => {
+                    this.route.navigateByUrl('tabs/reserve');
+                  });
+
+              })
+              .catch(async (e) => {
+                throw e;
               });
-            });;
-          console.log(log);
-          console.log("DESPUES DE ENVIAR CORREO");
-          //TODO: En caso de que el envio de error, notificarlo al usuario
-
-          this.sweetAlertService.showAlert(this.env.titleSuccessReserve, this.env.successReserve, 'success');
-          this.route.navigateByUrl('tabs/reserve');
+          }
+          );
+        } else {
+          this.sweetAlertService.loading.dismiss();
+          //Mostramos error al realizar la reserva
+          this.sweetAlertService.showAlert(this.env.titleErrorReserve, this.env.errorReserve, 'error')
         }
-        );
-      } else {
-        //Mostramos error al realizar la reserva
-        this.sweetAlertService.showAlert(this.env.titleErrorReserve, this.env.errorReserve, 'error')
       }
+    } catch (error) {
+      
+      this.sweetAlertService.loading.dismiss();
+      await this.sweetAlertService.showErrorConnection().then(() => {
+        //console.log("ERROR SENDEMAIL: " + e.message);
+        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        this.getData();
+      });
     }
   }
 
@@ -500,6 +512,11 @@ export class FormsPage implements OnInit {
     let comparativeA = new Date(Number(dateA[2]), Number(dateA[1]), Number(dateA[0]));
     let comparativeB = new Date(Number(dateB[2]), Number(dateB[1]), Number(dateB[0]));
     return comparativeB.getTime() - comparativeA.getTime();
+  }
+
+  // Controlador de errores (Validador de datos)
+  get errorControl() {
+    return this.reserveForm.controls;
   }
 
 }

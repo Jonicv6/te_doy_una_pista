@@ -44,18 +44,57 @@
 
       <br><br><br>
       <div class="nameReserve" [hidden]="hoursEmpty">
-        <ion-label>{{env.reserveName}}</ion-label>
-        <br>
-        <input class="form-control" type="text" [(ngModel)]="nameReserve" placeholder={{env.yourName}}>
-        <ion-label *ngIf="emailReserve==undefined">{{env.reserveEmail}}</ion-label>
-        <br>
-        <input *ngIf="emailReserve==undefined" class="form-control" type="email" [(ngModel)]="emailReserveTEMP" placeholder={{env.titleEmail}}>
+        <form [formGroup]="reserveForm" (ngSubmit)="checkReserve()" novalidate>
+          <ion-list>
+            <ion-item>
+              <ion-label position="stacked" class="ion-text-center">
+                <h2>
+                  {{env.reserveName}}
+                </h2>
+              </ion-label>
+              <br>
+              <ion-input type="text" name="name" formControlName="nameReserve" [(ngModel)]="nameReserve"
+                placeholder={{env.yourName}}></ion-input>
+              <!-- Error messages -->
+              <span class="error ion-padding" *ngIf="errorControl.nameReserve.errors?.required">
+                {{env.errorNameRequired }}
+              </span>
+              <span class="error ion-padding" *ngIf="errorControl.nameReserve.errors?.minlength">
+                {{env.errorNameLength }}
+              </span>
+              <span class="error ion-padding" *ngIf="errorControl.nameReserve.errors?.pattern">
+                {{env.errorNameFormat }}
+              </span>
+            </ion-item>
+            <ion-item>
+              <ion-label *ngIf="emailReserve==undefined" position="stacked">
+                <h2>
+                  {{env.reserveEmail}}
+                </h2>
+              </ion-label>
+              <br>
+              <ion-input *ngIf="emailReserve==undefined" type="email" name="email" formControlName="emailReserve"
+                [(ngModel)]="emailReserve" placeholder={{env.titleEmail}}></ion-input>
+
+              <!-- Error messages -->
+              <div *ngIf="emailReserve==undefined">
+                <span class="error ion-padding" *ngIf="errorControl.emailReserve.errors?.required">
+                  {{env.errorEmailRequired }}
+                </span>
+                <span class="error ion-padding" *ngIf="errorControl.emailReserve.errors?.pattern">
+                  {{env.errorEmailFormat }}
+                </span>
+              </div>
+            </ion-item>
+          </ion-list>
+          <div id="blockButton" [hidden]="hoursEmpty">
+            <ion-button id="buttonForms" color="tertiary" type="submit">{{env.reserver| titlecase}}</ion-button>
+          </div>
+
+        </form>
       </div>
     </div>
-    <div id="blockButton" [hidden]="hoursEmpty">
 
-      <ion-button id="buttonForms" color="tertiary" (click)="checkReserve()">{{env.reserver| titlecase}}</ion-button>
-    </div>
     <div id="containerComment" class="moveButtonClose" *ngIf="selectTrack!=undefined">
       <ion-button id="buttonComments" expand="block" color="primary" (click)="readComment()">
         <ion-icon name="caret-up-outline" *ngIf="closeComment"></ion-icon>
