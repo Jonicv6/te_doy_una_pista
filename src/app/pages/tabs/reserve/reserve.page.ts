@@ -84,33 +84,41 @@ export class ReservePage implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.listReservesPending.includes(reserve)) {
-          //Borramos la reserva de la lista
-          let index = this.listReservesPending.indexOf(reserve);
-          this.listReservesPending.splice(index, 1);
-          //Actualizamos la lista en local
-          localStorage.setItem('reserves', JSON.stringify(this.listReservesPending));
           //Borramos la reserva de la base de datos
-          this.reserveDataService.deleteReserve(reserve).subscribe(r => {
-            console.log(r);
+          this.reserveDataService.deleteReserve(reserve).toPromise()
+            .then(r => {
+              console.log(r);
 
-            this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success');
-          });
-          this.getDataLocal();
+              this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success')
+                .then(() => {
+                  //Borramos la reserva de la lista
+                  let index = this.listReservesPending.indexOf(reserve);
+                  this.listReservesPending.splice(index, 1);
+                  //Actualizamos la lista en local
+                  localStorage.setItem('reserves', JSON.stringify(this.listReservesPending));
+
+                  this.getDataLocal();
+                });
+
+
+            })
+            .catch(r => {
+              this.sweetAlertService.showAlert(this.env.titleErrorDeleted, this.env.errorDeleteReserve, 'error')
+                .then(() => {
+                  this.getDataLocal();
+                });
+
+            });
         }
 
         if (this.listReservesCompleted.includes(reserve)) {
-          //Borramos la reserva de la lista
+          //Borramos la reserva de la lista local
           let index = this.listReservesCompleted.indexOf(reserve);
           this.listReservesCompleted.splice(index, 1);
           //Actualizamos la lista en local
           localStorage.setItem('reserves', JSON.stringify(this.listReservesCompleted));
-          //Borramos la reserva de la base de datos
-          this.reserveDataService.deleteReserve(reserve).subscribe(r => {
-            console.log(r);
 
-            this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success');
-          });
-          this.getDataLocal();
+          //La reservas ya completadas no se eliminan de la BBDD
         }
       }
     })
@@ -118,11 +126,11 @@ export class ReservePage implements OnInit {
 
   commentInfoMeter(reserve) {
     this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter)
-    .toPromise().then(sportcenterWeather => {
-      let request = this.OpenMeteoAPI.getWeatherWithCoord(sportcenterWeather.latitude, sportcenterWeather.longitude,
-        reserve.date, reserve.hour)
-        .toPromise().then(
-          resultWeather => {
+      .toPromise()
+      .then(sportcenterWeather => {
+        this.OpenMeteoAPI.getWeatherWithCoord(sportcenterWeather.latitude, sportcenterWeather.longitude,
+          reserve.date, reserve.hour).toPromise()
+          .then(resultWeather => {
 
             //console.log(resultWeather);
             //Personalizamos el JSON para aplicarlos directamente en el modal.
@@ -268,17 +276,16 @@ export class ReservePage implements OnInit {
 
             //console.log(this.Json_EditWeather);
             this.presentModalWeather();
-          }
-        ).catch(async (e) => {
-          await this.sweetAlertService.showErrorConnection().then(() => {
-            console.log("ERROR MODALWEATHER: " + e.message);
+          })
+          .catch((e) => {
+            throw e;
           });
+      })
+      .catch(async (e) => {
+        await this.sweetAlertService.showErrorConnection().then(() => {
+          console.log("ERROR GETSPORTCENTER ID: " + e.message);
         });
-    }).catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR GETSPORTCENTER ID: " + e.message);
       });
-    });
   }
 
   async presentModalWeather() {
@@ -300,12 +307,6 @@ export class ReservePage implements OnInit {
     return;
   }
 
-  commentReserve(reserve) {
-    this.presentModalComment(reserve);
-    //this.navCtrl.navigateForward('tabs/search/forms/' + reserve.sportcenter.idSportCenter + "/" + this.sportAux);
-
-  }
-
   async presentModalComment(reserve: Reserve) {
     //Preparamos el modal, indicando la clase CSS y esperamos al cierre de esta para recoger los datos.
     const modal = await this.modalController.create({
@@ -319,7 +320,7 @@ export class ReservePage implements OnInit {
 
       //Si el usuario vuelve sin realizar el comentario, no se muestra nada
       if (dataReturned.data.dismissed !== true) {
-        console.log(dataReturned);
+        //console.log(dataReturned);
         //Verificamos que los datos devueltos del Modal no sean nulos.
         if (dataReturned.data.comment == null || dataReturned.data.score == null) {
           this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
@@ -333,13 +334,14 @@ export class ReservePage implements OnInit {
             "score": parseInt(dataReturned.data.score)
           }
           console.log(comment);
-          this.commentDataService.createComment(comment).subscribe(r => {
-            let resultado = <any>r;
-            console.log(resultado.Status);
-            if (resultado.Status == "Comment Saved") {
+          this.commentDataService.createComment(comment).toPromise()
+            .then(r => {
               this.sweetAlertService.showAlert(this.env.titleSuccessComment, this.env.successComment, 'success');
-            }
-          });
+            })
+            .catch(r => {
+              this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
+
+            });
         }
       }
     });
@@ -382,10 +384,12 @@ export class ReservePage implements OnInit {
       }
     });
 
+    // Ordenamos la lista de reservas completadas
     this.listReservesCompleted.sort((objA, objB) => {
       return this.orderArrayDate(objA, objB);
     });
 
+    // Ordenamos la lista de reservas pendientes
     this.listReservesPending.sort((objA, objB) => {
       return this.orderArrayDate(objA, objB);
     });
@@ -407,8 +411,6 @@ export class ReservePage implements OnInit {
 
     let hourA = objA.hour.split(':');
     let hourB = objB.hour.split(':');
-
-    console.log()
 
     let comparativeA = new Date(Number(dateA[2]), Number(dateA[1]), Number(dateA[0]), Number(hourA[0]), Number(hourA[1]));
     let comparativeB = new Date(Number(dateB[2]), Number(dateB[1]), Number(dateB[0]), Number(hourB[0]), Number(hourB[1]));
