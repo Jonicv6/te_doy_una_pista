@@ -6,7 +6,7 @@ import { config } from "process";
 
 export const environment = {
   production: true,
-  version: "1.0.3",
+  version: "1.0.4",
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   /*firebaseConfig: {
@@ -97,6 +97,7 @@ export const environment = {
   titleErrorComment: "Comentario erroneo", 
   titleSuccessComment: "Comentario realizado",
   titleErrorConnection: "Error de conexión",
+  titleErrorLocation: "Error en la localización",
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
@@ -112,6 +113,8 @@ export const environment = {
   textWait: "Espere por favor",
   textLoading: "Cargando...",
   textHere: "Usted esta aquí",
+  textSendEmail: "Enviando email...",
+  messageLocationDenied: "No ha aceptado los permisos de localización, configuralos en el apartado de permisos de la app",
 
   //Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
@@ -140,16 +143,17 @@ export const environment = {
 
   //Mensajes de Error 
   errorReserve: "Error en la reserva, seleccione otros datos.",
-  errorLocation: "Error en la localización",
   errorDataReserve: "Rellene todos los datos de la reserva.",
   errorSelectDay: "Debe seleccionar primero una pista.",
   errorSaveProfile: "Debe de cumplimentar los datos correctamente",  
   errorComment: "Faltan datos por completar",
   errorConnection: "No se ha recibido respuesta del servidor",
+  errorLocation: "Debe darnos permisos de localización para usar el mapa",
 
   //Mensajes de Error de Validación
   errorNameLength: "El nombre debe tener una longitud minima de 2 caracteres",
   errorNameRequired: "Nombre es un dato requerido",
+  errorNameFormat: "El Nombre no puede empezar por espacio",
   errorEmailRequired: "Email es un dato requerido",
   errorEmailFormat: "El formato del Email es incorrecto"
 };
