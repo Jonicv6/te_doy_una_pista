@@ -16,7 +16,7 @@ export class ReserveDataService {
     })
   
 
-  public createReserve(reserve:Reserve) {
+  public createReserve(reserve:Reserve): Observable<any> {
     return this.http.post(environment.endPoint + environment.reservePoint, reserve, { headers: this.httpHeader});
   }
 
