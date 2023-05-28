@@ -24,8 +24,10 @@ export class MapsPage implements OnInit, AfterContentInit {
   init: boolean = true;
   sport: any = null;
   env = environment
+  permissionDenied: boolean = false;
 
   @ViewChild('mapElement', { read: ElementRef, static: false }) mapElement: ElementRef;
+
 
   constructor(
     private geolocation: Geolocation,
@@ -50,6 +52,7 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getData() {
     //Activamos el loading y cargamos los datos
+    console.log("GET DATA");
     await this.sweetAlertService.presentLoading(environment.textLoading);
     //Leemos la lista de deportes
     await this.trackDataService.getTracks()
@@ -64,7 +67,10 @@ export class MapsPage implements OnInit, AfterContentInit {
         }
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
+
           console.log("ERROR MAPS: " + e.message);
+
+          this.sweetAlertService.loading.dismiss();
           //Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
@@ -78,8 +84,7 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getDataLocal() {
     //Presenta el texto de carga
-    this.sweetAlertService.presentLoading(environment.textWait);
-    this.sweetAlertService.loading.present();
+    console.log("GET DATALOCAL");
     setTimeout(async () => {
       //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
@@ -93,6 +98,7 @@ export class MapsPage implements OnInit, AfterContentInit {
       }
 
       //Desactivamos el mensaje de carga
+      console.log("GET DATALOCAL-CLOSED");
       this.sweetAlertService.loading.dismiss();
     }, 4000);
 
@@ -101,6 +107,7 @@ export class MapsPage implements OnInit, AfterContentInit {
   //Este metodo es llamado cada vez que se modifica el valor del deporte en el Select del mapa
   changeSport(sport) {
     this.sportCenters = [];
+    console.log("CHANGE SPORT");
     this.sweetAlertService.presentLoading(environment.textLoading);
     setTimeout(() => {
       //Consultamos a la base de datos y obtenemos la ubicación
@@ -133,6 +140,7 @@ export class MapsPage implements OnInit, AfterContentInit {
             this.getData();
           });
         });;
+      console.log("CHANGE SPORT - CLOSED");
       this.sweetAlertService.loading.dismiss();
     }, 1500);
 
@@ -141,7 +149,10 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   //Métodos necesarios para visualizar el mapa correctamente
   showMap() {
+    //Variable que usaremos para controlar el mensaje en pantalla de permisos denegados
+    this.permissionDenied = false;
 
+    console.log("MAPS: ");
     this.geolocation.getCurrentPosition().then((resp) => {
       this.latitude_ubication = resp.coords.latitude;
       this.longitude_ubication = resp.coords.longitude;
@@ -188,17 +199,32 @@ export class MapsPage implements OnInit, AfterContentInit {
         this.addMarkersToMap(this.sportCenters);   //Añadimos las marcas de posición de los lugares
       }
     }).catch(async (e) => {
-      await this.sweetAlertService.showErrorConnection().then(() => {
-        console.log("ERROR MAPS: " + e.message);
-      });
+      switch (e.code) {
+
+        //Code 1 - User denied Geolocation
+        //Code 2 - Network error
+        case 1:
+          await this.sweetAlertService.showAlert(this.env.titleErrorLocation, this.env.errorLocation, "warning");
+          this.permissionDenied = true;
+          break;
+
+        case 2:
+        default:
+          await this.sweetAlertService.showErrorConnection().then(() => {
+            console.log("ERROR MAPS " + "(CODE: " + e.code + ") Message: " + e.message);
+            this.showMap();
+          });
+          break;
+      }
+
     });;
 
     //Una vez finalizada la carga, si no ha encontrado ningún pabellón, se notifica al usuario de ello.
     if (this.sportCenters.length == 0 && this.sport != null) {
-      alert(environment.emptySportCenter);
+      //alert(environment.emptySportCenter);
     } else if (this.sport == null) {
       //Sino tiene ningún deporte selecciona, se notificará al usuario de ello
-      alert(environment.selectSportMap);
+      //alert(environment.selectSportMap);
     }
 
   }
