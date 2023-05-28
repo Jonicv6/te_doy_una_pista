@@ -254,19 +254,21 @@ export class FormsPage implements OnInit {
   }
 
   async checkReserve() {
-    
+
     try {
-      this.sweetAlertService.presentLoading(this.env.textSendEmail);
+      await this.sweetAlertService.presentLoading(this.env.textSendEmail);
+      this.sweetAlertService.loading.present();
 
       //Si algún campo está vacio salta el alert
       if (this.selectTrack == undefined ||
         this.selectDay == undefined ||
         this.selectHour == undefined ||
+        !this.reserveForm.valid ||
         (!this.reserveForm.valid && this.emailReserve == undefined)) {
-
+        this.sweetAlertService.loading.dismiss();
         this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
 
-      } else if (!this.reserveForm.valid && this.emailReserve != undefined) {
+      } else if (this.reserveForm.valid) {
         //Recoge los datos seleccionados
         let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
@@ -292,7 +294,6 @@ export class FormsPage implements OnInit {
             };
             listReserveLocal.push(reserveLocal);
             localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
-
 
             let email: Email = {
               from: "Nueva Reserva - Tedoyunapista",
@@ -366,7 +367,7 @@ export class FormsPage implements OnInit {
         }
       }
     } catch (error) {
-      
+
       this.sweetAlertService.loading.dismiss();
       await this.sweetAlertService.showErrorConnection().then(() => {
         //console.log("ERROR SENDEMAIL: " + e.message);

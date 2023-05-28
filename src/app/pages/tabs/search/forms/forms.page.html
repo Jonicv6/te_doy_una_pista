@@ -67,17 +67,17 @@
               </span>
             </ion-item>
             <ion-item>
-              <ion-label *ngIf="emailReserve==undefined" position="stacked">
+              <ion-label position="stacked">
                 <h2>
                   {{env.reserveEmail}}
                 </h2>
               </ion-label>
               <br>
-              <ion-input *ngIf="emailReserve==undefined" type="email" name="email" formControlName="emailReserve"
+              <ion-input type="email" name="email" formControlName="emailReserve"
                 [(ngModel)]="emailReserve" placeholder={{env.titleEmail}}></ion-input>
 
               <!-- Error messages -->
-              <div *ngIf="emailReserve==undefined">
+              <div>
                 <span class="error ion-padding" *ngIf="errorControl.emailReserve.errors?.required">
                   {{env.errorEmailRequired }}
                 </span>
