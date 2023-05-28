@@ -23,8 +23,7 @@
                         <ion-label position="stacked">
                             <h2>{{env.titleEmail| titlecase}}</h2>
                         </ion-label>
-                        <ion-input type="email" name="email" formControlName="email"
-                            pattern="^([a-zA-Z0-9_\-\,]+)@([a-zA-Z0-9_\-\,]{2,})\.([a-zA-Z]{2,})" [(ngModel)]="email">
+                        <ion-input type="email" name="email" formControlName="email" [(ngModel)]="email">
                         </ion-input>
                         <!-- Error messages -->
                         <span class="error ion-padding" *ngIf="errorControl.email.errors?.required">

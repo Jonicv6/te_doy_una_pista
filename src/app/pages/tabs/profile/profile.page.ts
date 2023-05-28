@@ -30,7 +30,7 @@ export class ProfilePage implements OnInit {
   ) {
     this.profileForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.pattern('^([a-zA-Z0-9_\\-\\,]+)@([a-zA-Z0-9_\\-\\,]{2,})\.([a-zA-Z]{2,})$')]],
+      email: ['', [Validators.required, Validators.pattern('^([a-zA-Z0-9_\\-\\,]+)@([a-zA-Z0-9_\\-\\,]{2,})\\.([a-zA-Z]{2,})$')]],
       city: ['', [Validators.required]],
       sport: ['', [Validators.required]]
     })
