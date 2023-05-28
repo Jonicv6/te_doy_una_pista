@@ -6,7 +6,7 @@ import { config } from "process";
 
 export const environment = {
   production: true,
-  version: "1.0.9",
+  version: "1.0.10",
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   /*firebaseConfig: {
@@ -92,6 +92,7 @@ export const environment = {
   titleErrorSelectDay: "Error Fecha",
   titleDeleteReserve: "¿Está seguro?",
   titleDeleted: "¡Borrado!",
+  titleErrorDeleted: "¡Borrado Fallido!",
   titleSaveProfile: "Datos Guardados",
   titleSaveProfileError: "Datos Erróneos",
   titleErrorComment: "Comentario erroneo", 
@@ -144,6 +145,7 @@ export const environment = {
   //Mensajes de Error 
   errorReserve: "Error en la reserva, seleccione otros datos.",
   errorDataReserve: "Rellene todos los datos de la reserva.",
+  errorDeleteReserve: "Ha ocurrido un error al eliminar la reserva",
   errorSelectDay: "Debe seleccionar primero una pista.",
   errorSaveProfile: "Debe de cumplimentar los datos correctamente",  
   errorComment: "Faltan datos por completar",
