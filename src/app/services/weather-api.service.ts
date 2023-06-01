@@ -8,14 +8,22 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 
-export class OpenMeteoAPI {  
+export class OpenMeteoAPI {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getWeatherWithCoord(lat,long,date,hour): Observable<any> {
+  // Método para obtener el clima con coordenadas, fecha y hora específicas
+  public getWeatherWithCoord(lat, long, date, hour): Observable<any> {
+    // Dividimos la fecha en partes (día, mes, año)
     date = date.split("-");
-    date = date[2]+"-"+date[1]+"-"+date[0]; //Ponemos la fecha en formato YYYY-MM-DD
-    let URI_Request = "latitude="+lat+"&longitude="+long+"&start_date="+date+"&end_date="+date+environment.openMeteoParam;
+
+    // Reorganizamos la fecha en formato YYYY-MM-DD
+    date = date[2] + "-" + date[1] + "-" + date[0];
+
+    // Construimos la URI para la solicitud
+    let URI_Request = "latitude=" + lat + "&longitude=" + long + "&start_date=" + date + "&end_date=" + date + environment.openMeteoParam;
+
+    // Realizamos una solicitud HTTP GET al servidor de OpenMeteo con la URI construida
     return this.httpClient.get(environment.openMeteoURI + URI_Request);
   }
 }

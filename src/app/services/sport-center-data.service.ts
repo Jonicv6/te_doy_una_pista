@@ -18,21 +18,26 @@ export class SportCenterDataService {
     this.sportCenters = data;
   }
 
+  // Método para obtener todos los centros deportivos
   public getSportCenters(): Observable<any> {
     return this.httpClient.get(environment.endPoint + environment.sporcenterPoint);
   }
 
+  // Método privado utilizado para asignar un valor al centro deportivo
   private setSportCenter(data) {
     this._sportCenter = data;
   }
 
+  // Método para obtener un centro deportivo específico por su ID
   public getSportCenter(id): Observable<SportCenter> {
     return this.httpClient.get<SportCenter>(environment.endPoint + environment.sporcenterPoint + id);
   }
 
+  // Método para obtener los centros deportivos de una ciudad y deporte específicos
   public getSportCentersCityAndSport(city, sport): Observable<any> {
     return this.httpClient.get(environment.endPoint + environment.sporcenterPoint + city + "/" + sport);
   }
+
 
 
   /* ------------------------- Constructor IOS/ANDROID ------------------------ */

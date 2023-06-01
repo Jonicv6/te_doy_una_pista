@@ -13,20 +13,24 @@ export class CommentDataService {
 
   constructor(private http: HttpClient) { }
 
-  httpHeader =  new HttpHeaders({
+  httpHeader = new HttpHeaders({
     'Content-Type': 'application/json'
   })
 
+  // Método privado utilizado para asignar un valor al comentario
   private setComment(value: Comment) {
     this._comment = value;
   }
 
-  public getComments(track:Track): Observable<any> {
+  // Método para obtener los comentarios de una pista específica
+  public getComments(track: Track): Observable<any> {
     return this.http.get(environment.endPoint + environment.commentPoint + track.idTrack);
   }
 
-  public createComment(comment:Comment) {
-    return this.http.post(environment.endPoint + environment.commentPoint, comment, { headers: this.httpHeader});
+  // Método para crear un comentario
+  public createComment(comment: Comment) {
+    return this.http.post(environment.endPoint + environment.commentPoint, comment, { headers: this.httpHeader });
   }
+
 
 }

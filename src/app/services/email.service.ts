@@ -15,10 +15,10 @@ export class EmailService {
     'Content-Type': 'application/json'
   })
 
+  // Método para enviar un correo electrónico
   public sendMail(email: Email): Observable<any> {
     try {
-      
-      //console.log(email);
+      // Se realiza una solicitud HTTP POST para enviar el correo electrónico utilizando el objeto "email" y las cabeceras "httpHeader"
       return this.http.post(environment.endPoint + environment.nodemailerPoint, email, { headers: this.httpHeader });
     } catch (error) {
 
