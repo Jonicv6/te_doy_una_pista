@@ -59,6 +59,7 @@ export class ReservePage implements OnInit {
     this.getDataLocal();
   }
 
+  // Funcion de refresco
   doRefresh(event) {
     this.getDataLocal();
     //Cuando finalice la lectura de datos, cancelamos el refresh.
@@ -66,11 +67,14 @@ export class ReservePage implements OnInit {
 
   }
 
+  // Identificador único para cada elemento de una colección en la directiva *cdkVirtualFor
   trackByFn(index, item) {
     return index; // or item.id
   }
 
+  // Funcion encargada de eliminar la reserva
   deleteReserve(reserve) {
+    // Pregunta de seguridad
     Swal.fire({
       title: this.env.titleDeleteReserve,
       text: this.env.textDeleteReserve,
@@ -81,14 +85,19 @@ export class ReservePage implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: this.env.buttonConfirmDelete,
       cancelButtonText: this.env.buttonCancelDelete
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        // En caso afirmativo, abrimos el loading
+
+        await this.sweetAlertService.presentLoading(this.env.textLoading);
+        this.sweetAlertService.loading.present();
+
+        // Si el elemento se encuentra en la lista de pendientes
         if (this.listReservesPending.includes(reserve)) {
           //Borramos la reserva de la base de datos
           this.reserveDataService.deleteReserve(reserve).toPromise()
             .then(r => {
               console.log(r);
-
               this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success')
                 .then(() => {
                   //Borramos la reserva de la lista
@@ -99,8 +108,6 @@ export class ReservePage implements OnInit {
 
                   this.getDataLocal();
                 });
-
-
             })
             .catch(r => {
               this.sweetAlertService.showAlert(this.env.titleErrorDeleted, this.env.errorDeleteReserve, 'error')
@@ -111,23 +118,29 @@ export class ReservePage implements OnInit {
             });
         }
 
+        // Si se encuentra en la lista de completados
+        //La reservas ya completadas no se eliminan de la BBDD
         if (this.listReservesCompleted.includes(reserve)) {
           //Borramos la reserva de la lista local
           let index = this.listReservesCompleted.indexOf(reserve);
           this.listReservesCompleted.splice(index, 1);
           //Actualizamos la lista en local
           localStorage.setItem('reserves', JSON.stringify(this.listReservesCompleted));
-
-          //La reservas ya completadas no se eliminan de la BBDD
+          this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success')
+            .then(() => {
+              this.getDataLocal();
+            });
         }
       }
     })
   }
 
   commentInfoMeter(reserve) {
+    // Recogemos la localizacion del pabellon
     this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter)
       .toPromise()
       .then(sportcenterWeather => {
+        // Consultamos la API de OpenMeteoAPI
         this.OpenMeteoAPI.getWeatherWithCoord(sportcenterWeather.latitude, sportcenterWeather.longitude,
           reserve.date, reserve.hour).toPromise()
           .then(resultWeather => {
@@ -362,9 +375,11 @@ export class ReservePage implements OnInit {
 
       //console.log(reserve.hour.substring(0, 2) + " -  " + this.actualHour.substring(0, 2))
       // Primer filtro, si la reserva es hoy y aún no se ha cumplido la hora y/o minutos
-      if (reserve.date == this.today &&
-        (reserve.hour.substring(0, 2) > this.actualHour.substring(0, 2) ||
-          reserve.hour.substring(0, 2) == this.actualHour.substring(0, 2) && reserve.hour.substring(3, 4) >= this.actualHour.substring(3, 4))) {
+      console.log(this.actualHour);
+      console.log(reserve.hour);
+      if (reserve.date == this.today && (reserve.hour.substring(0,2)>this.actualHour.substring(0, 2))){
+        /*(reserve.hour.substring(0, 2) > (parseInt(this.actualHour.substring(0, 2))-1).toString() ||
+          reserve.hour.substring(0, 2) == this.actualHour.substring(0, 2) && reserve.hour.substring(3, 4) >= this.actualHour.substring(3, 4))) {*/
         reserve.time = 0;
         this.listReservesPending.push(reserve);
       } else if (
