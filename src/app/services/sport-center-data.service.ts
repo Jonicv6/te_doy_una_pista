@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { SportCenter } from '../../models/sportcenter';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Track } from 'src/models/track';
 import { environment } from 'src/environments/environment';
-import { HTTP } from '@ionic-native/http/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +12,7 @@ export class SportCenterDataService {
   private _sportCenter: SportCenter;
 
   /* ----------------------------- Constructor WEB ---------------------------- */
-  
+
   constructor(private httpClient: HttpClient) { }
   private setSportCenters(data) {
     this.sportCenters = data;
@@ -34,8 +32,8 @@ export class SportCenterDataService {
 
   public getSportCentersCityAndSport(city, sport): Observable<any> {
     return this.httpClient.get(environment.endPoint + environment.sporcenterPoint + city + "/" + sport);
-  }  
-  
+  }
+
 
   /* ------------------------- Constructor IOS/ANDROID ------------------------ */
   /*
