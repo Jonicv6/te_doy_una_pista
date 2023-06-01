@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
-import { SendParamsService } from 'src/app/services/send-params.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { TrackDataService } from 'src/app/services/track-data.service';
 import { CommentDataService } from 'src/app/services/comment-data.service';
@@ -49,7 +48,6 @@ export class FormsPage implements OnInit {
 
 
   constructor(private route: Router, private activedRoute: ActivatedRoute,
-    public getParams: SendParamsService,
     private trackDataService: TrackDataService,
     private sportCenterDataService: SportCenterDataService,
     private reserveDataService: ReserveDataService,
