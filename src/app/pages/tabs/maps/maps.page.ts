@@ -52,7 +52,6 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getData() {
     //Activamos el loading y cargamos los datos
-    console.log("GET DATA");
     await this.sweetAlertService.presentLoading(environment.textLoading);
     //Leemos la lista de deportes
     await this.trackDataService.getTracks()
@@ -84,7 +83,6 @@ export class MapsPage implements OnInit, AfterContentInit {
 
   async getDataLocal() {
     //Presenta el texto de carga
-    console.log("GET DATALOCAL");
     setTimeout(async () => {
       //Busca en los archivos locales Profile, donde guardaremos los datos favoritos del usuario
       if (localStorage.getItem('profile') != null) {
@@ -98,7 +96,6 @@ export class MapsPage implements OnInit, AfterContentInit {
       }
 
       //Desactivamos el mensaje de carga
-      console.log("GET DATALOCAL-CLOSED");
       this.sweetAlertService.loading.dismiss();
     }, 4000);
 
@@ -107,7 +104,6 @@ export class MapsPage implements OnInit, AfterContentInit {
   //Este metodo es llamado cada vez que se modifica el valor del deporte en el Select del mapa
   changeSport(sport) {
     this.sportCenters = [];
-    console.log("CHANGE SPORT");
     this.sweetAlertService.presentLoading(environment.textLoading);
     setTimeout(() => {
       //Consultamos a la base de datos y obtenemos la ubicación
@@ -139,8 +135,7 @@ export class MapsPage implements OnInit, AfterContentInit {
             //Una vez finaliza la muestra del error, vuelve a intentar cargar
             this.getData();
           });
-        });;
-      console.log("CHANGE SPORT - CLOSED");
+        });
       this.sweetAlertService.loading.dismiss();
     }, 1500);
 
@@ -152,7 +147,6 @@ export class MapsPage implements OnInit, AfterContentInit {
     //Variable que usaremos para controlar el mensaje en pantalla de permisos denegados
     this.permissionDenied = false;
 
-    console.log("MAPS: ");
     this.geolocation.getCurrentPosition().then((resp) => {
       this.latitude_ubication = resp.coords.latitude;
       this.longitude_ubication = resp.coords.longitude;
