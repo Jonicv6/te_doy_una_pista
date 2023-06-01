@@ -375,8 +375,6 @@ export class ReservePage implements OnInit {
 
       //console.log(reserve.hour.substring(0, 2) + " -  " + this.actualHour.substring(0, 2))
       // Primer filtro, si la reserva es hoy y aún no se ha cumplido la hora y/o minutos
-      console.log(this.actualHour);
-      console.log(reserve.hour);
       if (reserve.date == this.today && (reserve.hour.substring(0,2)>this.actualHour.substring(0, 2))){
         /*(reserve.hour.substring(0, 2) > (parseInt(this.actualHour.substring(0, 2))-1).toString() ||
           reserve.hour.substring(0, 2) == this.actualHour.substring(0, 2) && reserve.hour.substring(3, 4) >= this.actualHour.substring(3, 4))) {*/
