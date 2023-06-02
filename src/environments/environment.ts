@@ -4,10 +4,10 @@
 
 export const environment = {
   production: true,
-  version: "1.3.0",
+  version: "1.3.1",
 
   // Variables Host NodeJS
-  endPoint: "https:// 31.131.183.8:3000",
+  endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
   sporcenterPoint: "/sportcenter/",
   reservePoint: "/reserve/",
@@ -15,7 +15,7 @@ export const environment = {
   nodemailerPoint: "/email/",
 
   // Variables OpenWeatherAPI
-  openMeteoURI:"https:// api.open-meteo.com/v1/forecast?",
+  openMeteoURI:"https://api.open-meteo.com/v1/forecast?",
   openMeteoParam: "&hourly=temperature_2m,precipitation,weathercode&daily=temperature_2m_max,temperature_2m_min,windspeed_10m_max&timezone=auto",
  
   // Variables usadas en el ModalWeather
