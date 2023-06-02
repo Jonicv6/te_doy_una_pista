@@ -2,6 +2,7 @@
     <ion-toolbar>
         <ion-title>{{env.titleModalComment}}</ion-title>
         <ion-buttons slot="end">
+            <!-- Botón de regreso -->
             <ion-button (click)="dismiss()">{{env.back}}</ion-button>
         </ion-buttons>
     </ion-toolbar>
@@ -9,11 +10,14 @@
 <ion-content>
     <div id="box-modal">
         <div id="container">
+            <!-- Modal de comentario -->
             <div id="modalComment">
+                <!-- Texto del comentario -->
                 <ion-textarea id="panelComment" placeholder="{{env.placeHolderComment}}" height="100%" rows="10"
                     maxlength="150" [(ngModel)]="comment"></ion-textarea>
                 <ion-item id="panelScore">
                     <ion-label>{{env.score}}</ion-label>
+                    <!-- Puntuacion de la pista -->
                     <ion-select value="1" multiple="false" placeholder="{{env.selectScore}}" [(ngModel)]="score">
                         <ion-select-option value="1">1</ion-select-option>
                         <ion-select-option value="2">2</ion-select-option>
@@ -23,6 +27,7 @@
                     </ion-select>
                     <ion-icon name="star"></ion-icon>
                 </ion-item>
+                <!-- Boton de envio -->
                 <ion-button (click)="submit()">{{env.buttonComment}}</ion-button>
             </div>
         </div>

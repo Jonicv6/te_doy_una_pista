@@ -4,19 +4,22 @@
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
   <div id="contentButtons">
+    <!-- Pestañas superiores usadas para desplazarnos de una lista a otra -->
     <ion-button (click)="showFuture()" [ngClass]="{'buttonActive': checkReserveFuture}"
       class="buttonsType">Próximas</ion-button>
     <ion-button (click)="showPast()" [ngClass]="{'buttonActive': checkReservePast}"
       class="buttonsType">Realizadas</ion-button>
   </div>
   <div id="contentList">
-
+    <!-- Scroll infinito de la lista Pendiente -->
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
       *ngIf="checkReserveFuture">
+      <!-- En funcion del dia y hora de la reserva, se le asigna una clase CSS distinta -->
       <ion-card class="cardReserve"
         *cdkVirtualFor="let reservePending of listReservesPendingObservable | async ; trackBy: trackByFn" [ngClass]="{'reserveFuture': (reservePending.time == 1), 
    'reserveToday': reservePending.time == 0}">
         <div>
+          <!-- Genera un ion-card por cada reserva -->
           <ion-card-title> {{ reservePending.sportCenter.name }} </ion-card-title>
           <ion-card-content class="dateReserve">
             <h6>{{ reservePending.track.name }}</h6>
@@ -27,6 +30,7 @@
         </div>
 
         <div id="containerButtons">
+          <!-- Añadimos el boton Eliminar e Informacion climatica en la lista de Pendientes -->
           <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
             (click)="deleteReserve(reservePending)">
             <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
@@ -38,18 +42,20 @@
           </ion-button>
         </div>
       </ion-card>
+      <!-- Mensaje en caso de que la lista este vacia -->
       <div class="message" *ngIf="!listReservesPending || listReservesPending.length==0">
         <ion-label> {{env.emptyReserveLocal }} </ion-label>
       </div>
     </cdk-virtual-scroll-viewport>
 
-
+    <!-- Scroll infinito de la lista Completada -->
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
       *ngIf="checkReservePast">
       <ion-card class="cardReserve"
         *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn"
         [ngClass]="{'reservePast': (reserveCompleted.time == -1)}">
         <div>
+          <!-- Se crea un ion-card por cada reserva -->
           <ion-card-title> {{ reserveCompleted.sportCenter.name }} </ion-card-title>
           <ion-card-content id="dateReserve">
             <h6>{{ reserveCompleted.track.name }}</h6>
@@ -60,6 +66,7 @@
         </div>
 
         <div id="containerButtons">
+          <!-- Añadimos el boton Eliminar y Comentar solo en la lista Completada -->
           <ion-button id="buttonDeleteReserve" class="iconsReserve" size="small" expand="block" shape="round"
             (click)="deleteReserve(reserveCompleted)">
             <ion-icon id="iconTrash" slot="icon-only" name="trash"></ion-icon>
@@ -71,12 +78,10 @@
           </ion-button>
         </div>
       </ion-card>
+      <!-- Mensaje en caso de que la lista Completada se encuentre vacia -->
       <div class="message" *ngIf="!listReservesCompleted || listReservesCompleted.length==0">
         <ion-label> {{env.emptyReserveLocal }} </ion-label>
       </div>
     </cdk-virtual-scroll-viewport>
-
-
   </div>
-
 </ion-content>

@@ -1,12 +1,14 @@
 <ion-content>
   <div id="menu-search">
     <div>
+      <!-- Seleccionador de ciudad -->
       <div class="select">
         <ion-label>{{env.city | titlecase}}</ion-label>
         <ion-select interface="popover" *ngIf="citys" [(ngModel)]="city" (ionChange)="search(city,sport)">
           <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
         </ion-select>
       </div>
+      <!-- Seleccionador de deporte -->
       <div class="select">
         <ion-label>{{env.sport | titlecase}}</ion-label>
         <ion-select interface="popover" [(ngModel)]="sport" (ionChange)="search(city,sport)">
@@ -14,17 +16,20 @@
         </ion-select>
       </div>
     </div>
+    <!-- Boton de busqueda -->
     <ion-button id="buttonSearch" expand="full" (click)="search(city, sport)">
       <p>{{env.search}}</p>
     </ion-button>
   </div>
   <div id="contentList">
     <ion-virtual-scroll id="result-search">
+      <!-- Scroll donde se visualiza todos los pabellones que cumplan las condiciones anteriores -->
       <ion-card *ngFor="let center of sportCenters" (click)="openPage(center)">
         <ion-card-title> {{ center.name }} </ion-card-title>
         <p>{{ center.street }} - {{ center.city }}</p>
       </ion-card>
 
+      <!-- Mensajes en caso de busqueda vacia o inicio de pagina -->
       <div *ngIf="init || empty" class="message">
         <ion-label *ngIf="init"> {{env.selectCitySport }}</ion-label>
         <ion-label *ngIf="empty"> {{env.emptySearch }} </ion-label>

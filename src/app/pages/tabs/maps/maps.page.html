@@ -1,8 +1,11 @@
 <ion-content color="primary" [fullscreen]="true">
+  <!-- Seleccionador de deporte -->
   <ion-select id="selectSport" (ionChange)="changeSport(sport)" interface="popover" [(ngModel)]="sport"
     placeholder="{{env.selectSport}}">
     <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
   </ion-select>
+  <!-- Mensaje que aparece unicamente cuando no se conceda el permiso de localizacion -->
   <p *ngIf="permissionDenied" id="messageLocation">{{env.messageLocationDenied}}</p>
+  <!-- Vista del mapa -->
   <div *ngIf="!permissionDenied" #mapElement class="map"></div>
 </ion-content>

@@ -4,14 +4,16 @@
             <ion-card-title>{{env.titleMyProfile| titlecase}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
+            <!-- Formulario donde se recaba los datos del perfil -->
             <form [formGroup]="profileForm" (ngSubmit)="saveData()" novalidate>
                 <ion-list>
                     <ion-item>
                         <ion-label position="stacked">
                             <h2>{{env.titleProfile| titlecase}}</h2>
                         </ion-label>
+                        <!-- Campo Nombre -->
                         <ion-input type="text" name="name" formControlName="name" [(ngModel)]="name"> </ion-input>
-                        <!-- Error messages -->
+                        <!-- Mensajes de Error -->
                         <span class="error ion-padding" *ngIf="errorControl.name.errors?.required">
                             {{env.errorNameRequired }}
                         </span>
@@ -23,9 +25,10 @@
                         <ion-label position="stacked">
                             <h2>{{env.titleEmail| titlecase}}</h2>
                         </ion-label>
+                        <!-- Campo Email -->
                         <ion-input type="email" name="email" formControlName="email" [(ngModel)]="email">
                         </ion-input>
-                        <!-- Error messages -->
+                        <!-- Mensajes de Error -->
                         <span class="error ion-padding" *ngIf="errorControl.email.errors?.required">
                             {{env.errorEmailRequired }}
                         </span>
@@ -37,6 +40,7 @@
                         <ion-label position="stacked">
                             <h2>{{env.titleUbication| titlecase}}</h2>
                         </ion-label>
+                        <!-- Campo Ciudad -->
                         <ion-select interface="popover" formControlName="city" [(ngModel)]="city">
                             <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
                         </ion-select>
@@ -45,6 +49,7 @@
                         <ion-label position="stacked">
                             <h2>{{env.titleSport| titlecase}}</h2>
                         </ion-label>
+                        <!-- Campo Deporte -->
                         <ion-select interface="popover" [(ngModel)]="sport" formControlName="sport">
                             <ion-select-option *ngFor="let sport of sports"
                                 [value]="sport">{{sport}}</ion-select-option>

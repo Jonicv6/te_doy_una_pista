@@ -2,12 +2,14 @@
     <ion-toolbar>
         <ion-title>{{env.titleModalWeather}}</ion-title>
         <ion-buttons slot="end">
+            <!-- Boton de regreso -->
             <ion-button (click)="dismiss()">{{env.back}}</ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 <ion-content>
     <div id="box-modal">
+        <!-- Modal de informacion meteorologica -->
         <div id="container">
             <div id="image_Weather"></div>
             <div id="modalWeather">

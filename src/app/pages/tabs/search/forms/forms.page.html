@@ -4,6 +4,7 @@
 
   <ion-toolbar>
     <ion-buttons slot="start">
+      <!-- Boton de regreso ubicado en la parte superior de la pantalla -->
       <ion-back-button id="backButton" defaultHref="/" [text]="env.back">
       </ion-back-button>
     </ion-buttons>
@@ -11,12 +12,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- Mostramos el nombre del pabellon y el deporte seleccionado anteriormente -->
   <h3 class="ml-3 text-center">{{sportCenterName}}</h3>
   <h5 class="ml-3 text-center">{{sport}}</h5>
   <div id="infoform" action="">
     <div id="contentInfo">
       <br>
       <div>
+        <!-- Seleccionador de pista -->
         <ion-label>{{env.track | titlecase }}</ion-label>
         <ion-select class="form-select form-select-sm" aria-label=".form-select-sm " placeholder="{{env.selectTrack}}"
           #trackSelect (ionChange)="changeTrack(trackSelect.value)" interface="popover" id="trackPicker">
@@ -24,14 +27,14 @@
         </ion-select>
       </div>
       <br>
-
+      <!-- Seleccionador del dia -->
       <div class="select">
         <ion-label>{{env.date | titlecase }}</ion-label>
         <input type="date" id="datePicker" [(ngModel)]="selectDay" [min]="minDay | date:'yyyy-MM-dd'"
           (change)="activeHour()" />
       </div>
       <br>
-
+      <!-- Seleccionador de la hora -->
       <div class="select" [hidden]="hoursEmpty">
         <ion-label>{{env.hour | titlecase }}</ion-label>
         <ion-select class="form-select form-select-sm" interface="popover" aria-label=".form-select-sm "
@@ -53,9 +56,10 @@
                 </h2>
               </ion-label>
               <br>
+              <!-- Campo Nombre de la Reserva -->
               <ion-input type="text" name="name" formControlName="nameReserve" [(ngModel)]="nameReserve"
                 placeholder={{env.yourName}}></ion-input>
-              <!-- Error messages -->
+              <!-- Mensajes de Error -->
               <span class="error ion-padding" *ngIf="errorControl.nameReserve.errors?.required">
                 {{env.errorNameRequired }}
               </span>
@@ -73,10 +77,12 @@
                 </h2>
               </ion-label>
               <br>
+
+              <!-- Campo Email -->
               <ion-input type="email" name="email" formControlName="emailReserve" [(ngModel)]="emailReserve"
                 placeholder={{env.titleEmail}}></ion-input>
 
-              <!-- Error messages -->
+              <!-- Mensajes de Error -->
               <div>
                 <span class="error ion-padding" *ngIf="errorControl.emailReserve.errors?.required">
                   {{env.errorEmailRequired }}
@@ -87,6 +93,8 @@
               </div>
             </ion-item>
           </ion-list>
+
+          <!-- Boton de envio -->
           <div id="blockButton" [hidden]="hoursEmpty">
             <ion-button id="buttonForms" color="tertiary" type="submit">{{env.reserver| titlecase}}</ion-button>
           </div>
@@ -95,6 +103,7 @@
       </div>
     </div>
 
+    <!-- Contenedor de las opiniones de la pista seleccionada -->
     <div id="containerComment" class="moveButtonClose" *ngIf="selectTrack!=undefined">
       <ion-button id="buttonComments" expand="block" color="primary" (click)="readComment()">
         <ion-icon name="caret-up-outline" *ngIf="closeComment"></ion-icon>
@@ -107,6 +116,7 @@
       <div id="comments" class="closeComment">
         <ion-virtual-scroll id="scrollComments">
           <ion-card *ngFor="let comment of listComments">
+            <!-- En la ion-card del comentario se muestra nombre, texto y puntuacion de la pista -->
             <ion-card-title> {{ comment.user }} </ion-card-title>
             <p>{{ comment.text }}</p>
             <div id="infoComment">
@@ -117,6 +127,7 @@
               <p id="dateComment">{{ comment.date }}</p>
             </div>
           </ion-card>
+          <!-- Mensaje en caso de que no exista ningun comentario en la pista seleccionada -->
           <p id="emptyComment" *ngIf="listCommentsEmpty">{{ env.emptyComments }}</p>
         </ion-virtual-scroll>
       </div>
