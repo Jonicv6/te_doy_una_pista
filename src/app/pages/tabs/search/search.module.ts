@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchPage } from './search.page';
-
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -17,4 +16,4 @@ import { ComponentsModule } from 'src/app/components/components.module';
   ],
   declarations: [SearchPage]
 })
-export class SearchPageModule {}
+export class SearchPageModule { }

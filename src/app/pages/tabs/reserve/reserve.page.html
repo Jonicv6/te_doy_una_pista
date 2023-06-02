@@ -1,13 +1,15 @@
-<ion-content>  
+<ion-content>
   <ion-backdrop [visible]="modalActive" *ngIf="modalActive"></ion-backdrop>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content> </ion-refresher-content>
   </ion-refresher>
   <div id="contentButtons">
-    <ion-button (click)="showFuture()" [ngClass]="{'buttonActive': checkReserveFuture}" class="buttonsType">Próximas</ion-button>
-    <ion-button (click)="showPast()" [ngClass]="{'buttonActive': checkReservePast}" class="buttonsType">Realizadas</ion-button>
+    <ion-button (click)="showFuture()" [ngClass]="{'buttonActive': checkReserveFuture}"
+      class="buttonsType">Próximas</ion-button>
+    <ion-button (click)="showPast()" [ngClass]="{'buttonActive': checkReservePast}"
+      class="buttonsType">Realizadas</ion-button>
   </div>
-  <div id="contentList"> 
+  <div id="contentList">
 
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
       *ngIf="checkReserveFuture">
@@ -45,7 +47,8 @@
     <cdk-virtual-scroll-viewport appendOnly itemSize="50" minBufferPx="200" maxBufferPx="400" class="reserveList"
       *ngIf="checkReservePast">
       <ion-card class="cardReserve"
-        *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn" [ngClass]="{'reservePast': (reserveCompleted.time == -1)}">
+        *cdkVirtualFor="let reserveCompleted of listReservesCompletedObservable | async ; trackBy: trackByFn"
+        [ngClass]="{'reservePast': (reserveCompleted.time == -1)}">
         <div>
           <ion-card-title> {{ reserveCompleted.sportCenter.name }} </ion-card-title>
           <ion-card-content id="dateReserve">
@@ -73,7 +76,7 @@
       </div>
     </cdk-virtual-scroll-viewport>
 
-    
+
   </div>
 
 </ion-content>

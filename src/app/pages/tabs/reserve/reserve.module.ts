@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReservePage } from './reserve.page';
 import { ComponentsModule } from 'src/app/components/components.module';
-import {MatTabsModule} from '@angular/material/tabs';
-import {ScrollingModule} from '@angular/cdk/scrolling';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ModalWeather } from './modals/modalWeather';
 import { ModalComment } from './modals/modalComment';
-
 
 
 @NgModule({
@@ -24,4 +23,4 @@ import { ModalComment } from './modals/modalComment';
   ],
   declarations: [ReservePage, ModalWeather, ModalComment]
 })
-export class ReservePageModule {}
+export class ReservePageModule { }

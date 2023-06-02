@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ProfilePage } from './profile.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
@@ -20,4 +20,4 @@ import { ComponentsModule } from 'src/app/components/components.module';
   ],
   declarations: [ProfilePage]
 })
-export class ProfilePageModule {}
+export class ProfilePageModule { }

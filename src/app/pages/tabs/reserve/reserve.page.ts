@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 
-//Services
+// Services
 import { ReserveDataService } from 'src/app/services/reserve-data.service';
 import { SportCenterDataService } from 'src/app/services/sport-center-data.service';
 import { OpenMeteoAPI } from 'src/app/services/weather-api.service';
@@ -32,6 +32,7 @@ export class ReservePage implements OnInit {
   env = environment;
   today = new Date().toLocaleDateString('en-US');
   actualHour: string = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // Variables usadas para cambiar de vistas entre Pendientes y Realizadas
   checkReserveFuture = true;
   checkReservePast = false;
   listReservesPendingObservable: any;
@@ -48,6 +49,7 @@ export class ReservePage implements OnInit {
     public modalController: ModalController,
     private commentDataService: CommentDataService,
     private sweetAlertService: SweetAlertService) {
+    // Obtenemos la fecha de hoy para usarla más adelante
     this.today = this.datepipe.transform(this.today, 'dd-MM-yyyy');
   }
 
@@ -55,14 +57,14 @@ export class ReservePage implements OnInit {
   }
 
   ionViewWillEnter() {
-    //Refresca los datos cada vez que la pestaña está en vista activa.
+    // Refresca los datos cada vez que la pestaña está en vista activa.
     this.getDataLocal();
   }
 
   // Funcion de refresco
   doRefresh(event) {
     this.getDataLocal();
-    //Cuando finalice la lectura de datos, cancelamos el refresh.
+    // Cuando finalice la lectura de datos, cancelamos el refresh.
     event.target.complete();
 
   }
@@ -86,46 +88,44 @@ export class ReservePage implements OnInit {
       confirmButtonText: this.env.buttonConfirmDelete,
       cancelButtonText: this.env.buttonCancelDelete
     }).then(async (result) => {
+
       if (result.isConfirmed) {
         // En caso afirmativo, abrimos el loading
-
         await this.sweetAlertService.presentLoading(this.env.textLoading);
         this.sweetAlertService.loading.present();
 
         // Si el elemento se encuentra en la lista de pendientes
         if (this.listReservesPending.includes(reserve)) {
-          //Borramos la reserva de la base de datos
+
+          // Borramos la reserva de la base de datos
           this.reserveDataService.deleteReserve(reserve).toPromise()
             .then(r => {
+              // Tanto en caso de que existiera la reserva o no en la BBDD arroja un codigo 200
+              // Por ello, igualmente, se borrara de Local
               console.log(r);
+              // Borra de Local la reserva seleccionada pasandole el objeto y la lista a la que pertenece
+              this.deleteReserveLocal(reserve, this.listReservesPending);
               this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success')
                 .then(() => {
-                  //Borramos la reserva de la lista
-                  let index = this.listReservesPending.indexOf(reserve);
-                  this.listReservesPending.splice(index, 1);
-                  //Actualizamos la lista en local
-                  localStorage.setItem('reserves', JSON.stringify(this.listReservesPending));
-
+                  // Una vez borrado de la BBDD y de Local, vuelve a cargar los datos nuevos.                  
                   this.getDataLocal();
                 });
             })
-            .catch(r => {
-              this.sweetAlertService.showAlert(this.env.titleErrorDeleted, this.env.errorDeleteReserve, 'error')
-                .then(() => {
-                  this.getDataLocal();
-                });
+            .catch(async e => {
+              await this.sweetAlertService.showErrorConnection().then(() => {
+                console.log("ERROR GETRESERVELOCAL: " + e.message);
+                // Una vez finaliza la muestra del error, vuelve a intentar cargar
+                this.getDataLocal();
+              });
+            })
 
-            });
         }
 
         // Si se encuentra en la lista de completados
-        //La reservas ya completadas no se eliminan de la BBDD
+        // La reservas ya completadas no se eliminan de la BBDD pero si en Local
         if (this.listReservesCompleted.includes(reserve)) {
-          //Borramos la reserva de la lista local
-          let index = this.listReservesCompleted.indexOf(reserve);
-          this.listReservesCompleted.splice(index, 1);
-          //Actualizamos la lista en local
-          localStorage.setItem('reserves', JSON.stringify(this.listReservesCompleted));
+          // Pasamos el objeto y la lista a la que pertenece
+          this.deleteReserveLocal(reserve, this.listReservesCompleted);
           this.sweetAlertService.showAlert(this.env.titleDeleted, this.env.successReserveDeleted, 'success')
             .then(() => {
               this.getDataLocal();
@@ -135,6 +135,17 @@ export class ReservePage implements OnInit {
     })
   }
 
+  // Metodo encargado de borrar la reserva en Local
+  deleteReserveLocal(reserve, list) {
+    // Borramos la reserva de la lista
+    let index = list.indexOf(reserve);
+    list.splice(index, 1);
+
+    // Actualizamos la lista en local
+    localStorage.setItem('reserves', JSON.stringify(list));
+  }
+
+  // Metodo responsable de mostrar el Modal de la información Meteorologica
   commentInfoMeter(reserve) {
     // Recogemos la localizacion del pabellon
     this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter)
@@ -145,11 +156,11 @@ export class ReservePage implements OnInit {
           reserve.date, reserve.hour).toPromise()
           .then(resultWeather => {
 
-            //console.log(resultWeather);
-            //Personalizamos el JSON para aplicarlos directamente en el modal.
+            // console.log(resultWeather);
+            // Personalizamos el JSON para aplicarlos directamente en el modal.
             let hour_id = parseInt(reserve.hour.split(":")[0]);
 
-            //Info del WeatherCode de la API
+            // Info del WeatherCode de la API
             /*
             0	Cielo limpio
             1, 2, 3	Principalmente despejado, parcialmente nublado y nublado
@@ -176,94 +187,94 @@ export class ReservePage implements OnInit {
             116 x 6 = 696
             */
 
-            //Modificamos el icono a presentar en función del código que recibimos
+            // Modificamos el icono a presentar en función del código que recibimos
             let image_weather_pos = "-464px -464px";
 
             switch (resultWeather.hourly.weathercode[hour_id]) {
-              //Despejado
+              // Despejado
               case 0:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-0px -232px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-464px -464px";
                 }
                 break;
 
-              //Poco nublado
+              // Poco nublado
               case 1:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-464px -232px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-348px -580px";
                 }
                 break;
 
-              //Parcialmente nublado
+              // Parcialmente nublado
               case 2:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-348px -232px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-0px -580px";
                 }
                 break;
 
-              //Muy Nublado
+              // Muy Nublado
               case 3:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-116px -348px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-232px -580px";
                 }
                 break;
 
-              //Neblina
+              // Neblina
               case 45: case 48:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-116px -242px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-116px -580px";
                 }
                 break;
 
-              //Llovizna
+              // Llovizna
               case 51: case 53: case 55: case 56: case 57:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-0px -348px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-464px -0px";
                 }
                 break;
 
-              //Lluvia leve
+              // Lluvia leve
               case 61: case 80:
                 image_weather_pos = "-232px -0px";
                 break;
 
-              //Lluvia moderada
+              // Lluvia moderada
               case 63: case 81:
                 image_weather_pos = "-464px -348px";
                 break;
 
-              //Lluvia fuerte
+              // Lluvia fuerte
               case 65: case 82:
                 image_weather_pos = "-232px -464px";
                 break;
 
-              //Lluvia helada
+              // Lluvia helada
               case 66: case 67:
                 image_weather_pos = "-464px -116px";
                 break;
 
-              //Nevanda
+              // Nevanda
               case 71: case 73: case 75: case 77: case 85: case 86:
                 image_weather_pos = "-348px -116px";
                 break;
 
-              //Torment
+              // Torment
               case 95:
-                if (hour_id >= 9 && hour_id <= 19) { //Dia
+                if (hour_id >= 9 && hour_id <= 19) { // Dia
                   image_weather_pos = "-242px -348px";
-                } else { //Noche
+                } else { // Noche
                   image_weather_pos = "-242px -116px";
                 }
                 break;
@@ -273,7 +284,7 @@ export class ReservePage implements OnInit {
                 break;
             }
 
-            //Juntamos todos los datos en el nuevo JSON
+            // Juntamos todos los datos en el nuevo JSON
             this.Json_EditWeather = {
               'latitude': resultWeather.latitude,
               'longitude': resultWeather.longitude,
@@ -287,7 +298,9 @@ export class ReservePage implements OnInit {
               'image_weather': image_weather_pos
             };
 
-            //console.log(this.Json_EditWeather);
+            // console.log(this.Json_EditWeather);
+
+            // Mostramos el modal con la información 
             this.presentModalWeather();
           })
           .catch((e) => {
@@ -321,77 +334,89 @@ export class ReservePage implements OnInit {
   }
 
   async presentModalComment(reserve: Reserve) {
-    //Preparamos el modal, indicando la clase CSS y esperamos al cierre de esta para recoger los datos.
+    // Preparamos el modal, indicando la clase CSS y esperamos al cierre de esta para recoger los datos.
     const modal = await this.modalController.create({
       component: ModalComment,
     });
     modal.cssClass = 'ion-modal';
     this.modalActive = true;
     await modal.present();
-    modal.onDidDismiss().then((dataReturned) => {
-      this.modalActive = false;
+    modal.onWillDismiss()
+      .then(async (dataReturned) => {
 
-      //Si el usuario vuelve sin realizar el comentario, no se muestra nada
-      if (dataReturned.data.dismissed !== true) {
-        //console.log(dataReturned);
-        //Verificamos que los datos devueltos del Modal no sean nulos.
-        if (dataReturned.data.comment == null || dataReturned.data.score == null) {
-          this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
-        } else {
-          //Una vez verificados, lo guardamos en la base de datos.
-          let comment = <any>{
-            "track": reserve.track.idTrack,
-            "user": reserve.user,
-            "text": dataReturned.data.comment,
-            "date": reserve.date,
-            "score": parseInt(dataReturned.data.score)
+        // console.log(dataReturned);
+        // Si el usuario vuelve sin realizar el comentario, no se muestra nada
+        if (dataReturned.data.dismissed == false) {
+
+          // Mostrando mensaje de carga
+          await this.sweetAlertService.presentLoading(environment.textLoading);
+          this.sweetAlertService.loading.present();
+
+          // Verificamos que los datos devueltos del Modal no sean nulos.
+          if (dataReturned.data.comment == undefined || dataReturned.data.score == undefined) {
+            this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
+          } else {
+            // Una vez verificados, lo guardamos en la base de datos.
+            let comment = <any>{
+              "track": reserve.track.idTrack,
+              "user": reserve.user,
+              "text": dataReturned.data.comment,
+              "date": reserve.date,
+              "score": parseInt(dataReturned.data.score)
+            }
+            console.log(comment);
+            // Se realiza la creación del comentario utilizando el servicio commentDataService y se maneja el resultado mediante promesas
+            this.commentDataService.createComment(comment).toPromise()
+              .then(r => {
+                this.sweetAlertService.showAlert(this.env.titleSuccessComment, this.env.successComment, 'success');
+              })
+              .catch(r => {
+                this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
+              });
           }
-          console.log(comment);
-          this.commentDataService.createComment(comment).toPromise()
-            .then(r => {
-              this.sweetAlertService.showAlert(this.env.titleSuccessComment, this.env.successComment, 'success');
-            })
-            .catch(r => {
-              this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
-
-            });
         }
-      }
-    });
+        // Desactivamos el background
+        this.modalActive = false;
 
-    return;
+      });
   }
 
-  //metodo para leer los datos locales
+  // metodo para leer los datos locales
   async getDataLocal() {
+    // Array usando para las diferentes listas de reservas
     this.listReservesPending = [];
     this.listReservesCompleted = [];
 
+    // Leemos los datos locales de Reserva
     let list: ReserveLocal[] = await JSON.parse(localStorage.getItem('reserves'));
 
     list.forEach(reserve => {
       let reserveDate = reserve.date.split("-");
       let todayDate = this.today.split("-");
 
-      //console.log(reserve.hour.substring(0, 2) + " -  " + this.actualHour.substring(0, 2))
+      // console.log(reserve.hour.substring(0, 2) + " -  " + this.actualHour.substring(0, 2))
+
+      // En funcion del dia que sea con respecto a la reserva, le damos una class CSS
+
       // Primer filtro, si la reserva es hoy y aún no se ha cumplido la hora y/o minutos
-      if (reserve.date == this.today && (reserve.hour.substring(0,2)>this.actualHour.substring(0, 2))){
+      if (reserve.date == this.today && (reserve.hour.substring(0, 2) > this.actualHour.substring(0, 2))) {
         /*(reserve.hour.substring(0, 2) > (parseInt(this.actualHour.substring(0, 2))-1).toString() ||
           reserve.hour.substring(0, 2) == this.actualHour.substring(0, 2) && reserve.hour.substring(3, 4) >= this.actualHour.substring(3, 4))) {*/
         reserve.time = 0;
         this.listReservesPending.push(reserve);
       } else if (
-        //EXPLICACION: Dia posterior pero mismo mes y año - Mes posterior pero mismo año - Año posterior
-        //En caso de que no sea la misma fecha, ni la hora del evento, se convierte en un evento futuro
+        // EXPLICACION: Dia posterior pero mismo mes y año - Mes posterior pero mismo año - Año posterior
+        // En caso de que no sea la misma fecha, ni la hora del evento, se convierte en un evento futuro
         (reserveDate[0] > todayDate[0] && reserveDate[1] == todayDate[1] && reserveDate[2] == todayDate[2]) ||
         (reserveDate[1] > todayDate[1] && reserveDate[2] == todayDate[2]) ||
         (reserveDate[2] > todayDate[2])) {
         this.listReservesPending.push(reserve);
         reserve.time = 1;
 
-        //console.log("RESERVA: " + reserve.date + " - TODAY: " + this.today + " - RESERVE HOUR: " + reserve.hour + " - HOUR: " + this.actualHour);
+        // console.log("RESERVA: " + reserve.date + " - TODAY: " + this.today + " - RESERVE HOUR: " + reserve.hour + " - HOUR: " + this.actualHour);
 
       } else {
+        // Eventos cumplidos
         reserve.time = -1;
         this.listReservesCompleted.push(reserve)
       }
@@ -410,14 +435,14 @@ export class ReservePage implements OnInit {
     this.listReservesCompletedObservable = new BehaviorSubject(this.listReservesCompleted);
     this.listReservesPendingObservable = new BehaviorSubject(this.listReservesPending);
 
-    //console.log("LISTRESERVES:");
-    //console.log(this.listReservesPending);
-    //console.log("LISTRESERVESCOMPLETED:");
-    //console.log(this.listReservesCompleted);
+    // console.log("LISTRESERVES:");
+    // console.log(this.listReservesPending);
+    // console.log("LISTRESERVESCOMPLETED:");
+    // console.log(this.listReservesCompleted);
   }
 
-  //Metodo para ordenar las reserva, de forma que la mas próxima esté primera
-  //Primero compara el año, luego el mes y luego el dia
+  // Metodo para ordenar las reserva, de forma que la mas próxima esté primera
+  // Primero compara el año, luego el mes y luego el dia
   orderArrayDate(objA, objB) {
     let dateA = objA.date.split('-');
     let dateB = objB.date.split('-');
@@ -430,14 +455,16 @@ export class ReservePage implements OnInit {
     return comparativeA.getTime() - comparativeB.getTime();
   }
 
+  // Visualiza la pestada de Reservas proximos
   showFuture() {
-    //console.log("ShowFuture");
+    // console.log("ShowFuture");
     this.checkReserveFuture = true;
     this.checkReservePast = false;
   }
 
+  // Visualiza la pestada de Reservas realizados
   showPast() {
-    //console.log("ShowPast");
+    // console.log("ShowPast");
     this.checkReserveFuture = false;
     this.checkReservePast = true;
   }

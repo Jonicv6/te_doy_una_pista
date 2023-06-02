@@ -10,9 +10,10 @@
     <div id="box-modal">
         <div id="container">
             <div id="modalComment">
-                <ion-textarea id="panelComment" placeholder="{{env.placeHolderComment}}" height="100%" rows="10"  maxlength="150" [(ngModel)]="comment"></ion-textarea>
+                <ion-textarea id="panelComment" placeholder="{{env.placeHolderComment}}" height="100%" rows="10"
+                    maxlength="150" [(ngModel)]="comment"></ion-textarea>
                 <ion-item id="panelScore">
-                    <ion-label >{{env.score}}</ion-label>
+                    <ion-label>{{env.score}}</ion-label>
                     <ion-select value="1" multiple="false" placeholder="{{env.selectScore}}" [(ngModel)]="score">
                         <ion-select-option value="1">1</ion-select-option>
                         <ion-select-option value="2">2</ion-select-option>

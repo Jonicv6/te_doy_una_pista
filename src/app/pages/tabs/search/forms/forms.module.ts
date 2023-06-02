@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-
 import { FormsPageRoutingModule } from './forms-routing.module';
-
 import { FormsPage } from './forms.page';
 import { RouterModule } from '@angular/router';
 
@@ -20,4 +18,4 @@ import { RouterModule } from '@angular/router';
   ],
   declarations: [FormsPage]
 })
-export class FormsPageModule {}
+export class FormsPageModule { }

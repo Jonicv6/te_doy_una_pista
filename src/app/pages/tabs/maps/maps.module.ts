@@ -20,4 +20,4 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
   declarations: [MapsPage],
   providers: [Geolocation]
 })
-export class MapsPageModule {}
+export class MapsPageModule { }

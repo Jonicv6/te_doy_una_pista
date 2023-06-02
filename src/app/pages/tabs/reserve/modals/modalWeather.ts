@@ -5,19 +5,19 @@ import { WeatherAPI } from 'src/models/jsonWeather';
 
 
 @Component({
-    selector: 'modal-weather',
-    templateUrl: 'modalWeather.html',
-    styleUrls: ['../reserve.page.scss']
+  selector: 'modal-weather',
+  templateUrl: 'modalWeather.html',
+  styleUrls: ['../reserve.page.scss']
 })
 export class ModalWeather {
-  env=environment;
+  env = environment;
   @Input() weatherData: WeatherAPI;
 
   constructor(private modalCtrl: ModalController) {
   }
 
-  ngOnInit(){
-    
+  ngOnInit() {
+
     //console.log(this.weatherData);
     let image_weather_icon = document.getElementById('image_Weather');
     image_weather_icon.style.backgroundPosition = this.weatherData.image_weather;
