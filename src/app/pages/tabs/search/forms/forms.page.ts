@@ -97,7 +97,7 @@ export class FormsPage implements OnInit {
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETSPORTCENTER: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });;
@@ -109,7 +109,7 @@ export class FormsPage implements OnInit {
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETTRACK: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });
@@ -129,13 +129,13 @@ export class FormsPage implements OnInit {
         this.emailReserve = dataLocal['email'];
       }
 
-      //Desactivamos el mensaje de carga
+      // Desactivamos el mensaje de carga
       this.sweetAlertService.loading.dismiss();
     }, 1500);
 
   }
 
-
+  // Metodo que es llamado cada vez que se detecta un cambio en el seleccionador de la pista
   changeTrack(trackAux: Track) {
     this.selectTrack = trackAux;
     this.selectDay = undefined;
@@ -159,22 +159,22 @@ export class FormsPage implements OnInit {
     } else {
 
       this.selectHour = undefined;
-      //Transformamos la fecha yyyy-MM-dd a dd-MM-yyyy(formato de la BD)
+      // Transformamos la fecha yyyy-MM-dd a dd-MM-yyyy(formato de la BD)
       let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
-      //Realizamos la consulta para que nos devuelva la lista de reservas.
+      // Realizamos la consulta para que nos devuelva la lista de reservas.
       this.reserveDataService.getReservesForTrackDate(this.selectTrack.idTrack, formatDate)
         .subscribe(async result => {
           let reservesBD: Reserve[] = result;
-          let hoursReserveThisTrackDay: string[] = []; //Horas ocupadas de esa pista y dia seleccionados
+          let hoursReserveThisTrackDay: string[] = []; // Horas ocupadas de esa pista y dia seleccionados
           for (let reserve of reservesBD) {
             hoursReserveThisTrackDay.push(reserve.hour.split(":")[0]);
           }
 
-          //Son las horas ocupadas en las pistas que interseccionan
+          // Son las horas ocupadas en las pistas que interseccionan
           let hoursReserveTrackIntersection: string[] = [];
 
-          //Consultamos las horas de las pistas que interseccionen
+          // Consultamos las horas de las pistas que interseccionen
           let typeTrackIntersection: string;
           switch (this.selectTrack.type) {
             case "Vertical":
@@ -190,26 +190,26 @@ export class FormsPage implements OnInit {
 
           await this.reserveDataService.getHourReservesForSportCenterDateType(this.sportCenter.idSportCenter, formatDate, typeTrackIntersection)
             .toPromise().then(result => {
-              //Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
+              // Recorremos la lista y a traves del id (r) vamos cogiendo el valor hour, unicamente la hora
               for (let r in result) {
                 hoursReserveTrackIntersection.push(result[r].hour.split(":")[0]);
               }
             }).catch(async (e) => {
               await this.sweetAlertService.showErrorConnection().then(() => {
                 console.log("ERROR GETHOURRESERVE: " + e.message);
-                //Una vez finaliza la muestra del error, vuelve a intentar cargar
+                // Una vez finaliza la muestra del error, vuelve a intentar cargar
                 this.getData();
               });
             });;
 
-          this.hoursFree = []  //Reiniciamos la variable
-          //Rellenamos la variable hours con una diferencia minima de dos horas
+          this.hoursFree = []  // Reiniciamos la variable
+          // Rellenamos la variable hours con una diferencia minima de dos horas
           for (let hourElement of this.defaultHours) {
-            //Transformamos temporalmente la variable minDay 
+            // Transformamos temporalmente la variable minDay 
             let today = this.datepipe.transform(this.minDay, 'dd-MM-yyyy');
-            //Rellenamos las horas libres segun si es el dia seleccionado o no
-            //Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
-            //Ni en las pistas que interseccionen
+            // Rellenamos las horas libres segun si es el dia seleccionado o no
+            // Tambien comprobamos que la hora libre no esté ni en esa pista en ese dia
+            // Ni en las pistas que interseccionen
             if (today === formatDate && !hoursReserveThisTrackDay.includes(hourElement.hour) &&
               (!hoursReserveTrackIntersection.includes(hourElement.hour) || hoursReserveTrackIntersection.length == 0)) {
               if (Number.parseInt(hourElement.hour) >= Number.parseInt(this.actualHour.toString()) + 2) {
@@ -219,31 +219,32 @@ export class FormsPage implements OnInit {
               this.hoursFree.push(hourElement);
             }
           }
-          //console.log(this.hoursFree);
+          // console.log(this.hoursFree);
           this.checkHoursEmpty();
 
         });
     }
   }
 
+  // Metodo usado para concatenar los valores del seleccionador de hora
   changeHour(selectHourForm) {
     this.selectHour = selectHourForm.hour + ":" + selectHourForm.minutes;
-    //console.log(this.selectHour);
+    // console.log(this.selectHour);
   }
 
+  // Metodo que verifica si la hora seleccionada esta disponible
   checkHoursEmpty() {
-    //Si hay un dia seleccionado y no hay horas disponible mostrará un mensaje
+    // Si hay un dia seleccionado y no hay horas disponible mostrará un mensaje
     if (this.hoursFree.length == 0 && this.selectDay != undefined) {
       this.hoursEmpty = true;
     } else {
-      //No muestra el mensaje al haber al menos una hora disponible
-      //
+      // No muestra el mensaje al haber al menos una hora disponible
       if (this.selectDay != undefined) {
-        //Si el dia está seleccionado visualizamos el selector de Horas
+        // Si el dia está seleccionado visualizamos el selector de Horas
         document.getElementById("hourPicker").style.visibility = "visible";
         this.hoursEmpty = false;
       } else {
-        //Si el dia no está seleccionado ocultamos el selector de Horas
+        // Si el dia no está seleccionado ocultamos el selector de Horas
         document.getElementById("hourPicker").style.visibility = "hidden";
         this.hoursEmpty = true;
 
@@ -251,13 +252,14 @@ export class FormsPage implements OnInit {
     }
   }
 
+  // Metodo que verifica la reserva
   async checkReserve() {
 
     try {
       await this.sweetAlertService.presentLoading(this.env.textSendEmail);
       this.sweetAlertService.loading.present();
 
-      //Si algún campo está vacio salta el alert
+      // Si algún campo está vacio salta el alert
       if (this.selectTrack == undefined ||
         this.selectDay == undefined ||
         this.selectHour == undefined ||
@@ -267,17 +269,17 @@ export class FormsPage implements OnInit {
         this.sweetAlertService.showAlert(this.env.titleErrorDataReserve, this.env.errorDataReserve, 'error');
 
       } else if (this.reserveForm.valid) {
-        //Recoge los datos seleccionados
+        // Recoge los datos seleccionados
         let formatDate = this.datepipe.transform(this.selectDay, 'dd-MM-yyyy');
 
-        //Creamos la variable Reserva
+        // Creamos la variable Reserva
         let reserve = <any>{ track: this.selectTrack.idTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve };
 
-        //Comprobamos si la pista esta disponible antes de guardarla
+        // Comprobamos si la pista esta disponible antes de guardarla
         let reserveAvailable = await this.checkDateReserveEmpty(reserve);
 
         if (reserveAvailable) {
-          //Creamos la reserva en la base de datos solo en caso de que la pista este disponible
+          // Creamos la reserva en la base de datos solo en caso de que la pista este disponible
           this.reserveDataService.createReserve(reserve)
             .toPromise()
             .then(async r => {
@@ -289,7 +291,7 @@ export class FormsPage implements OnInit {
                 listReserveLocal = JSON.parse(localStorage.getItem('reserves'));
               }
 
-              //Creamos la variable que guardaremos en local, con el id de la reserva creada en la BBDD
+              // Creamos la variable que guardaremos en local, con el id de la reserva creada en la BBDD
               let reserveLocal = <ReserveLocal>{
                 idReserve: r['idReserve'], sportCenter: this.sportCenter,
                 track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve
@@ -338,7 +340,7 @@ export class FormsPage implements OnInit {
                   "<tr>" +
                   "<td>" + environment.titleUbication.toUpperCase().toString() +
                   "</td>" +
-                  "<td>" + "<a href=\"https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude + "\">" + this.env.titleUbication + "</a>" +
+                  "<td>" + "<a href=\"https:// www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude + "\">" + this.env.titleUbication + "</a>" +
                   "</td>" +
                   "</tr>" +
                   "</table>"
@@ -351,13 +353,12 @@ export class FormsPage implements OnInit {
                 })
                 .finally(() => {
 
-                  //console.log("CORREO FINALIZADO");
+                  // console.log("CORREO FINALIZADO");
                   this.sweetAlertService.loading.dismiss();
                   this.sweetAlertService.showAlert(this.env.titleSuccessReserve, this.env.successReserve, 'success')
                     .then(() => {
                       this.route.navigateByUrl('tabs/reserve');
                     });
-
                 })
                 .catch(async (e) => {
                   throw e;
@@ -368,7 +369,7 @@ export class FormsPage implements OnInit {
             });
         } else {
           this.sweetAlertService.loading.dismiss();
-          //Mostramos error al realizar la reserva
+          // Mostramos error al realizar la reserva
           this.sweetAlertService.showAlert(this.env.titleErrorReserve, this.env.errorReserve, 'error')
         }
       }
@@ -378,7 +379,7 @@ export class FormsPage implements OnInit {
       await this.sweetAlertService.showErrorConnection().then(() => {
         console.log("ERROR SENDEMAIL: " + e.message);
 
-        //Una vez finaliza la muestra del error, vuelve a intentar cargar
+        // Una vez finaliza la muestra del error, vuelve a intentar cargar
         this.getData();
       });
     }
@@ -386,7 +387,7 @@ export class FormsPage implements OnInit {
 
   // Comprobamos que la Reserva está disponible en la fecha y pista seleccionadas, justo antes de guardarla en BBDD.
   async checkDateReserveEmpty(reserve) {
-    //Consultamos las horas de las pistas que interseccionen
+    // Consultamos las horas de las pistas que interseccionen
     let typeTrackIntersection: string;
     switch (this.selectTrack.type) {
       case "Vertical":
@@ -419,7 +420,7 @@ export class FormsPage implements OnInit {
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETHOURRESERVE: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });;
@@ -444,7 +445,7 @@ export class FormsPage implements OnInit {
       .catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETRESERVE: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });;
@@ -466,7 +467,7 @@ export class FormsPage implements OnInit {
     }
 
     let listCommentsElement = document.getElementById('comments');
-    //Si la clase está en el elemento, la elimina, sino, la añade.
+    // Si la clase está en el elemento, la elimina, sino, la añade.
     listCommentsElement.classList.toggle('openComment');
     listCommentsElement.classList.toggle('closeComment');
 
@@ -482,13 +483,13 @@ export class FormsPage implements OnInit {
     this.listComments = [];
     this.listCommentsEmpty = true;
 
-    //Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
+    // Filtramos la lista a traves del id del Track elegido, mostrando así unicamente las opiniones de la pista seleccionada
     this.listComments = await this.commentDataService.getComments(this.selectTrack)
       .toPromise()
       .catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR GETCOMMENTS: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });;
@@ -496,7 +497,7 @@ export class FormsPage implements OnInit {
     // Verificamos que la lista de comentario no este vacia.
     if (this.listComments.length != 0) {
       this.listCommentsEmpty = false;
-      //console.log(this.listComments);
+      // console.log(this.listComments);
       this.listComments.sort((objA, objB) => {
         return this.orderArrayDate(objA, objB);
       });
@@ -504,11 +505,11 @@ export class FormsPage implements OnInit {
       this.listCommentsEmpty = true;
     }
 
-    //console.log(result);
+    // console.log(result);
   }
 
-  //Metodo para ordenar las opiniones, de forma que la mas próxima esté primera
-  //Primero compara el año, luego el mes y luego el dia
+  // Metodo para ordenar las opiniones, de forma que la mas próxima esté primera
+  // Primero compara el año, luego el mes y luego el dia
   orderArrayDate(objA, objB) {
     let dateA = objA.date.split('-');
     let dateB = objB.date.split('-');

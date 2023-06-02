@@ -381,7 +381,7 @@ export class ReservePage implements OnInit {
       });
   }
 
-  // metodo para leer los datos locales
+  // Metodo para leer los datos locales
   async getDataLocal() {
     // Array usando para las diferentes listas de reservas
     this.listReservesPending = [];

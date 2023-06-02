@@ -19,13 +19,15 @@ export class ModalWeather {
   ngOnInit() {
 
     //console.log(this.weatherData);
+
+    // Carga la imagen recibida al abrir el modal 
     let image_weather_icon = document.getElementById('image_Weather');
     image_weather_icon.style.backgroundPosition = this.weatherData.image_weather;
   }
 
   dismiss() {
-    // using the injected ModalController this page
-    // can "dismiss" itself and optionally pass back data
+    // Usando el injerto del ModalController
+    // Usamos "dismiss" para cerrar el modal y devolver los valores
     this.modalCtrl.dismiss({
       'dismissed': true
     });

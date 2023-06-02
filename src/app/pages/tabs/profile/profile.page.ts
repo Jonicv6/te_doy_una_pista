@@ -41,31 +41,31 @@ export class ProfilePage implements OnInit {
   }
 
   async getData() {
-    //Activamos el loading y cargamos los datos
+    // Activamos el loading y cargamos los datos
     await this.sweetAlertService.presentLoading(environment.textLoading);
     this.sweetAlertService.loading.present();
 
-    //Extraemos las ciudad de los SportCenters
+    // Extraemos las ciudades de los SportCenters
     await this.sportCenterDataService.getSportCenters()
       .toPromise().then(result => {
-        //Recorremos los datos 
+        // Recorremos los datos 
         for (let i of result) {
-          //Si la ciudad está repetida, se descarta
+          // Si la ciudad está repetida, se descarta
           if (!this.citys.includes(i.city)) {
             this.citys.push(i.city);
-            //console.log(i.city);
+            // console.log(i.city);
           }
         };
         this.city = this.citys[0];
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR PROFILE: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });
 
-    //Leemos los deportes que existen
+    // Extraemos los deportes que existen
     await this.trackDataService.getTracks()
       .toPromise().then(result => {
         for (let i of result) {
@@ -80,14 +80,14 @@ export class ProfilePage implements OnInit {
       }).catch(async (e) => {
         await this.sweetAlertService.showErrorConnection().then(() => {
           console.log("ERROR PROFILE: " + e.message);
-          //Una vez finaliza la muestra del error, vuelve a intentar cargar
+          // Una vez finaliza la muestra del error, vuelve a intentar cargar
           this.getData();
         });
       });
 
     await this.getDataLocal();
 
-    //Paramos el loading
+    // Paramos el loading
     this.sweetAlertService.loading.dismiss();
   }
 
@@ -95,10 +95,10 @@ export class ProfilePage implements OnInit {
     return this.profileForm.controls;
   }
 
-  //Método que guarda a nivel local los datos del usuario
+  // Método que guarda a nivel local los datos del usuario
   saveData() {
 
-    //Indicamos el estado para los mensajes de aviso
+    // Indicamos el estado para los mensajes de aviso
     if (!this.profileForm.valid) {
       this.sweetAlertService.showAlert(this.env.titleSaveProfileError, this.env.errorSaveProfile, 'error');
       return false;
@@ -111,7 +111,7 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  //metodo para leer los datos locales
+  // Metodo para leer los datos locales
   async getDataLocal() {
     let dataLocal = await JSON.parse(localStorage.getItem('profile'));
     if (dataLocal != null) {
