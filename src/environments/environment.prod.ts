@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  version: "1.2.0",
+  version: "1.2.1",
 
   //Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
@@ -86,6 +86,7 @@ export const environment = {
   titleSuccessComment: "Comentario realizado",
   titleErrorConnection: "Error de conexión",
   titleErrorLocation: "Error en la localización",
+  titleErrorSportcentersMaps: "Ningún pabellón",
 
   //Mensaje SweetAlert
   textDeleteReserve: "Eliminará su reserva",
@@ -138,6 +139,7 @@ export const environment = {
   errorComment: "Faltan datos por completar",
   errorConnection: "No se ha recibido respuesta del servidor",
   errorLocation: "Debe darnos permisos de localización para usar el mapa",
+  errorSportcenterMaps: "No se ha encontrado ningún pabellón para ese deporte, por favor, seleccione otro",
 
   //Mensajes de Error de Validación
   errorNameLength: "El nombre debe tener una longitud minima de 2 caracteres",
