@@ -2,23 +2,10 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { config } from "process";
-
 export const environment = {
   production: true,
-  version: "1.1.1",
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  /*firebaseConfig: {
-    apiKey: "AIzaSyAgkpKuy49LY1GFOHCCnVP6a-zsjjgBjuM",
-    authDomain: "superb-tendril-224107.firebaseapp.com",
-    databaseURL: "https://superb-tendril-224107.firebaseio.com",
-    projectId: "superb-tendril-224107",
-    storageBucket: "superb-tendril-224107.appspot.com",
-    messagingSenderId: "702844795474",
-    appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
-    measurementId: "G-XGZ2PTLG4B"
-  },*/
+  version: "1.2.0",
+
   //Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
   trackPoint: "/track/",
@@ -160,20 +147,6 @@ export const environment = {
   errorEmailFormat: "El formato del Email es incorrecto"
 };
 
-
-export const firebaseConfig= {
-  apiKey: "AIzaSyAgkpKuy49LY1GFOHCCnVP6a-zsjjgBjuM",
-  authDomain: "superb-tendril-224107.firebaseapp.com",
-  databaseURL: "https://superb-tendril-224107.firebaseio.com",
-  projectId: "superb-tendril-224107",
-  storageBucket: "superb-tendril-224107.appspot.com",
-  messagingSenderId: "702844795474",
-  appId: "1:702844795474:web:a22f5702e871f66d63bd8b",
-  measurementId: "G-XGZ2PTLG4B",
-  client_id: "702844795474-sbh3uc19otjoi43n1esknkgmq431l1j5.apps.googleusercontent.com",
-  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-  scope: "https://www.googleapis.com/auth/calendar"
-}
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
