@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -26,27 +26,25 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 /* FirebaseUI */
-@import '~firebaseui/dist/firebaseui.css';
+@import "~firebaseui/dist/firebaseui.css";
 
-.ion-modal ion-backdrop{
-    background-color: black;
-    
-  }
+.ion-modal ion-backdrop {
+  background-color: black;
+}
 
-.ion-page .ion-modal{
-      
-  width: fit-content!important;
+.ion-page .ion-modal {
+  width: fit-content !important;
   min-width: 80%;
   height: 50%;
   margin: 50% 10% 50% 10%;
-  border-radius: 6px!important;
-  box-shadow: 0 28px 48px #0006!important;
-  }
+  border-radius: 6px !important;
+  box-shadow: 0 28px 48px #0006 !important;
+}
 
-  .error{
-    color: #ff2424;
-    padding: 0px 6px;
-    background-color: #07070730;
-    border-radius: 5px;
-    pointer-events: none;
-  }
+.error {
+  color: #ff2424;
+  padding: 0px 6px;
+  background-color: #07070730;
+  border-radius: 5px;
+  pointer-events: none;
+}
