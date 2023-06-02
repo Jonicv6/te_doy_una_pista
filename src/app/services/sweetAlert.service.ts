@@ -44,6 +44,7 @@ export class SweetAlertService {
         title: this.env.titleErrorConnection,
         text: this.env.errorConnection,
         icon: 'error',
+        footer: '<a href="'+ this.env.endPoint +'">'+ this.env.textVisitWebEndPoint+'</a>',
         heightAuto: false,
         confirmButtonText: this.env.buttonRetry,
       }).then((result) => {
