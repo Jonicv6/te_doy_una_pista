@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  version: "1.4.0",
+  version: "1.4.1",
 
   // Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
@@ -104,6 +104,7 @@ export const environment = {
   textHere: "Usted esta aquí",
   textSendEmail: "Enviando email...",
   messageLocationDenied: "No ha aceptado los permisos de localización, configuralos en el apartado de permisos de la app",
+  textVisitWebEndPoint: "Visita esta web para solucionar el error",
 
   // Mensajes de selects
   selectCitySport: "Selecciona una Ciudad y un Deporte",
