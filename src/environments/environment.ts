@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  version: "1.4.2",
+  version: "1.4.3",
 
   // Variables Host NodeJS
   endPoint: "https://31.131.183.8:3000",
