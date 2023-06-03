@@ -146,7 +146,7 @@ export class ReservePage implements OnInit {
   }
 
   // Metodo responsable de mostrar el Modal de la información Meteorologica
-  commentInfoMeter(reserve) {
+  reserveInfoMeter(reserve) {
     // Recogemos la localizacion del pabellon
     this.SportCenterDataService.getSportCenter(reserve.sportCenter.idSportCenter)
       .toPromise()
@@ -193,7 +193,7 @@ export class ReservePage implements OnInit {
             switch (resultWeather.hourly.weathercode[hour_id]) {
               // Despejado
               case 0:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-0px -232px";
                 } else { // Noche
                   image_weather_pos = "-464px -464px";
@@ -202,7 +202,7 @@ export class ReservePage implements OnInit {
 
               // Poco nublado
               case 1:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-464px -232px";
                 } else { // Noche
                   image_weather_pos = "-348px -580px";
@@ -211,7 +211,7 @@ export class ReservePage implements OnInit {
 
               // Parcialmente nublado
               case 2:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-348px -232px";
                 } else { // Noche
                   image_weather_pos = "-0px -580px";
@@ -220,7 +220,7 @@ export class ReservePage implements OnInit {
 
               // Muy Nublado
               case 3:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-116px -348px";
                 } else { // Noche
                   image_weather_pos = "-232px -580px";
@@ -229,7 +229,7 @@ export class ReservePage implements OnInit {
 
               // Neblina
               case 45: case 48:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-116px -242px";
                 } else { // Noche
                   image_weather_pos = "-116px -580px";
@@ -238,7 +238,7 @@ export class ReservePage implements OnInit {
 
               // Llovizna
               case 51: case 53: case 55: case 56: case 57:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-0px -348px";
                 } else { // Noche
                   image_weather_pos = "-464px -0px";
@@ -272,7 +272,7 @@ export class ReservePage implements OnInit {
 
               // Torment
               case 95:
-                if (hour_id >= 9 && hour_id <= 19) { // Dia
+                if (hour_id >= 8 && hour_id <= 19) { // Dia
                   image_weather_pos = "-242px -348px";
                 } else { // Noche
                   image_weather_pos = "-242px -116px";
