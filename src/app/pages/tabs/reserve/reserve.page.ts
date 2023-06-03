@@ -369,6 +369,8 @@ export class ReservePage implements OnInit {
             this.commentDataService.createComment(comment).toPromise()
               .then(r => {
                 this.sweetAlertService.showAlert(this.env.titleSuccessComment, this.env.successComment, 'success');
+                this.deleteReserveLocal(reserve, this.listReservesCompleted);
+                this.getDataLocal();
               })
               .catch(r => {
                 this.sweetAlertService.showAlert(this.env.titleErrorComment, this.env.errorComment, 'error');
