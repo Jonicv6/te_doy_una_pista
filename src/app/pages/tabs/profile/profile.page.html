@@ -41,7 +41,7 @@
                             <h2>{{env.titleUbication| titlecase}}</h2>
                         </ion-label>
                         <!-- Campo Ciudad -->
-                        <ion-select interface="popover" formControlName="city" [(ngModel)]="city">
+                        <ion-select formControlName="city" [(ngModel)]="city">
                             <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -50,7 +50,7 @@
                             <h2>{{env.titleSport| titlecase}}</h2>
                         </ion-label>
                         <!-- Campo Deporte -->
-                        <ion-select interface="popover" [(ngModel)]="sport" formControlName="sport">
+                        <ion-select [(ngModel)]="sport" formControlName="sport">
                             <ion-select-option *ngFor="let sport of sports"
                                 [value]="sport">{{sport}}</ion-select-option>
                         </ion-select>

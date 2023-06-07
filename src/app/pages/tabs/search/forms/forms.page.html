@@ -22,7 +22,7 @@
         <!-- Seleccionador de pista -->
         <ion-label>{{env.track | titlecase }}</ion-label>
         <ion-select class="form-select form-select-sm" aria-label=".form-select-sm " placeholder="{{env.selectTrack}}"
-          #trackSelect (ionChange)="changeTrack(trackSelect.value)" interface="popover" id="trackPicker">
+          #trackSelect (ionChange)="changeTrack(trackSelect.value)" id="trackPicker">
           <ion-select-option *ngFor="let track of tracks" [value]="track">{{track.name}}</ion-select-option>
         </ion-select>
       </div>
@@ -37,7 +37,7 @@
       <!-- Seleccionador de la hora -->
       <div class="select" [hidden]="hoursEmpty">
         <ion-label>{{env.hour | titlecase }}</ion-label>
-        <ion-select class="form-select form-select-sm" interface="popover" aria-label=".form-select-sm "
+        <ion-select class="form-select form-select-sm" aria-label=".form-select-sm "
           placeholder="{{env.selectHour}}" id="hourPicker" (ionChange)="changeHour(hourSelect.value)" #hourSelect>
           <ion-select-option *ngFor="let hourElement of hoursFree"
             [value]="hourElement">{{hourElement.hour}}:{{hourElement.minutes}}</ion-select-option>

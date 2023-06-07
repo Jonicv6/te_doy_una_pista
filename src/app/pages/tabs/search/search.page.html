@@ -4,14 +4,14 @@
       <!-- Seleccionador de ciudad -->
       <div class="select">
         <ion-label>{{env.city | titlecase}}</ion-label>
-        <ion-select interface="popover" *ngIf="citys" [(ngModel)]="city" (ionChange)="search(city,sport)">
+        <ion-select *ngIf="citys" [(ngModel)]="city" (ionChange)="search(city,sport)">
           <ion-select-option *ngFor="let city of citys">{{city}}</ion-select-option>
         </ion-select>
       </div>
       <!-- Seleccionador de deporte -->
       <div class="select">
         <ion-label>{{env.sport | titlecase}}</ion-label>
-        <ion-select interface="popover" [(ngModel)]="sport" (ionChange)="search(city,sport)">
+        <ion-select [(ngModel)]="sport" (ionChange)="search(city,sport)">
           <ion-select-option *ngFor="let sport of sports" [value]="sport">{{sport}}</ion-select-option>
         </ion-select>
       </div>
