@@ -294,7 +294,7 @@ export class FormsPage implements OnInit {
               // Creamos la variable que guardaremos en local, con el id de la reserva creada en la BBDD
               let reserveLocal = <ReserveLocal>{
                 idReserve: r['idReserve'], sportCenter: this.sportCenter,
-                track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve
+                track: this.selectTrack, date: formatDate, hour: this.selectHour, user: this.nameReserve, price: this.selectTrack.price
               };
               listReserveLocal.push(reserveLocal);
               localStorage.setItem('reserves', JSON.stringify(listReserveLocal));
@@ -338,9 +338,15 @@ export class FormsPage implements OnInit {
                   "</td>" +
                   "</tr>" +
                   "<tr>" +
+                  "<td>" + environment.price.toUpperCase().toString() +
+                  "</td>" +
+                  "<td>" + reserveLocal.price + " €/h" +
+                  "</td>" +
+                  "</tr>" +
+                  "<tr>" +
                   "<td>" + environment.titleUbication.toUpperCase().toString() +
                   "</td>" +
-                  "<td>" + "<a href=\"https:// www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude + "\">" + this.env.titleUbication + "</a>" +
+                  "<td>" + "<a href=\"https://www.google.es/maps?q=" + reserveLocal.sportCenter.latitude + "," + reserveLocal.sportCenter.longitude + "\">" + this.env.titleUbication + "</a>" +
                   "</td>" +
                   "</tr>" +
                   "</table>"

@@ -44,8 +44,8 @@
         </ion-select>
       </div>
       <p [hidden]="!hoursEmpty" id="messageHours">{{env.emptyHours}}</p>
+      <p id="priceTrack" *ngIf="selectTrack!=undefined">{{env.price}}: <b>{{selectTrack.price}}</b> €/h</p>
 
-      <br><br><br>
       <div class="nameReserve" [hidden]="hoursEmpty">
         <form [formGroup]="reserveForm" (ngSubmit)="checkReserve()" novalidate>
           <ion-list>
