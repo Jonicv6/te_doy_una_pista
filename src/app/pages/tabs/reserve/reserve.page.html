@@ -25,7 +25,8 @@
             <h6>{{ reservePending.track.name }}</h6>
             <ion-icon name="calendar"></ion-icon> {{ reservePending.date }}
             <ion-icon name="time"></ion-icon> {{ reservePending.hour }}
-            <p>Nombre de la reserva: '{{ reservePending.user }}'</p>
+            <p>{{env.price}}: {{reservePending.price}} €/h</p>
+            <p>{{env.reserveName}}: '{{ reservePending.user }}'</p>
           </ion-card-content>
         </div>
 
@@ -61,7 +62,8 @@
             <h6>{{ reserveCompleted.track.name }}</h6>
             <ion-icon name="calendar"></ion-icon> {{ reserveCompleted.date }}
             <ion-icon name="time"></ion-icon> {{ reserveCompleted.hour }}
-            <p>Nombre de la reserva: '{{ reserveCompleted.user }}'</p>
+            <p>{{env.price}}: {{reserveCompleted.price}} €/h</p>
+            <p>{{env.reserveName}}: '{{ reserveCompleted.user }}'</p>
           </ion-card-content>
         </div>
 
